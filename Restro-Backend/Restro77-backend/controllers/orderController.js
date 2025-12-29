@@ -8,7 +8,7 @@ const placeOrder = async (req, res) => {
     const frontend_url = "http://localhost:5173";
 
     try {
-        const { userId, items, amount, address, pointsToUse } = req.body;
+        const { userId, items, amount, address, pointsToUse, orderType } = req.body;
 
         let newOrderData = {
             userId,
@@ -16,7 +16,8 @@ const placeOrder = async (req, res) => {
             amount,
             address,
             pointsUsed: 0,
-            pointsEarned: Math.floor(amount / 50)
+            pointsEarned: Math.floor(amount / 50),
+            orderType: orderType || "Delivery"
         };
 
         // Handle Points Redemption
@@ -155,7 +156,7 @@ const verifyOrder = async (req, res) => {
 // user Orders for frontend
 const userOrders = async (req, res) => {
     try {
-        const orders = await orderModel.find({ userId: req.body.userId })
+        const orders = await orderModel.find({ userId: req.body.userId }).sort({ date: -1 })
         res.json({ success: true, data: orders })
 
     } catch (error) {
@@ -181,7 +182,12 @@ const listOrders = async (req, res) => {
 // Update Order Status
 const updateStatus = async (req, res) => {
     try {
-        await orderModel.findByIdAndUpdate(req.body.orderId, { status: req.body.status })
+        const { orderId, status, prepTime } = req.body;
+
+        let updateData = { status };
+        if (prepTime) updateData.prepTime = prepTime;
+
+        await orderModel.findByIdAndUpdate(orderId, updateData);
 
         // Emit Status Update
         io.emit("orderStatusUpdated", { orderId: req.body.orderId, status: req.body.status });

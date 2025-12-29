@@ -57,6 +57,18 @@ const Orders = ({ URl }) => {
   }, [URl])
 
 
+  const prepTimeHandler = async (orderId, mins) => {
+    const response = await axios.post(URl + "/api/order/status", {
+      orderId,
+      status: orders.find(o => o._id === orderId).status, // Keep existing status
+      prepTime: Number(mins)
+    })
+    if (response.data.success) {
+      toast.success("Prep Time Updated!");
+      await fetchAllOrders();
+    }
+  }
+
   return (
     <div className='order add'>
       <h3>Order Page</h3>
@@ -75,23 +87,49 @@ const Orders = ({ URl }) => {
                 })}
               </p>
               <p className='order-item-name'>
-                {
-                  order.address.firstName + " " + order.address.lastName
-                }
+                {order.address.firstName + " " + order.address.lastName}
               </p>
-              <div className="order-item-address">
-                <p>{order.address.street + ","}</p>
-                <p>{[order.address.city, order.address.state, order.address.country, order.address.zipcode].filter(Boolean).join(", ")}</p>
-              </div>
-              <p className="order-item-phone">{order.address.phone}</p>
+              <p className='order-item-date'>
+                Order Time: {new Date(order.date).toLocaleString()}
+              </p>
+
+              <p className='order-item-type' style={{ fontWeight: 'bold', color: '#555', marginTop: '5px' }}>
+                Type: {order.orderType || "Delivery"}
+              </p>
+
+              {(!order.orderType || order.orderType === "Delivery") ? (
+                <div className="order-item-address">
+                  <p>{order.address.street + ","}</p>
+                  <p>{[order.address.city, order.address.state, order.address.country, order.address.zipcode].filter(Boolean).join(", ")}</p>
+                  <p className="order-item-phone">{order.address.phone}</p>
+                </div>
+              ) : (
+                <div className="order-item-address" style={{ color: '#006064', fontWeight: 'bold' }}>
+                  <p>{order.address.street}</p> {/* Shows Table No or Takeaway message */}
+                </div>
+              )}
             </div>
             <p>Items : {order.items.length}</p>
             <p><FaRupeeSign />{order.amount}</p>
-            <select onChange={(event) => { statusHandler(event, order._id) }} value={order.status}>
-              <option value="Food is Getting Ready!">Food is Getting Ready!</option>
-              <option value="Out for delivery">Out for delivery</option>
-              <option value="Delivered">Delivered</option>
-            </select>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <select onChange={(event) => { statusHandler(event, order._id) }} value={order.status}>
+                <option value="Food is Getting Ready!">Food is Getting Ready!</option>
+                <option value="Out for delivery">Out for delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+
+              <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                <input
+                  type="number"
+                  placeholder="Mins"
+                  style={{ width: '60px', padding: '5px' }}
+                  defaultValue={order.prepTime || 0}
+                  onBlur={(e) => prepTimeHandler(order._id, e.target.value)}
+                />
+                <span style={{ fontSize: '12px' }}>Prep Time (Min)</span>
+              </div>
+            </div>
           </div>
         ))}
       </div>

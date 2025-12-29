@@ -106,29 +106,32 @@ const PlaceOrder = () => {
   useEffect(async () => {
     await fetchLocation();
   }, [])
+  // Order Type State
+  const [orderType, setOrderType] = useState("Delivery");
+
   const placeOrder = async (event) => {
     event.preventDefault();
-    console.log(address);
-    console.log(token);
-    console.log(userData);
-
 
     if (!token) return;
-    try {
-      const response = await axios.put(URl + "/api/user/updateAddress", { email: userData?.email, address }, { headers: { token } });
-      console.log(response.data);
-      setAddress(response.data.userData.address)
-    } catch (error) {
-      console.error(error);
-    }
 
-    // Save Address if checked
-    if (saveThisAddress && address) {
+    // Only validate/save address if Delivery
+    if (orderType === "Delivery") {
       try {
-        await axios.post(URl + "/api/user/save-address", { address, label: addressLabel }, { headers: { token } });
-        toast.success("Address Saved to File");
+        // Update user address only if it's a delivery address
+        const response = await axios.put(URl + "/api/user/updateAddress", { email: userData?.email, address }, { headers: { token } });
+        setAddress(response.data.userData.address)
       } catch (error) {
-        console.error("Failed to save address", error);
+        console.error(error);
+      }
+
+      // Save Address if checked
+      if (saveThisAddress && address) {
+        try {
+          await axios.post(URl + "/api/user/save-address", { address, label: addressLabel }, { headers: { token } });
+          toast.success("Address Saved to File");
+        } catch (error) {
+          console.error("Failed to save address", error);
+        }
       }
     }
 
@@ -141,18 +144,34 @@ const PlaceOrder = () => {
       }
     })
 
-    // Construct simplified order data with profile info
-    let orderData = {
-      address: {
-        street: address, // Map single address string to street for compatibility
+    // Construct address object based on type
+    let finalAddress = {};
+    if (orderType === "Delivery") {
+      finalAddress = {
+        street: address,
         firstName: userData?.name || "Guest",
         lastName: "",
         email: userData?.email || "",
         phone: userData?.phone || ""
-      },
+      };
+    } else {
+      // For Dine-in/Takeaway, use minimal info or Table No if added later
+      // Use the 'address' field for "Table No" if Dine-in
+      finalAddress = {
+        street: orderType === "Dine-in" ? `Table: ${address}` : "Takeaway / Parcel",
+        firstName: userData?.name || "Guest",
+        lastName: `(${orderType})`,
+        email: userData?.email || "",
+        phone: userData?.phone || ""
+      };
+    }
+
+    let orderData = {
+      address: finalAddress,
       items: orderItems,
-      amount: getTotalCartAmount() + 5 - (usePoints ? userPoints : 0),
-      pointsToUse: usePoints ? userPoints : 0
+      amount: getTotalCartAmount() + (orderType === "Delivery" ? 5 : 0) - (usePoints ? userPoints : 0),
+      pointsToUse: usePoints ? userPoints : 0,
+      orderType: orderType
     }
 
     if (orderData.amount < 0) orderData.amount = 0;
@@ -194,84 +213,142 @@ const PlaceOrder = () => {
   return (
     <form onSubmit={placeOrder} className={style.placeOrder}>
       <div className={style.placeOrderLeft}>
-        <p className={style.title}>Delivery Details</p>
+        <p className={style.title}>Order Options</p>
 
-        <div style={{ marginBottom: "20px" }}>
-
-          {savedAddresses.length > 0 && (
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Select Saved Address</label>
-              <select
-                value={selectedAddressId}
-                onChange={handleAddressSelect}
-                style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-              >
-                <option value="">-- Choose from saved addresses --</option>
-                {savedAddresses.map(addr => (
-                  <option key={addr._id} value={addr._id}>{addr.label}: {addr.address.substring(0, 30)}...</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <label style={{ display: 'block', marginBottom: '10px', color: '#555' }}>Delivery Address</label>
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-            <button
-              type="button"
-              onClick={fetchLocation}
-              disabled={locationLoading}
-              style={{
-                padding: "12px 20px",
-                background: locationLoading ? "#ccc" : "#000",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: locationLoading ? "not-allowed" : "pointer",
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              Fetch Current
-            </button>
-          </div>
-
-          <textarea
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Enter your address here if not fetched automatically..."
-            required
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              minHeight: "100px",
-              resize: "vertical",
-              fontSize: "16px"
-            }}
-          />
-
-          <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Order Type Selection */}
+        <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
             <input
-              type="checkbox"
-              id="saveAddr"
-              checked={saveThisAddress}
-              onChange={(e) => setSaveThisAddress(e.target.checked)}
+              type="radio"
+              name="orderType"
+              value="Delivery"
+              checked={orderType === "Delivery"}
+              onChange={(e) => { setOrderType("Delivery"); setAddress(""); }} // Reset address on switch
             />
-            <label htmlFor="saveAddr" style={{ cursor: 'pointer', color: '#555' }}>Save this address for future</label>
-
-            {saveThisAddress && (
-              <input
-                type="text"
-                placeholder="Label (e.g. Work)"
-                value={addressLabel}
-                onChange={(e) => setAddressLabel(e.target.value)}
-                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc', marginLeft: '10px' }}
-              />
-            )}
-          </div>
+            Home Delivery
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+            <input
+              type="radio"
+              name="orderType"
+              value="Dine-in"
+              checked={orderType === "Dine-in"}
+              onChange={(e) => { setOrderType("Dine-in"); setAddress(""); }}
+            />
+            Dine-in (Table)
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+            <input
+              type="radio"
+              name="orderType"
+              value="Takeaway"
+              checked={orderType === "Takeaway"}
+              onChange={(e) => { setOrderType("Takeaway"); setAddress(""); }}
+            />
+            Takeaway
+          </label>
         </div>
+
+        {/* Dynamic Input Section */}
+        {orderType === "Delivery" ? (
+          <>
+            <p className={style.title}>Delivery Details</p>
+            <div style={{ marginBottom: "20px" }}>
+
+              {savedAddresses.length > 0 && (
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Select Saved Address</label>
+                  <select
+                    value={selectedAddressId}
+                    onChange={handleAddressSelect}
+                    style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                  >
+                    <option value="">-- Choose from saved addresses --</option>
+                    {savedAddresses.map(addr => (
+                      <option key={addr._id} value={addr._id}>{addr.label}: {addr.address.substring(0, 30)}...</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <label style={{ display: 'block', marginBottom: '10px', color: '#555' }}>Delivery Address</label>
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                <button
+                  type="button"
+                  onClick={fetchLocation}
+                  disabled={locationLoading}
+                  style={{
+                    padding: "12px 20px",
+                    background: locationLoading ? "#ccc" : "#000",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: locationLoading ? "not-allowed" : "pointer",
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  Fetch Current
+                </button>
+                {/* Add Map Button here later if needed */}
+              </div>
+
+              <textarea
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Enter your address here if not fetched automatically..."
+                required
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                  minHeight: "100px",
+                  resize: "vertical",
+                  fontSize: "16px"
+                }}
+              />
+
+              <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <input
+                  type="checkbox"
+                  id="saveAddr"
+                  checked={saveThisAddress}
+                  onChange={(e) => setSaveThisAddress(e.target.checked)}
+                />
+                <label htmlFor="saveAddr" style={{ cursor: 'pointer', color: '#555' }}>Save this address for future</label>
+
+                {saveThisAddress && (
+                  <input
+                    type="text"
+                    placeholder="Label (e.g. Work)"
+                    value={addressLabel}
+                    onChange={(e) => setAddressLabel(e.target.value)}
+                    style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc', marginLeft: '10px' }}
+                  />
+                )}
+              </div>
+            </div>
+          </>
+        ) : orderType === "Dine-in" ? (
+          <div style={{ marginBottom: "20px" }}>
+            <p className={style.title}>Table Information</p>
+            <label style={{ display: 'block', marginBottom: '10px', color: '#555' }}>Enter Table Number</label>
+            <input
+              type="text"
+              value={address} // Reusing address state for Table No
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="E.g. Table 5"
+              required
+              style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+            />
+          </div>
+        ) : (
+          <div style={{ marginBottom: "20px", padding: '15px', background: '#e0f7fa', borderRadius: '5px', color: '#006064' }}>
+            <p><strong>Takeaway:</strong> Please collect your order from the counter when it is ready.</p>
+          </div>
+        )}
 
         {userData && (
           <div style={{ padding: '15px', background: '#f5f5f5', borderRadius: '8px' }}>
@@ -293,7 +370,7 @@ const PlaceOrder = () => {
             <hr />
             <div className={style1.CartTotalDetails}>
               <p>Delivery Fee</p>
-              <p>₹{getTotalCartAmount() === 0 ? 0 : 5}</p>
+              <p>₹{orderType === "Delivery" && getTotalCartAmount() !== 0 ? 5 : 0}</p>
             </div>
 
             {userPoints > 0 && (
@@ -312,7 +389,7 @@ const PlaceOrder = () => {
             <hr />
             <div className={style1.CartTotalDetails}>
               <b>Total</b>
-              <b>₹{getTotalCartAmount() === 0 ? 0 : Math.max(0, getTotalCartAmount() + 5 - (usePoints ? userPoints : 0))}</b>
+              <b>₹{getTotalCartAmount() === 0 ? 0 : Math.max(0, getTotalCartAmount() + (orderType === "Delivery" ? 5 : 0) - (usePoints ? userPoints : 0))}</b>
             </div>
           </div>
           <button type='submit'>Proceed To Payment</button>

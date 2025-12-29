@@ -8,6 +8,43 @@ import { assets } from "../../assets/assets";
 import { FaRupeeSign } from "react-icons/fa";
 import { io } from 'socket.io-client'; // Import socket.io-client
 
+const OrderTimer = ({ order }) => {
+    const [timeLeft, setTimeLeft] = useState(null);
+
+    useEffect(() => {
+        if (!order.prepTime || order.prepTime === 0 || order.status !== "Food is Getting Ready!") {
+            setTimeLeft(null);
+            return;
+        }
+
+        const targetTime = new Date(order.date).getTime() + order.prepTime * 60000;
+
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+            const difference = targetTime - now;
+
+            if (difference <= 0) {
+                setTimeLeft("Arriving Soon");
+                clearInterval(interval);
+            } else {
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                setTimeLeft(`${minutes}m ${seconds}s`);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [order]);
+
+    if (!timeLeft) return null;
+
+    return (
+        <p style={{ color: 'tomato', fontWeight: 'bold' }}>
+            Arriving in: {timeLeft}
+        </p>
+    );
+};
+
 const MyOrders = () => {
     const { URl, token } = useContext(StoreContext)
     const [data, setData] = useState([]);
@@ -22,8 +59,6 @@ const MyOrders = () => {
         if (token) {
             fetchOrders();
 
-            // Connect to Socket via Backend URL
-            // Ensure URl doesn't have trailing slash issues, but standard is fine
             const socket = io(URl);
 
             socket.on("orderStatusUpdated", (data) => {
@@ -36,8 +71,6 @@ const MyOrders = () => {
             }
         }
     }, [token, URl])
-
-
 
     return (
         <div className={styles.myorders}>
@@ -56,7 +89,11 @@ const MyOrders = () => {
                             })}</p>
                             <p><FaRupeeSign />{order.amount}.00</p>
                             <p>Items: {order.items.length}</p>
-                            <p><span>&#x25cf;</span> <b>{order.status}</b> </p>
+                            <p>Type: <b>{order.orderType || "Delivery"}</b></p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                <p><span>&#x25cf;</span> <b>{order.status}</b> </p>
+                                <OrderTimer order={order} />
+                            </div>
                             <button onClick={fetchOrders}>Track Order</button>
                         </div>
                     )
