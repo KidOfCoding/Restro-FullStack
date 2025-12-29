@@ -82,3 +82,21 @@
         font-size: 14px;
     }
 }
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.deleteIcon {
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.deleteIcon:hover {
+    transform: scale(1.2);
+    color: #ffcccc;
+}
