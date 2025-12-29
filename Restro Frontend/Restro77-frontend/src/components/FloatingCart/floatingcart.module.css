@@ -1,0 +1,84 @@
+.floatingCart {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
+    background-color: #ef4f5f;
+    /* Brand Primary Color */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(239, 79, 95, 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2000;
+    /* High z-index to sit above everything */
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+.cartInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.itemCount {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.totalPrice {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.separator {
+    opacity: 0.5;
+}
+
+.viewCartBtn {
+    background-color: white;
+    color: #ef4f5f;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: transform 0.2s;
+    white-space: nowrap;
+}
+
+.viewCartBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Ensure it doesn't overlap the content too much on mobile */
+@media (max-width: 768px) {
+    .floatingCart {
+        bottom: 90px;
+        /* Increased to 90px to guarantee visibility above all mobile navigation bars */
+        width: 90%;
+        padding: 12px 15px;
+    }
+
+    .cartInfo {
+        font-size: 14px;
+    }
+}

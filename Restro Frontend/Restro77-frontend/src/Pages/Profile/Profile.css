@@ -1,0 +1,84 @@
+.profile-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #1e1e1e;
+    /* Dark theme */
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.profile-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #e5e7eb;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.form-group textarea {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 70px;
+    background: #1e1e1e;
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #a1a1aa;
+}
+
+.form-group input {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #2a2a2a;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.form-group input.disabled {
+    background: #1a1a1a;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.save-btn {
+    margin-top: 10px;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.save-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}

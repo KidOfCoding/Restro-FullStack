@@ -1,0 +1,110 @@
+.Cart{
+    margin-top: 100px;
+    color : #fff;
+}
+
+.CartItemsTitle{
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+    align-items: center;
+    color: grey;
+    font-size: max(1vw,12px);
+    gap: 20px;
+}
+
+.CartItemsItem {    
+    margin: 10px 0px;
+    color: #fff;
+}
+
+.CartItemsItem img{
+    width: 50px;
+}
+
+.Cart hr{
+    height: 1px;
+    background-color: #e2e2e2;
+    border: none;
+}
+
+.CartItemsItem .Cross{
+    cursor: pointer;
+}
+
+.CartBottom{
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: max(12vw,20px);
+}
+
+.CartTotal{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    color: #fff;
+}
+
+.CartTotalDetails{
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+}
+
+.CartTotal hr{
+    margin: 10px 0px;
+}
+
+.CartTotal button{
+    border: none;
+    color: black;
+    background-color: #eded05;
+    width: max(18vw,250px);
+    padding: 12px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.CartPromoCode{
+    flex: 1;
+}
+
+.CartPromoCode p{
+    color: #555;
+}
+
+.CartPromoCodeInput{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eaeaea;
+    border-radius: 4px;
+}
+
+.CartPromoCodeInput input{
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+}
+
+.CartPromoCodeInput button{
+    width: max(10vw,150px);
+    padding: 12px 5px;
+    background-color: black;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media (max-width:750px){
+    .CartBottom{
+        flex-direction: column-reverse;
+    }
+    .CartPromoCode{
+        justify-content: start;
+    }
+}

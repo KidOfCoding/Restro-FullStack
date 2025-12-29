@@ -1,0 +1,109 @@
+:root {
+  --primary-color: #e67e22;
+  --veg-color: #27ae60;
+  --nonveg-color: #c0392b;
+  --bg-color: #f8f9fa;
+  --text-dark: #2d3436;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+}
+
+header {
+  background: white;
+  padding: 20px 0 0 0;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+h1 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.8rem; }
+
+.category-tabs {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px 15px 15px;
+  gap: 10px;
+}
+
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  padding: 8px 18px;
+  background: #eee;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.tab:hover, .tab.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 15px 50px;
+}
+
+.section-title {
+  margin: 30px 0 15px;
+  font-size: 1.4rem;
+  border-left: 5px solid var(--primary-color);
+  padding-left: 10px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+.cAdd-cart{
+   cursor: pointer;
+}
+.item-card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+.item-card:hover { transform: translateY(-3px); }
+
+.item-info { display: flex; align-items: center; gap: 12px; }
+
+.symbol {
+  width: 14px;
+  height: 14px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.symbol.veg { border-color: var(--veg-color); }
+.symbol.nonVeg { border-color: var(--nonveg-color); }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot.veg { background: var(--veg-color); }
+.dot.nonVeg { background: var(--nonveg-color); }
+
+.item-name { font-weight: 500; font-size: 1rem; }
+.price { font-weight: 700; color: #2d3436; }
+
+@media (max-width: 600px) {
+  .menu-grid { grid-template-columns: 1fr; }
+}

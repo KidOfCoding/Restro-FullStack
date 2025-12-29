@@ -1,0 +1,175 @@
+.testimonials {
+    margin-top: 100px;
+    padding: 40px 0;
+    /* Reduced top/bottom padding to be closer to footer */
+    position: relative;
+    overflow: hidden;
+    /* Removed clashing background, letting the dark app background show through */
+    /* Add a subtle glow/spotlight effect matching the dark theme */
+    background: radial-gradient(circle at 50% 50%, rgba(239, 79, 95, 0.05) 0%, transparent 70%);
+}
+
+@media (max-width: 768px) {
+    .testimonials {
+        margin-top: 50px;
+        /* reduce spacing on mobile */
+    }
+}
+
+.testimonials h2 {
+    text-align: center;
+    font-size: clamp(24px, 4vw, 36px);
+    /* Responsive font size */
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #fff;
+    /* White text for dark theme */
+    letter-spacing: 0.5px;
+}
+
+.marqueeContainer {
+    width: 100%;
+    overflow: hidden;
+    /* Ensure no horizontal scrollbar on main page */
+    position: relative;
+    padding-bottom: 20px;
+
+    /* Gradient Masks for fade effect on edges - adjusted for dark theme */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.marqueeContent {
+    display: flex;
+    gap: 30px;
+    width: max-content;
+    animation: flow 60s linear infinite;
+    /* Slower animation for elegance */
+    padding: 20px 0;
+}
+
+.marqueeContent:hover {
+    animation-play-state: paused;
+}
+
+@keyframes flow {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-33.33%);
+    }
+
+    /* Adjusted for tripled list */
+}
+
+/* Glassmorphism Card - Dark Theme */
+.card {
+    min-width: 300px;
+    max-width: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Very slight white tint */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Subtle border */
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    /* Animation */
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Response for smaller screens */
+@media (max-width: 768px) {
+    .card {
+        min-width: 260px;
+        max-width: 260px;
+        padding: 20px;
+    }
+
+    .marqueeContent {
+        gap: 20px;
+    }
+}
+
+.card:nth-child(even) {
+    animation-delay: 1.5s;
+}
+
+.card:nth-child(3n) {
+    animation-delay: 3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ef4f5f;
+    box-shadow: 0 10px 30px rgba(239, 79, 95, 0.2);
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.quoteIcon {
+    font-size: 30px;
+    color: #ef4f5f;
+    line-height: 1;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #e0e0e0;
+    /* Light grey text for readability on dark */
+    font-style: italic;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.cardFooter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ef4f5f;
+}
+
+.userInfo h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.stars {
+    color: #ffb703;
+    /* Brighter gold for dark theme contrast */
+    font-size: 14px;
+    margin-top: 2px;
+}

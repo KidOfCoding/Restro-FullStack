@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+
+
+*{
+  padding: 0%;
+  margin: 0%;
+  box-sizing: border-box;
+  font-family: poppins;
+  scroll-behavior: smooth;
+}
+
+body{
+  min-height: 100vh;
+  background-color: #0c0d14;
+}
+
+a{
+  text-decoration: none;
+  color: #fff;
+}
+
+.app{
+  width: 90%;
+  margin: auto;
+}
+
+
+
+@keyframes fadeIn{
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}

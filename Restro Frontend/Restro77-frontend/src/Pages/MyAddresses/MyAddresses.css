@@ -1,0 +1,84 @@
+.my-addresses {
+    margin: 50px auto;
+    width: 80%;
+    max-width: 800px;
+}
+
+.my-addresses h2 {
+    margin-bottom: 20px;
+    color: #262626;
+}
+
+.address-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.address-form textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.address-form select,
+.address-form button {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+.address-form button {
+    background-color: tomato;
+    color: white;
+    font-weight: 600;
+    border: none;
+    transition: 0.3s;
+}
+
+.address-form button:hover {
+    background-color: #ff4c4c;
+}
+
+.address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.address-card {
+    border: 1px solid #e2e2e2;
+    padding: 15px;
+    border-radius: 5px;
+    background: white;
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.address-header button {
+    background: transparent;
+    border: 1px solid tomato;
+    color: tomato;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.address-header button:hover {
+    background: tomato;
+    color: white;
+}

@@ -1,0 +1,228 @@
+.ExploreMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+}
+
+.ExploreMenu h1 {
+    color: #fff;
+    font-weight: 500;
+}
+
+.ExploreMenuText {
+    max-width: 60%;
+    color: #bbb;
+}
+
+/* Desktop: Grid View (Wrapping) */
+.ExploreMenuList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    text-align: center;
+    margin: 20px 0px;
+    flex-wrap: wrap;
+}
+
+/* Hide scrollbar */
+.ExploreMenuList::-webkit-scrollbar {
+    display: none;
+}
+
+.ExploreMenuList {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.MenuListItem {
+    flex-shrink: 0;
+}
+
+.MenuListItem img {
+    width: 7.5vw;
+    min-width: 70px;
+    height: 7.5vw;
+    min-height: 70px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.1s;
+    object-fit: cover;
+}
+
+.MenuListItem p {
+    margin-top: 10px;
+    color: #ffffff;
+    font-size: max(1.4vw, 12px);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.ExploreMenu hr {
+    margin: 10px 0px;
+    height: 2px;
+    background-color: #eded05;
+    border: none;
+}
+
+.MenuListItem .active {
+    border: 3px solid #eded05;
+    padding: 2px;
+}
+
+@media (max-width: 1050px) {
+    .ExploreMenuText {
+        max-width: 100%;
+        font-size: 14px;
+        display: none;
+    }
+}
+
+/* Mobile: Horizontal Scroll (Nowrap) by default */
+@media (max-width: 768px) {
+    .ExploreMenuList {
+        justify-content: flex-start;
+        gap: 20px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-left: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .ExploreMenuList.mobileGrid {
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow-x: visible;
+        padding-left: 0;
+    }
+
+    .MenuListItem {
+        min-width: 80px;
+        width: auto;
+        margin-bottom: 0;
+        transition: all 0.3s;
+    }
+
+    .mobileGrid .MenuListItem {
+        margin-bottom: 15px;
+        width: 28%;
+        /* 3 items per row usually */
+    }
+
+    .MenuListItem img {
+        width: 70px;
+        height: 70px;
+        max-width: none;
+        max-height: none;
+    }
+
+    .MenuListItem p {
+        font-size: 12px;
+    }
+}
+
+.headerControl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    /* Add slight gap */
+}
+
+.headerControl h1 {
+    margin: 0;
+    /* Remove default margins */
+    white-space: nowrap;
+    /* Try to keep on one line */
+}
+
+.viewToggle {
+    background: none;
+    border: none;
+    color: #ef4f5f;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    /* Hidden on desktop */
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    /* Force one line: View All */
+    flex-shrink: 0;
+    /* Don't crush the button */
+}
+
+@media (max-width: 480px) {
+
+    /* Very small screens */
+    .headerControl h1 {
+        font-size: 18px;
+        /* Significantly smaller to fit */
+    }
+
+    .viewToggle {
+        font-size: 12px;
+        gap: 3px;
+    }
+}
+
+@media (max-width: 768px) {
+    .viewToggle {
+        display: flex;
+    }
+
+    /* Ensure h1 isn't too big on generic mobile */
+    .headerControl h1 {
+        font-size: max(4vw, 20px);
+    }
+}
+
+.scrollIndicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    animation: bounceRight 2s infinite;
+}
+
+.listContainer {
+    position: relative;
+    width: 100%;
+}
+
+@keyframes bounceRight {
+
+    0%,
+    100% {
+        transform: translate(0, -50%);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(5px, -50%);
+        opacity: 1;
+    }
+}
+
+@media (min-width: 769px) {
+    .scrollIndicator {
+        display: none !important;
+    }
+
+    .viewToggle {
+        display: none !important;
+    }
+}

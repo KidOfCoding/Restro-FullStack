@@ -1,0 +1,235 @@
+/* ================================
+   GLOBAL PAGE
+================================ */
+.my-rewards {
+    width: 80%;
+    margin: 50px auto;
+    background: transparent;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ================================
+   HEADER
+================================ */
+.rewards-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    margin-bottom: 55px;
+}
+
+.rewards-header h2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #e5e7eb;
+    letter-spacing: 0.4px;
+}
+
+/* ================================
+   POINTS CARD (SHINY + ANIMATED)
+================================ */
+.points-card {
+    position: relative;
+    padding: 38px 95px;
+    border-radius: 24px;
+    text-align: center;
+    color: white;
+
+    background: linear-gradient(135deg,
+            #0b0b0b,
+            #161616,
+            #0b0b0b);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 0 45px rgba(139, 92, 246, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    overflow: hidden;
+}
+
+/* SHINE SWEEP */
+.points-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -140%;
+    width: 140%;
+    height: 100%;
+    background: linear-gradient(120deg,
+            transparent,
+            rgba(255, 255, 255, 0.14),
+            transparent);
+    animation: shine 4.5s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -140%;
+    }
+
+    45% {
+        left: 140%;
+    }
+
+    100% {
+        left: 140%;
+    }
+}
+
+/* ================================
+   POINTS TEXT
+================================ */
+.points-card h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #a1a1aa;
+    letter-spacing: 0.6px;
+}
+
+.points-card h1 {
+    font-size: 66px;
+    font-weight: 700;
+    margin: 12px 0;
+    color: #facc15;
+    text-shadow:
+        0 0 12px rgba(250, 204, 21, 0.65),
+        0 0 36px rgba(250, 204, 21, 0.35);
+}
+
+.points-card h1 span {
+    font-size: 18px;
+    color: #e5e7eb;
+    font-weight: 500;
+}
+
+.points-card p {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* ================================
+   REWARDS HISTORY
+================================ */
+.rewards-history {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.rewards-history h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: #e5e7eb;
+}
+
+/* ================================
+   HISTORY LIST
+================================ */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ================================
+   HISTORY ITEM (GLASS CARD)
+================================ */
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 22px;
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(8px);
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+
+    transition: all 0.35s ease;
+}
+
+.history-item:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow:
+        0 0 30px rgba(139, 92, 246, 0.28);
+}
+
+/* ================================
+   HISTORY LEFT
+================================ */
+.history-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.history-left img {
+    width: 40px;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+}
+
+.history-left p {
+    font-size: 15px;
+    font-weight: 500;
+    color: #f3f4f6;
+    margin: 0;
+}
+
+.history-left span {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* ================================
+   HISTORY RIGHT (POINTS)
+================================ */
+.history-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.history-right span {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.green {
+    color: #22c55e;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.65);
+}
+
+.red {
+    color: #ef4444;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.65);
+}
+
+/* ================================
+   MOBILE
+================================ */
+@media (max-width: 600px) {
+    .my-rewards {
+        width: 92%;
+        margin: 30px auto;
+    }
+
+    .points-card {
+        padding: 28px 40px;
+        width: 100%;
+    }
+
+    .points-card h1 {
+        font-size: 46px;
+    }
+
+    .history-item {
+        padding: 14px 16px;
+    }
+}

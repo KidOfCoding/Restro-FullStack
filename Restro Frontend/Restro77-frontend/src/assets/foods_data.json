@@ -1,0 +1,650 @@
+[
+    {
+        "_id": "6946211c8935ba25f4a4ddce",
+        "name": "Veg Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 50,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddcf",
+        "name": "Schezwan Veg Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd0",
+        "name": "Veg Hakka Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd1",
+        "name": "Mix Veg Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd2",
+        "name": "Schezwan Mix Veg Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd3",
+        "name": "Paneer Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd4",
+        "name": "Schezwan Paneer Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd5",
+        "name": "Mushroom Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd6",
+        "name": "Schezwan Mushroom Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd7",
+        "name": "American Veg Noodles",
+        "category": "noodles",
+        "type": "veg",
+        "price": 75,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd8",
+        "name": "American Non-Veg Noodles",
+        "category": "noodles",
+        "type": "nonVeg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddd9",
+        "name": "Chicken Noodles",
+        "category": "noodles",
+        "type": "nonVeg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddda",
+        "name": "Schezwan Chicken Noodles",
+        "category": "noodles",
+        "type": "nonVeg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dddb",
+        "name": "Chicken Hakka Noodles",
+        "category": "noodles",
+        "type": "nonVeg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dddc",
+        "name": "Egg Noodles",
+        "category": "noodles",
+        "type": "nonVeg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dddd",
+        "name": "Veg Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 50,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddde",
+        "name": "Schezwan Veg Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dddf",
+        "name": "Mix Veg Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde0",
+        "name": "Schezwan Mix Veg Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde1",
+        "name": "Paneer Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde2",
+        "name": "Schezwan Paneer Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde3",
+        "name": "Kaju Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde4",
+        "name": "Kaju Paneer Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde5",
+        "name": "Mushroom Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde6",
+        "name": "Schezwan Mushroom Fried Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde7",
+        "name": "Plain Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 40,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde8",
+        "name": "Jeera Rice",
+        "category": "rice",
+        "type": "veg",
+        "price": 50,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dde9",
+        "name": "Chicken Fried Rice",
+        "category": "rice",
+        "type": "nonVeg",
+        "price": 65,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddea",
+        "name": "Schezwan Chicken Fried Rice",
+        "category": "rice",
+        "type": "nonVeg",
+        "price": 75,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddeb",
+        "name": "Egg Fried Rice",
+        "category": "rice",
+        "type": "nonVeg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddec",
+        "name": "Schezwan Egg Fried Rice",
+        "category": "rice",
+        "type": "nonVeg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4dded",
+        "name": "Veg Roll",
+        "category": "rolls",
+        "type": "veg",
+        "price": 50,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddee",
+        "name": "Paneer Roll",
+        "category": "rolls",
+        "type": "veg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddef",
+        "name": "Paneer Lacha Roll",
+        "category": "rolls",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddf0",
+        "name": "Egg Roll",
+        "category": "rolls",
+        "type": "nonVeg",
+        "price": 60,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddf1",
+        "name": "Double Egg Chicken Roll",
+        "category": "rolls",
+        "type": "nonVeg",
+        "price": 70,
+        "__v": 0
+    },
+    {
+        "_id": "6946211c8935ba25f4a4ddf2",
+        "name": "Double Egg Chicken Lacha Roll",
+        "category": "rolls",
+        "type": "nonVeg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "694628e012b6f55c5ee05a0c",
+        "name": "Paneer Chilli + 2 Parathas",
+        "category": "combo",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae5c",
+        "name": "Gobi Chilli",
+        "category": "starter",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae5d",
+        "name": "Paneer Chilli",
+        "category": "starter",
+        "type": "veg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae5e",
+        "name": "Mushroom Chilli",
+        "category": "starter",
+        "type": "veg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae5f",
+        "name": "Paneer Manchurian",
+        "category": "starter",
+        "type": "veg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae60",
+        "name": "Paneer Pakoda",
+        "category": "starter",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae61",
+        "name": "Veg Manchurian",
+        "category": "starter",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae62",
+        "name": "Mushroom Manchurian",
+        "category": "starter",
+        "type": "veg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae63",
+        "name": "Chilli Chicken",
+        "category": "starter",
+        "type": "nonVeg",
+        "price": 120,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae64",
+        "name": "Chicken Manchurian",
+        "category": "starter",
+        "type": "nonVeg",
+        "price": 120,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae65",
+        "name": "Chicken 65",
+        "category": "starter",
+        "type": "nonVeg",
+        "price": 120,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae66",
+        "name": "Dragon Chicken",
+        "category": "starter",
+        "type": "nonVeg",
+        "price": 140,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae67",
+        "name": "Chicken Pakoda",
+        "category": "starter",
+        "type": "nonVeg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae68",
+        "name": "Chicken Lollipop",
+        "category": "starter",
+        "type": "nonVeg",
+        "price": 140,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae69",
+        "name": "Paneer Butter Masala",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae6a",
+        "name": "Paneer Hyderabadi",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae6b",
+        "name": "Matar Paneer",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae6c",
+        "name": "Kaju Paneer",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae6d",
+        "name": "Paneer Dopiaza",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae6e",
+        "name": "Paneer Punjabi",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 220,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae6f",
+        "name": "Paneer Kadhai",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 250,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae70",
+        "name": "Mushroom Masala",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 180,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae71",
+        "name": "Mushroom Hyderabadi",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae72",
+        "name": "Kadhai Mushroom",
+        "category": "mainCourse",
+        "type": "veg",
+        "price": 250,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae73",
+        "name": "Chicken Kasa",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae74",
+        "name": "Chicken Masala",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 200,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae75",
+        "name": "Chicken Butter Masala",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 240,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae76",
+        "name": "Chicken Hyderabadi",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 240,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae77",
+        "name": "Chicken Dopiaza",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 240,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae78",
+        "name": "Chicken Punjabi",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 250,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae79",
+        "name": "Chicken Mughlai",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 260,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae7a",
+        "name": "Chicken Kadhai",
+        "category": "mainCourse",
+        "type": "nonVeg",
+        "price": 250,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae7b",
+        "name": "Roti",
+        "category": "breads",
+        "type": "veg",
+        "price": 8,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae7c",
+        "name": "Plain Paratha",
+        "category": "breads",
+        "type": "veg",
+        "price": 10,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae7d",
+        "name": "Lacha Paratha",
+        "category": "breads",
+        "type": "veg",
+        "price": 20,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae7e",
+        "name": "Red Sauce Pasta",
+        "category": "pasta",
+        "type": "veg",
+        "price": 75,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae7f",
+        "name": "White Sauce Pasta",
+        "category": "pasta",
+        "type": "veg",
+        "price": 95,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae80",
+        "name": "Chicken Pasta",
+        "category": "pasta",
+        "type": "nonVeg",
+        "price": 110,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae81",
+        "name": "Paneer Chilli + 2 Parathas",
+        "category": "combo",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae82",
+        "name": "Mushroom Chilli + 2 Parathas",
+        "category": "combo",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae83",
+        "name": "Paneer Curry + 2 Parathas",
+        "category": "combo",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae84",
+        "name": "Mushroom Curry + 2 Parathas",
+        "category": "combo",
+        "type": "veg",
+        "price": 80,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae85",
+        "name": "Chicken Chilli + 2 Parathas",
+        "category": "combo",
+        "type": "nonVeg",
+        "price": 100,
+        "__v": 0
+    },
+    {
+        "_id": "69462a87b9caeee39002ae86",
+        "name": "Chicken Curry + 2 Parathas",
+        "category": "combo",
+        "type": "nonVeg",
+        "price": 100,
+        "__v": 0
+    }
+]
