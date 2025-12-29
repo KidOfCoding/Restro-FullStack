@@ -253,4 +253,19 @@ const deleteAddress = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, addPoints, getProfile, updateProfile, getAddress, getUser, updateaddress, saveAddress, deleteAddress }
+const adminLogin = async (req, res) => {
+    try {
+        const { password } = req.body;
+        if (password === "dev77") {
+            const token = createToken("admin-user-id");
+            res.json({ success: true, token });
+        } else {
+            res.json({ success: false, message: "Invalid Password" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error" });
+    }
+}
+
+export { loginUser, registerUser, addPoints, getProfile, updateProfile, getAddress, getUser, updateaddress, saveAddress, deleteAddress, adminLogin }

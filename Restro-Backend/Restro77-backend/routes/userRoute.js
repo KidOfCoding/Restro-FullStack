@@ -1,5 +1,5 @@
 import express from 'express'
-import { addPoints, getAddress, getProfile, getUser, loginUser, registerUser, updateaddress, updateProfile, saveAddress, deleteAddress } from "../controllers/userController.js";
+import { addPoints, getAddress, getProfile, getUser, loginUser, registerUser, updateaddress, updateProfile, saveAddress, deleteAddress, adminLogin } from "../controllers/userController.js";
 import authMiddleware from "../middleware/auth.js";
 
 const userRouter = express.Router();
@@ -14,5 +14,6 @@ userRouter.get("/get-address", authMiddleware, getAddress);
 userRouter.get("/getuser", getUser);
 userRouter.post("/save-address", authMiddleware, saveAddress);
 userRouter.post("/delete-address", authMiddleware, deleteAddress);
+userRouter.post("/admin/login", adminLogin);
 
 export default userRouter;
