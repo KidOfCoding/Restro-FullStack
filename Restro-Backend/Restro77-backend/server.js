@@ -17,16 +17,24 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // CORS - Must be first middleware
-app.use(cors({
+const corsOptions = {
     origin: ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "token"]
-}));
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes explicitly
 
 // Create HTTP server
 const server = createServer(app);
 
+/* ====================================================================
+   SOCKET.IO SETUP (Uncomment this block for DigitalOcean / VPS)
+   Note: Vercel Serverless does NOT support persistent websockets.
+   ==================================================================== */
+/*
 // Initialize Socket.io
 const io = new Server(server, {
     cors: {
@@ -44,6 +52,8 @@ io.on("connection", (socket) => {
         console.log("User Disconnected", socket.id);
     });
 });
+*/
+/* ==================================================================== */
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -82,6 +92,6 @@ if (process.env.NODE_ENV !== 'production') {
     })
 }
 
-// Export io for use in controllers
-export { io };
+/* Uncomment for DigitalOcean */
+// export { io };
 export default app;

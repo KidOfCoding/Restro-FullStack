@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti'
 import { useLocation } from 'react-router-dom'
 import { assets } from "../../assets/assets";
 import { FaRupeeSign } from "react-icons/fa";
-import { io } from 'socket.io-client'; // Import socket.io-client
+// import { io } from 'socket.io-client'; // Import socket.io-client
 
 const timeAgo = (dateParam) => {
     if (!dateParam) return null;
@@ -92,6 +92,8 @@ const MyOrders = () => {
         if (token) {
             fetchOrders();
 
+            /* Uncomment for DigitalOcean */
+            /*
             const socket = io(URl);
 
             socket.on("connect", () => {
@@ -106,6 +108,7 @@ const MyOrders = () => {
             return () => {
                 socket.disconnect();
             }
+            */
         }
     }, [token, URl])
 
