@@ -16,14 +16,23 @@ import rateLimit from 'express-rate-limit'
 const app = express();
 const port = process.env.PORT || 4000;
 
+// CORS - Must be first middleware
+app.use(cors({
+    origin: ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "token"]
+}));
+
 // Create HTTP server
 const server = createServer(app);
 
 // Initialize Socket.io
 const io = new Server(server, {
     cors: {
-        origin: "*", // Allow all origins for now
-        methods: ["GET", "POST"]
+        origin: ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 
@@ -38,18 +47,17 @@ io.on("connection", (socket) => {
 
 // Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 100, // Limit each IP to 100 requests per window
-    message: "Too many requests from this IP, please try again after 15 minutes"
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    message: "Too many requests from this IP, please try again after 15 minutes",
+    standardHeaders: true,
+    legacyHeaders: false,
 })
 app.use(limiter)
 
 //middleware 
 app.use(express.urlencoded({ extended: true }))
-app.use(express.json()) // For parsing json files coming to backend
-app.use(cors({
-    origin: "*"
-})) // To access backend from any frontend
+app.use(express.json())
 
 
 // DB Connection 

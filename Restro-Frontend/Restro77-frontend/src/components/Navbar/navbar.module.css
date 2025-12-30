@@ -90,15 +90,29 @@
     font-size: 15px;
     color: #eded05;
     border: 1px solid #eded05;
-    padding: 8px 25px;
+    padding: 8px 20px;
+    /* Slightly reduced horizontal padding */
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s;
+    white-space: nowrap;
+    /* Prevent breaking into two lines */
+    min-width: fit-content;
+    /* Ensure button fits text */
+    flex-shrink: 0;
+    /* Prevent button from shrinking */
 }
 
 .Navbar button:hover {
     background-color: #eded05;
     color: black;
+}
+
+@media (max-width: 400px) {
+    .Navbar button {
+        padding: 6px 15px;
+        font-size: 13px;
+    }
 }
 
 /* ================= PROFILE DROPDOWN ================= */
