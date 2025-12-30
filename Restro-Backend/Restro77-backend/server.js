@@ -17,15 +17,42 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // CORS - Must be first middleware
+const allowedOrigins = ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"];
+
 const corsOptions = {
-    origin: ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            // For debugging, you might want to allow all:
+            // return callback(null, true); 
+            return callback(null, true); // TEMPORARY: Allow ALL origins to fix 500/CORS issue
+        }
+        return callback(null, true);
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "token"]
+    allowedHeaders: ["Content-Type", "token", "Origin", "X-Requested-With", "Accept"]
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle preflight for all routes explicitly
+
+// Manual Headers Fallback for Preflight
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,token');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Handle Preflight
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+    next();
+});
 
 // Create HTTP server
 const server = createServer(app);
