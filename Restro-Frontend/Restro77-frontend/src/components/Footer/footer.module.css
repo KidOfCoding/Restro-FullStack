@@ -45,9 +45,30 @@
     color: white;
 }
 
-.FooterSocial img {
+.FooterSocial {
+    display: flex;
+    gap: 15px;
+}
+
+.socialIcon {
     width: 40px;
-    margin-right: 15px;
+    height: 40px;
+    border: 1px solid #777;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 18px;
+    color: #fff;
+}
+
+.socialIcon:hover {
+    background-color: #eded05;
+    border-color: #eded05;
+    color: black;
+    transform: translateY(-3px);
 }
 
 .Footer hr {

@@ -2,6 +2,7 @@ import React from 'react'
 import style from './footer.module.css'
 import { assets } from '../../assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -29,9 +30,9 @@ const Footer = () => {
             </Link>
           </p>
           <div className={style.FooterSocial}>
-            <img src={assets.facebook_icon} alt="" />
-            <img src={assets.instagram_icon} alt="" />
-            {/* <img src={assets.twitter_icon} alt="" /> */}
+            <div className={style.socialIcon}><FaFacebookF /></div>
+            <div className={style.socialIcon}><FaInstagram /></div>
+            <div className={style.socialIcon}><FaLinkedinIn /></div>
           </div>
         </div>
         <div className={style.FooterContentMiddle}>
