@@ -12,7 +12,7 @@ const razorpay = new Razorpay({
 
 // Placing user order
 const placeOrder = async (req, res) => {
-    const frontend_url = "http://localhost:5173";
+
 
     try {
         const { userId, items, amount, address, pointsToUse, orderType } = req.body;

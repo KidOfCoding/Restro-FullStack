@@ -5,7 +5,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import foodListJSON from "../assets/foods_data.json";
 
 const StoreContextProvider = (props) => {
-    const [cartItem, setCartItems] = useState({});
+    const [cartItem, setCartItems] = useState(() => {
+        try {
+            const savedCart = localStorage.getItem("cartItem");
+            return savedCart ? JSON.parse(savedCart) : {};
+        } catch (error) {
+            console.error("Failed to parse cart from local storage", error);
+            return {};
+        }
+    });
+
     const URl = (import.meta.env.VITE_BACKEND_URL || "http://localhost:4000").replace(/\/$/, "");
 
     // Optimistic UI: Initialize token directly from localStorage to prevent flicker
@@ -14,6 +23,11 @@ const StoreContextProvider = (props) => {
     const [food_list, setFoodList] = useState([])
     const [Items, setItems] = useState(0);
     const [userData, setUserData] = useState(null);
+
+    // Persist Cart to LocalStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem("cartItem", JSON.stringify(cartItem));
+    }, [cartItem]);
 
     const addToCart = async (itemId) => {
         if (!token) {
@@ -124,6 +138,7 @@ const StoreContextProvider = (props) => {
 
     const logOut = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("cartItem");
         setToken("");
         setCartItems({});
         setItems(0);
@@ -144,10 +159,11 @@ const StoreContextProvider = (props) => {
         loaddata()
     }, [])
 
-    // Refresh points when token changes
+    // Refresh points and cart when token changes
     useEffect(() => {
         if (token) {
             fetchUserPoints(token);
+            loadcartData(token);
         } else {
             setUserPoints(0);
             setUserData(null);

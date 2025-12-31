@@ -20,7 +20,9 @@ const port = process.env.PORT || 4000;
 // const allowedOrigins = ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"];
 
 app.use(cors({
-    origin: true, // Reflects the request origin, easiest for Vercel + multiple domains
+    origin: process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(',')
+        : true, // Fallback to reflecting request origin if no env var set
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "token", "Origin", "X-Requested-With", "Accept"]
@@ -51,9 +53,12 @@ app.use((req, res, next) => {
 const server = createServer(app);
 
 // Initialize Socket.io
+
 const io = new Server(server, {
     cors: {
-        origin: ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
+        origin: process.env.ALLOWED_ORIGINS
+            ? process.env.ALLOWED_ORIGINS.split(',')
+            : ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
         methods: ["GET", "POST"],
         credentials: true
     }

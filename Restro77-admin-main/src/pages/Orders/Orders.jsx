@@ -141,6 +141,19 @@ const Orders = ({ URl }) => {
     socket.on("newOrder", (data) => {
       toast.info("New Order Received 🔔"); // Toast notification
       fetchAllOrders(); // Refresh list
+
+      try {
+        // Play notification sound
+        const audio = new Audio("https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3");
+        audio.play().catch(e => console.log("Audio play failed (interaction needed)", e));
+
+        // Speak the notification
+        const customerName = data?.address?.firstName || "Customer";
+        const msg = new SpeechSynthesisUtterance(`New order arrived from ${customerName}`);
+        window.speechSynthesis.speak(msg);
+      } catch (e) {
+        console.error("Audio notification failed", e);
+      }
     });
 
     // Listen for Status Updates (sync across tabs)
