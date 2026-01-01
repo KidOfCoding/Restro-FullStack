@@ -2,7 +2,7 @@
 
 Restro77 is a comprehensive full-stack solution for managing a restaurant's digital presence. It includes a robust backend API, a customer-facing frontend for food ordering, and a dedicated admin panel for management.
 
-Vist the website here : restro77.com
+Vist the website here : https://restro77.com
 
 ## 🚀 Project Components
 
