@@ -100,20 +100,24 @@ const StoreContextProvider = (props) => {
         // const response = await axios.get(URl + "/api/food/list")
         // setFoodList(response.data.data)
         // setFoodList(response.data.data)
-        /*
-        const testItem = {
-            _id: "test_item_1",
-            name: "Test Verification Item (₹1)",
-            image: "food_1.png",
-            price: 1,
-            description: "A dummy item to verify payment flow",
-            category: "noodles", // Appear in first category
-            type: "veg"
-        };
-        // Add test item to the beginning or end
-        setFoodList([testItem, ...foodListJSON])
-        */
-        setFoodList(foodListJSON);
+
+        const keepTest = import.meta.env.VITE_KEEP_TEST;
+
+        if (keepTest === '1') {
+            const testItem = {
+                _id: "test_item_1",
+                name: "Test Verification Item (₹1)",
+                image: "food_1.png", // Kept for compatibility if needed later
+                price: 1,
+                description: "A dummy item to verify payment flow",
+                category: "noodles", // Appear in first category
+                type: "veg"
+            };
+            // Add test item to the beginning
+            setFoodList([testItem, ...foodListJSON])
+        } else {
+            setFoodList(foodListJSON);
+        }
     }
 
     const loadcartData = async (token) => {
