@@ -13,6 +13,7 @@ import MyAddresses from './Pages/MyAddresses/MyAddresses'
 import Profile from './Pages/Profile/Profile'
 import About from './Pages/About/About'
 import FloatingCart from './components/FloatingCart/FloatingCart'
+import PortfolioButton from './components/PortfolioButton/PortfolioButton'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/about" element={<About />} />
         </Routes>
         <FloatingCart />
+        <PortfolioButton />
       </div>
       <Footer />
     </>
