@@ -74,6 +74,8 @@ io.on("connection", (socket) => {
 });
 
 // Rate Limiting
+// Rate Limiting (Removed per user request)
+/*
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 1000,
@@ -82,6 +84,7 @@ const limiter = rateLimit({
     legacyHeaders: false,
 })
 app.use(limiter)
+*/
 
 //middleware 
 app.use(express.urlencoded({ extended: true }))

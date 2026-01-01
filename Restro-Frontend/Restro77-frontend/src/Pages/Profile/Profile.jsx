@@ -32,13 +32,24 @@ const Profile = () => {
     const onChangeHandler = (e) => {
         const name = e.target.name;
         const value = e.target.value;
+
+        // Validation logic
+        if (name === "phone") {
+            if (!/^\d*$/.test(value)) return; // Only numbers
+            if (value.length > 10) return;    // Max 10 digits
+        }
+        if (name === "name") {
+            if (value.length > 50) return;    // Max 50 chars
+        }
+
         setUserData(data => ({ ...data, [name]: value }));
     }
 
     const onUpdate = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(URl + "/api/user/update-profile", userData, { headers: { token } });
+            // Changed POST to PUT to match backend route
+            const response = await axios.put(URl + "/api/user/update-profile", userData, { headers: { token } });
             if (response.data.success) {
                 toast.success(response.data.message);
                 // Refresh context data

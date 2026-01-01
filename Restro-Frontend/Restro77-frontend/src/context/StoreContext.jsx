@@ -106,9 +106,9 @@ const StoreContextProvider = (props) => {
         if (keepTest === '1') {
             const testItem = {
                 _id: "test_item_1",
-                name: "Test Verification Item (₹1)",
+                name: "Test Verification Item (₹2)",
                 image: "food_1.png", // Kept for compatibility if needed later
-                price: 1,
+                price: 2,
                 description: "A dummy item to verify payment flow",
                 category: "noodles", // Appear in first category
                 type: "veg"

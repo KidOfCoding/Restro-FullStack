@@ -81,105 +81,121 @@ const PlaceOrder = () => {
   /* ---------------- PLACE ORDER ---------------- */
   const placeOrder = async (e) => {
     e.preventDefault();
-    if (!token) return;
+    try {
+      if (!token) return;
 
-    if (orderType === "Delivery" && saveThisAddress && address) {
-      await axios.post(
-        URl + "/api/user/save-address",
-        { address, label: addressLabel },
+      if (orderType === "Delivery" && saveThisAddress && address) {
+        await axios.post(
+          URl + "/api/user/save-address",
+          { address, label: addressLabel },
+          { headers: { token } }
+        );
+      }
+
+      const items = [];
+      food_list.forEach((item) => {
+        if (cartItem[item._id] > 0) {
+          items.push({ ...item, quantity: cartItem[item._id] });
+        }
+      });
+
+      const finalAddress =
+        orderType === "Delivery"
+          ? {
+            street: address,
+            firstName: userData?.name || "Guest",
+            lastName: "",
+            email: userData?.email || "",
+            phone: userData?.phone || ""
+          }
+          : {
+            street:
+              orderType === "Dine-in"
+                ? `Table: ${address}`
+                : "Takeaway Order",
+            firstName: userData?.name || "Guest",
+            lastName: `(${orderType})`,
+            email: userData?.email || "",
+            phone: userData?.phone || ""
+          };
+
+      const orderData = {
+        address: finalAddress,
+        items,
+        orderType,
+        pointsToUse: usePoints ? userPoints : 0,
+        amount: Math.max(
+          0,
+          getTotalCartAmount() - (usePoints ? userPoints : 0)
+        )
+      };
+
+      const res = await axios.post(
+        URl + "/api/order/place",
+        orderData,
         { headers: { token } }
       );
-    }
 
-    const items = [];
-    food_list.forEach((item) => {
-      if (cartItem[item._id] > 0) {
-        items.push({ ...item, quantity: cartItem[item._id] });
+      if (!res.data.success) {
+        toast.error("Order Failed: " + (res.data.message || "Unknown error"));
+        return;
       }
-    });
 
-    const finalAddress =
-      orderType === "Delivery"
-        ? {
-          street: address,
-          firstName: userData?.name || "Guest",
-          lastName: "",
-          email: userData?.email || "",
-          phone: userData?.phone || ""
-        }
-        : {
-          street:
-            orderType === "Dine-in"
-              ? `Table: ${address}`
-              : "Takeaway Order",
-          firstName: userData?.name || "Guest",
-          lastName: `(${orderType})`,
-          email: userData?.email || "",
-          phone: userData?.phone || ""
-        };
+      const loaded = await loadRazorpayScript();
+      if (!loaded) {
+        toast.error("Razorpay not loaded");
+        return;
+      }
 
-    const orderData = {
-      address: finalAddress,
-      items,
-      orderType,
-      pointsToUse: usePoints ? userPoints : 0,
-      amount: Math.max(
-        0,
-        getTotalCartAmount() - (usePoints ? userPoints : 0)
-      )
-    };
+      const options = {
+        key: res.data.key,
+        amount: res.data.order.amount,
+        currency: "INR",
+        name: "Restro77",
+        description: "Food Order",
+        order_id: res.data.order.id,
+        handler: async (response) => {
+          try {
+            const verify = await axios.post(
+              URl + "/api/order/verify-razorpay",
+              {
+                ...response,
+                orderId: res.data.orderId
+              }
+            );
 
-    const res = await axios.post(
-      URl + "/api/order/place",
-      orderData,
-      { headers: { token } }
-    );
-
-    if (!res.data.success) {
-      toast.error("Order Failed");
-      return;
-    }
-
-    const loaded = await loadRazorpayScript();
-    if (!loaded) {
-      toast.error("Razorpay not loaded");
-      return;
-    }
-
-    const options = {
-      key: res.data.key,
-      amount: res.data.order.amount,
-      currency: "INR",
-      name: "Restro77",
-      description: "Food Order",
-      order_id: res.data.order.id,
-      handler: async (response) => {
-        const verify = await axios.post(
-          URl + "/api/order/verify-razorpay",
-          {
-            ...response,
-            orderId: res.data.orderId
+            if (verify.data.success) {
+              confetti({ particleCount: 120, spread: 80 });
+              setEarnedPoints(verify.data.pointsEarned || 0);
+              setOrderSuccess(true);
+              setCartItems({});
+              setItems(0);
+              setTimeout(() => navigate("/myorders"), 3500);
+            } else {
+              toast.error("Payment Verification Failed");
+            }
+          } catch (error) {
+            console.log(error);
+            toast.error("Payment Verification Error");
           }
-        );
+        },
+        prefill: {
+          name: finalAddress.firstName,
+          email: finalAddress.email,
+          contact: finalAddress.phone
+        },
+        theme: { color: "#ff6347" }
+      };
 
-        if (verify.data.success) {
-          confetti({ particleCount: 120, spread: 80 });
-          setEarnedPoints(verify.data.pointsEarned || 0);
-          setOrderSuccess(true);
-          setCartItems({});
-          setItems(0);
-          setTimeout(() => navigate("/myorders"), 3500);
-        }
-      },
-      prefill: {
-        name: finalAddress.firstName,
-        email: finalAddress.email,
-        contact: finalAddress.phone
-      },
-      theme: { color: "#ff6347" }
-    };
-
-    new window.Razorpay(options).open();
+      new window.Razorpay(options).open();
+    } catch (error) {
+      console.error("Place Order Error:", error);
+      if (error.response && error.response.status === 429) {
+        toast.error("Server busy (Too Many Requests). Please wait a moment and try again.");
+      } else {
+        toast.error("Something went wrong while placing the order.");
+      }
+    }
   };
 
   /* ---------------- JSX ---------------- */

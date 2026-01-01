@@ -102,6 +102,20 @@ const LoginPopUp = ({ setShowLogin }) => {
   const onChangehandler = (event) => {
     const name = event.target.name
     const value = event.target.value;
+
+    // Validation
+    if (name === "phone") {
+      // Allow only numbers
+      if (!/^\d*$/.test(value)) return;
+      // Max 10 digits
+      if (value.length > 10) return;
+    }
+
+    if (name === "name") {
+      // Max 50 chars
+      if (value.length > 50) return;
+    }
+
     setData(data => ({ ...data, [name]: value }))
   }
 
