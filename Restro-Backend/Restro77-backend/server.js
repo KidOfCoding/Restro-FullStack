@@ -106,17 +106,22 @@ app.get('/', (req, res) => {
 });
 
 
-// To Run on port 4000
-if (process.env.NODE_ENV !== 'production') {
-    server.listen(port, () => {
-        console.log(`Server Running on http://localhost:${port}`)
-    })
-} else {
-    // For Production (DigitalOcean / VPS)
-    server.listen(port, () => {
-        console.log(`Server Running on port ${port}`)
-    })
-}
+// // To Run on port 4000
+// if (process.env.NODE_ENV !== 'production') {
+//     server.listen(port, () => {
+//         console.log(`Server Running on http://localhost:${port}`)
+//     })
+// } else {
+//     // For Production (DigitalOcean / VPS)
+//     server.listen(port, '0.0.0.0', () => {
+//         console.log(`Server Running on port ${port}`)
+//     })
+// }
+
+server.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+});
+
 
 export { io };
 export default app;
