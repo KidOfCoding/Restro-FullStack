@@ -8,28 +8,44 @@ import axios from "axios"
 
 
 // Login user
+// Login user
 const loginUser = async (req, res) => {
     const { name, email, phone } = req.body;
-    console.log(name, email, phone);
+    console.log("Login Request:", { name, email, phone });
 
     try {
         const user = await userModel.findOne({ email })
+
+        // Case 1: User does not exist by Email
         if (!user) {
-            // If phone is not provided, do not create user -> Ask frontend to prompt user
+            // If phone is not provided, we cannot register them yet.
+            // Tell frontend to prompt for Phone Number.
             if (!phone) {
                 return res.json({ success: false, message: "User not found", requireSignup: true });
             }
 
+            // If phone IS provided, we are attempting to Register.
+            // CRITICAL: Check if this phone number is already in use by ANOTHER user.
+            const existingPhoneUser = await userModel.findOne({ phone });
+            if (existingPhoneUser) {
+                return res.json({
+                    success: false,
+                    message: "This phone number is already linked to another account. Please use a different number or login with that account."
+                });
+            }
+
+            // Create new user if phone is unique
             const newUser = new userModel({
                 name: name,
                 email: email,
                 phone: phone
             })
-            const user = await newUser.save()
-            const token = createToken(user._id)
-            return res.json({ success: true, token })
+            const savedUser = await newUser.save()
+            const token = createToken(savedUser._id)
+            return res.json({ success: true, token, message: "Account created successfully" })
         }
 
+        // Case 2: User exists -> Return Token
         const token = createToken(user._id)
         res.json({ success: true, token })
     } catch (error) {

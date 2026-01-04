@@ -8,6 +8,7 @@ import { auth, googleProvider } from "../firebase/Auth";
 import { ToastContainer, toast } from 'react-toastify';
 const LoginPopUp = ({ setShowLogin }) => {
   const [currState, setCurrState] = useState("Login");
+  const [googleData, setGoogleData] = useState(null); // Store Google info for step 2
 
   const googleLogin = async () => {
     try {
@@ -38,59 +39,77 @@ const LoginPopUp = ({ setShowLogin }) => {
   const handleGoogleLogin = async (event) => {
     event.preventDefault();
 
-    if (currState === "Sign Up") {
-      if (!data.name || !data.phone) {
-        toast.error("Please enter Name and Phone number");
+    let newURl = URl + "/api/user/login";
+
+    // --- STEP 2: FINALIZE REGISTRATION (User already authenticated with Google) ---
+    if (googleData) {
+      if (!data.phone) {
+        toast.error("Please enter Phone number");
         return;
       }
       if (!agree) {
         toast.error("Please agree to Terms and Conditions");
         return;
       }
-    }
-
-    let newURl = URl;
-    try {
-      // 1. Authenticate with Google (Popup)
-      const user = await googleLogin();
-
-      // 2. OPTIMISTIC CLOSING: Close modal immediately after Google success
-      setShowLogin(false);
-
-      // 3. Show "Processing" feedback so user knows it's working
-      const pendingToast = toast.loading("Verifying with server...");
 
       const payload = {
-        name: currState === "Sign Up" ? data.name : user.displayName,
-        email: user.email,
-        phone: currState === "Sign Up" ? data.phone : null
+        name: data.name, // Allow user to edit name
+        email: googleData.email,
+        phone: data.phone // User provided phone
       };
 
-      console.log("Login Payload:", payload);
+      const pendingToast = toast.loading("Creating Account...");
+      try {
+        const response = await axios.post(newURl, payload);
+        if (response.data.success) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+          toast.update(pendingToast, { render: "Account Created Successfully!", type: "success", isLoading: false, autoClose: 3000 });
+          setShowLogin(false);
+          setGoogleData(null);
+        } else {
+          toast.update(pendingToast, { render: response.data.message || "Registration failed", type: "error", isLoading: false, autoClose: 3000 });
+        }
+      } catch (err) {
+        console.error("Registration Error:", err);
+        toast.update(pendingToast, { render: "Error creating account", type: "error", isLoading: false, autoClose: 3000 });
+      }
+      return;
+    }
 
-      newURl += "/api/user/login";
+    // --- STEP 1: INITIAL GOOGLE AUTH ---
+    try {
+      const user = await googleLogin(); // Trigger Popup
 
-      // 4. Background: Sync with Backend
+      // Optimistic/Loading Feedback
+      const pendingToast = toast.loading("Verifying with server...");
+
+      // Check if user exists
+      const payload = { name: user.displayName, email: user.email }; // No phone yet
       const response = await axios.post(newURl, payload);
 
       if (response.data.success) {
-        // Success
+        // User exists -> Login Success
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
-
-        // Update toast to success
         toast.update(pendingToast, { render: "Login Successful!", type: "success", isLoading: false, autoClose: 3000 });
-      } else {
-        // Handle failure (e.g. need signup)
-        if (response.data.requireSignup) {
-          // If we optimistically closed, we might need to re-open or just show error
-          toast.update(pendingToast, { render: "Account not found. Please Sign Up.", type: "info", isLoading: false, autoClose: 3000 });
-          setShowLogin(true); // Re-open since action is needed
-          setCurrState("Sign Up");
-          setData(prev => ({ ...prev, name: user.displayName || "" }));
-        } else {
-          toast.update(pendingToast, { render: response.data.message || 'Login failed', type: "error", isLoading: false, autoClose: 3000 });
-        }
+        setShowLogin(false);
+      }
+      else if (response.data.requireSignup) {
+        // User new -> Needs to provide phone
+        toast.update(pendingToast, { render: "Please complete your profile", type: "info", isLoading: false, autoClose: 2000 });
+
+        setGoogleData(user); // Cache credentials!
+        setCurrState("Sign Up");
+        setData(prev => ({
+          ...prev,
+          name: user.displayName || "",
+          email: user.email
+        }));
+        // Logic: Stay open, wait for phone input + button click
+      }
+      else {
+        toast.update(pendingToast, { render: response.data.message || 'Login failed', type: "error", isLoading: false, autoClose: 3000 });
       }
 
     } catch (err) {
@@ -166,7 +185,9 @@ const LoginPopUp = ({ setShowLogin }) => {
           )}
         </div>
         <button type="button" className={style.googlebtn} onClick={handleGoogleLogin}>
-          <span>{currState === "Sign Up" ? "Sign Up with Google" : "Continue with Google"}</span>
+          <span>
+            {googleData ? "Create Account" : (currState === "Sign Up" ? "Sign Up with Google" : "Continue with Google")}
+          </span>
         </button>
         <div className={style.LoginPopUpConditon}>
           <input type="checkbox" required checked={agree} onChange={(e) => setAgree(e.target.checked)} />
