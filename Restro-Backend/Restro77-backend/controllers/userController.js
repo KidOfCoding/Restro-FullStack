@@ -49,12 +49,21 @@ const createToken = (id) => {
 }
 
 const registerUser = async (req, res) => {
-    const { name, password, email } = req.body;
+    const { name, password, email, phone } = req.body;
     try {
         // Checking if user exist
         const exist = await userModel.findOne({ email });
         if (exist) {
             return res.json({ success: false, message: "User Already Exist!" })
+        }
+
+        // Check if phone number is already registered
+        const existingPhone = await userModel.findOne({ phone });
+        if (existingPhone) {
+            return res.json({
+                success: false,
+                message: "This mobile number is already registered. Please login.",
+            });
         }
 
         //  Validating Email Format and Strong Password
@@ -73,7 +82,8 @@ const registerUser = async (req, res) => {
         const newUser = new userModel({
             name: name,
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            phone: phone
         })
 
         const user = await newUser.save()

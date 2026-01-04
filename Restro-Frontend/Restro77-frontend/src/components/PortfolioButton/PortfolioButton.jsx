@@ -4,7 +4,8 @@ import style from './portfoliobutton.module.css';
 const PortfolioButton = () => {
     const handleNavigation = () => {
         // Replace this URL with your actual portfolio URL
-        window.open('http://www.linkedin.com/in/debasish-dash-276638310', '_blank', 'noopener,noreferrer');
+        // window.open('http://www.linkedin.com/in/debasish-dash-276638310', '_blank', 'noopener,noreferrer');
+        window.open('https://developer.restro77.com', '_blank', 'noopener,noreferrer');
     };
 
     return (

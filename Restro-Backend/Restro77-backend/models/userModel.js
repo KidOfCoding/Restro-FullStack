@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     ],
     cartData: { type: Object, default: {} },
     points: { type: Number, default: 0 },
-    phone: { type: String, default: "" }
+    phone: { type: String, required: true, unique: true, default: undefined }
 }, { minimize: false })
 
 const userModel = mongoose.model.user || mongoose.model("user", userSchema)
