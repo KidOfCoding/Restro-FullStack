@@ -27,6 +27,7 @@
     width: 30px;
     height: 30px;
     background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+    /* background: linear-gradient(135deg, #b91c1c 0%, #c2410c 100%); */
     border-radius: 50%;
     display: flex;
     align-items: center;

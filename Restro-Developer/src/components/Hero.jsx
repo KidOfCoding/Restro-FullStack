@@ -42,11 +42,10 @@ const Hero = () => {
                         top: '50%',
                         left: '50%',
                         borderRadius: '50%',
-                        // Using only Red, Orange, and Transparent/Black interactions
                         background: 'conic-gradient(from 0deg, #ff4d4d, #ff9e2c, #ff4d4d, transparent, #ff4d4d)',
                         zIndex: -1,
                         animation: 'spin 4s linear infinite',
-                        filter: 'blur(8px)', // Increased blur for the "light area slightly" effect
+                        filter: 'blur(8px)',
                         opacity: 0.8
                     }} />
 
