@@ -121,21 +121,42 @@ const StoreContextProvider = (props) => {
     }
 
     const loadcartData = async (token) => {
-        const response = await axios.post(URl + "/api/cart/get", {}, { headers: { token } })
-        setCartItems(response.data.cartData)
-        const totalItems = Object.values(response.data.cartData).reduce((sum, qty) => sum + qty, 0);
-
-        setItems(totalItems);
+        try {
+            const response = await axios.post(URl + "/api/cart/get", {}, { headers: { token } })
+            if (response.data && response.data.cartData) {
+                setCartItems(response.data.cartData)
+                const totalItems = Object.values(response.data.cartData).reduce((sum, qty) => sum + qty, 0);
+                setItems(totalItems);
+            } else {
+                // If cartData is missing, it might mean the user is invalid or deleted
+                console.warn("Cart data missing or invalid user");
+                if (response.data.success === false) {
+                    // Optional: logOut() if we are sure it's an invalid token
+                }
+            }
+        } catch (error) {
+            console.error("Error loading cart data:", error);
+        }
     }
 
     const [userPoints, setUserPoints] = useState(0);
 
     const fetchUserPoints = async (token) => {
         if (token) {
-            const response = await axios.get(URl + "/api/user/get-profile", { headers: { token } });
-            if (response.data.success) {
-                setUserPoints(response.data.userData.points);
-                setUserData(response.data.userData);
+            try {
+                const response = await axios.get(URl + "/api/user/get-profile", { headers: { token } });
+                if (response.data.success) {
+                    setUserPoints(response.data.userData.points);
+                    setUserData(response.data.userData);
+                } else {
+                    // User likely deleted or token invalid
+                    console.warn("Failed to fetch profile:", response.data.message);
+                    if (response.data.message === "User not found" || response.data.message === "Invalid Token") {
+                        logOut(); // Auto logout to fix the crash loop
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching user points:", error);
             }
         }
     }
