@@ -17,7 +17,7 @@ const Navbar = () => {
             }}
         >
             <div style={{ fontSize: '1.5rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ color: '#ff4d4d' }}>&lt;/&gt;</span>
+                <span style={{ color: '#ff4d4d' }}>&lt;DD/&gt;</span>
                 <span>Developer DD</span>
             </div>
 
