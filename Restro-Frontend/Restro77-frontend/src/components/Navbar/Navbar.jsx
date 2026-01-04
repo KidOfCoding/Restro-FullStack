@@ -95,40 +95,44 @@ const Navbar = ({ setShowLogin }) => {
           <li onClick={() => { setMenu("contact"); document.getElementById('Footer')?.scrollIntoView({ behavior: 'smooth' }); }}>Contact</li>
         </ul>
         {/* RIGHT SECTION */}
-        <div className={style.navbarRight}>
-          <div className={style.searchIcon} onClick={() => { navigate('/'); setTimeout(() => document.getElementById('search-input')?.focus(), 100); }}>
-            <FiSearch />
-          </div>
-          <div className={style.basketIcon}>
-            <Link to='/cart'>
-              <img src={assets.basket_icon} alt="Cart" />
-              {Items > 0 && <div className={style.dot}>{Items}</div>}
-            </Link>
-          </div>
+        <div className={style.navbarRight} style={{ display: 'flex', gap: '20px' }}>
           {!token ? (
+            // If NOT logged in, Show "Sign in" button
             <button onClick={() => setShowLogin(true)} className={style.signInBtn}>Sign in</button>
           ) : (
-            <div className={style.navbarProfile} onClick={toggleProfile}>
-              {showProfile ? <FiX className={style.profileIconMain} /> : <FiUser className={style.profileIconMain} />}
-              <ul className={`${style.navProfileDropdown} ${showProfile ? style.showDropdown : ""}`}>
-                <li onClick={() => navigate('/myorders')}>
-                  <FiPackage className={style.dropIcon} /> <p>Orders</p>
-                </li>
-                <li onClick={() => navigate('/myrewards')}>
-                  <BiSolidOffer className={style.dropIcon} /> <p>Rewards</p>
-                </li>
-                <li onClick={() => navigate('/myaddresses')}>
-                  <FiMapPin className={style.dropIcon} /> <p>Addresses</p>
-                </li>
-                <li onClick={() => navigate('/profile')}>
-                  <FiUser className={style.dropIcon} /> <p>Profile</p>
-                </li>
-                <hr />
-                <li onClick={Logout} className={style.logoutRow}>
-                  <FiLogOut className={style.dropIcon} /> <p>Logout</p>
-                </li>
-              </ul>
-            </div>
+            <>
+              <div className={style.searchIcon} onClick={() => { navigate('/'); setTimeout(() => document.getElementById('search-input')?.focus(), 100); }}>
+                <FiSearch />
+              </div>
+              <div className={style.basketIcon}>
+                <Link to='/cart'>
+                  <img src={assets.basket_icon} alt="Cart" />
+                  {Items > 0 && <div className={style.dot}>{Items}</div>}
+                </Link>
+              </div>
+              <div className={style.navbarProfile} onClick={toggleProfile}>
+                {showProfile ? <FiX className={style.profileIconMain} /> : <FiUser className={style.profileIconMain} />}
+                {/* Desktop Dropdown */}
+                <ul className={`${style.navProfileDropdown} ${showProfile ? style.showDropdown : ""}`}>
+                  <li onClick={() => { navigate('/myorders'); setShowProfile(false); }}>
+                    <FiPackage className={style.dropIcon} /> <p>Orders</p>
+                  </li>
+                  <li onClick={() => { navigate('/myrewards'); setShowProfile(false); }}>
+                    <BiSolidOffer className={style.dropIcon} /> <p>Rewards</p>
+                  </li>
+                  <li onClick={() => { navigate('/myaddresses'); setShowProfile(false); }}>
+                    <FiMapPin className={style.dropIcon} /> <p>Addresses</p>
+                  </li>
+                  <li onClick={() => { navigate('/profile'); setShowProfile(false); }}>
+                    <FiUser className={style.dropIcon} /> <p>Profile</p>
+                  </li>
+                  <hr />
+                  <li onClick={() => { Logout(); setShowProfile(false); }} className={style.logoutRow}>
+                    <FiLogOut className={style.dropIcon} /> <p>Logout</p>
+                  </li>
+                </ul>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -200,9 +204,42 @@ const Navbar = ({ setShowLogin }) => {
           <FiPackage />
           <span>Orders</span>
         </div>
-        <div className={`${style.navItem} ${menu === "profile" ? style.activeNav : ""}`} onClick={() => !token ? setShowLogin(true) : navigate('/profile')}>
+
+        {/* PROFILE TAB WITH BOTTOM DROPDOWN */}
+        <div className={`${style.navItem} ${menu === "profile" ? style.activeNav : ""}`}
+          onClick={(e) => {
+            if (!token) {
+              setShowLogin(true);
+            } else {
+              e.stopPropagation();
+              toggleProfile(e); // Recycle existing toggle
+            }
+          }}
+        >
           <FiUser />
           <span>Profile</span>
+
+          {/* Bottom Dropdown Menu */}
+          {token && (
+            <ul className={`${style.bottomProfileDropdown} ${showProfile ? style.showDropdown : ""}`}>
+              <li onClick={(e) => { e.stopPropagation(); navigate('/myorders'); setShowProfile(false); }}>
+                <FiPackage className={style.dropIcon} /> <p>Orders</p>
+              </li>
+              <li onClick={(e) => { e.stopPropagation(); navigate('/myrewards'); setShowProfile(false); }}>
+                <BiSolidOffer className={style.dropIcon} /> <p>Rewards</p>
+              </li>
+              <li onClick={(e) => { e.stopPropagation(); navigate('/myaddresses'); setShowProfile(false); }}>
+                <FiMapPin className={style.dropIcon} /> <p>Addresses</p>
+              </li>
+              <li onClick={(e) => { e.stopPropagation(); navigate('/profile'); setShowProfile(false); }}>
+                <FiUser className={style.dropIcon} /> <p>Profile</p>
+              </li>
+              <hr />
+              <li onClick={(e) => { e.stopPropagation(); Logout(); setShowProfile(false); }} className={style.logoutRow}>
+                <FiLogOut className={style.dropIcon} /> <p>Logout</p>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </>

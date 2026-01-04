@@ -64,6 +64,24 @@
     width: 40px;
 }
 
+/* Make Desktop Icons Visible and Cleaner */
+.searchIcon svg,
+.navbarProfile svg {
+    font-size: 28px;
+    /* Slightly larger for better visibility */
+    color: #49557e;
+    /* Bright white to pop against dark background */
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+.searchIcon svg:hover,
+.navbarProfile svg:hover {
+    color: #ff6b4a;
+    /* Hover color matches brand */
+    transform: scale(1.1);
+}
+
 .basketIcon {
     position: relative;
     color: white;
@@ -173,6 +191,42 @@
     border-top: 1px solid #333;
     margin: 5px 0;
 }
+
+/* Bottom Nav Profile Dropdown */
+.bottomProfileDropdown {
+    position: fixed;
+    bottom: 80px;
+    /* Above the bottom nav */
+    right: 10px;
+    z-index: 3002;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    min-width: 180px;
+    border-radius: 8px;
+    padding: 10px 0;
+    list-style: none;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+    display: none;
+    flex-direction: column;
+    animation: slideUpRight 0.3s ease;
+}
+
+.bottomProfileDropdown li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px 20px;
+    color: #e0e0e0;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.bottomProfileDropdown li:hover {
+    background-color: #2a2a2a;
+    color: #ff6b4a;
+}
+
 
 /* ================= BOTTOM NAVIGATION (MOBILE) ================= */
 .bottomNav {
@@ -349,7 +403,36 @@
 
     .basketIcon,
     .searchIcon {
-        display: flex;
+        /* display: flex;  <-- Old code forced them to show */
+        /* We want to hide them on mobile if logged in (controlled by React rendering? No, we are switching to CSS control) */
+        /* Actually, user wants them HIDDEN on mobile for logged in state, but VISIBLE on Desktop. */
+        /* If we just hide them here, they are gone on mobile always. Is that desired? */
+        /* "Visual Check: Top Right of navbar should be empty/gone" (Mobile context). */
+        /* So yes, hide Search/Cart/Profile on mobile. */
+        display: none !important;
+    }
+
+    /* Ensure the Sign In button is still visible if present */
+    .Navbar button {
+        display: block;
+    }
+
+    /* We need to specifically target the navbarProfile too to hide it on mobile */
+    .navbarProfile {
+        display: none !important;
+    }
+}
+
+/* New Animation for Bottom Right Dropdown (Vertical only, no horizontal shifting) */
+@keyframes slideUpRight {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
