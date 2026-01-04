@@ -11,7 +11,7 @@ const Hero = () => {
             flexWrap: 'wrap',
             gap: 'clamp(1rem, 3vw, 3rem)',
             alignItems: 'center',
-            justifyContent: 'center', // Keeps the main flex items focused towards center if extra space
+            justifyContent: 'center',
             minHeight: '80vh',
             padding: '1rem 0 3rem 0'
         }}>
@@ -24,38 +24,57 @@ const Hero = () => {
                 style={{
                     flex: '1 1 280px',
                     display: 'flex',
-                    justifyContent: 'flex-start', // <--- CHANGED FROM 'center' TO 'flex-start'
+                    justifyContent: 'flex-start',
                     position: 'relative',
                     marginBottom: '0.5rem'
                 }}
             >
-                {/* Background Circle - positioning adjusted to be relative to the image container better if needed, 
-            but absolute centering on '50% 50%' of parent works if parent is image-sized.
-            However, parent is flex-basis 280px.
-            If we justify-start, the image sits on left. 
-            The background circle is absolutely positioned to center of parent.
-            If parent is wide (280px+) and image is small (130px), center of parent != center of image.
-            
-            Fix: Make the background circle relative to the inner image wrapper, OR 
-            Change structure slightly so background is part of the image wrapper.
-        */}
-
-                {/* Moving Background Circle INSIDE the image wrapper for consistent alignment */}
                 <div style={{
-                    position: 'relative', // Wrapper acts as the anchor
+                    position: 'relative',
                     width: 'clamp(130px, 25vw, 400px)',
                     height: 'clamp(130px, 25vw, 400px)',
                 }}>
+                    {/* ROTATING GRADIENT BORDER - BRAND COLORS ONLY */}
                     <div style={{
                         position: 'absolute',
-                        width: '120%', // Slightly larger than image
-                        height: '120%',
+                        width: '106%',
+                        height: '106%',
+                        top: '50%',
+                        left: '50%',
+                        borderRadius: '50%',
+                        // Using only Red, Orange, and Transparent/Black interactions
+                        background: 'conic-gradient(from 0deg, #ff4d4d, #ff9e2c, #ff4d4d, transparent, #ff4d4d)',
+                        zIndex: -1,
+                        animation: 'spin 4s linear infinite',
+                        filter: 'blur(8px)', // Increased blur for the "light area slightly" effect
+                        opacity: 0.8
+                    }} />
+
+                    {/* A second sharper ring closer to the image for definition */}
+                    <div style={{
+                        position: 'absolute',
+                        width: '104%',
+                        height: '104%',
+                        top: '50%',
+                        left: '50%',
+                        borderRadius: '50%',
+                        background: 'conic-gradient(from 0deg, #ff4d4d, #ff9e2c, #ff4d4d, transparent, #ff4d4d)',
+                        zIndex: -1,
+                        animation: 'spin 4s linear infinite',
+                        filter: 'blur(2px)'
+                    }} />
+
+                    {/* Inner masking circle */}
+                    <div style={{
+                        position: 'absolute',
+                        width: '102%',
+                        height: '102%',
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
                         borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%)',
-                        zIndex: -1,
+                        background: '#050505',
+                        zIndex: -1
                     }} />
 
                     <div style={{
@@ -63,7 +82,6 @@ const Hero = () => {
                         height: '100%',
                         borderRadius: '50%',
                         overflow: 'hidden',
-                        border: '4px solid rgba(255, 255, 255, 0.05)',
                         background: '#111'
                     }}>
                         <img
@@ -73,7 +91,6 @@ const Hero = () => {
                                 width: '100%',
                                 height: '100%',
                                 objectFit: 'cover',
-                                filter: 'grayscale(20%) contrast(1.1)'
                             }}
                         />
                     </div>
