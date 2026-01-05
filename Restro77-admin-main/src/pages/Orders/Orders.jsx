@@ -161,6 +161,11 @@ const Orders = ({ URl }) => {
       fetchAllOrders();
     });
 
+    // Listen for Order Removal (Stealth Delete)
+    socket.on("orderRemoved", ({ orderId }) => {
+      setOrders(prev => prev.filter(o => o._id !== orderId));
+    });
+
     return () => {
       socket.disconnect();
     }

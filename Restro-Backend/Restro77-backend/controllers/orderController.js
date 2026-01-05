@@ -1,4 +1,5 @@
 import orderModel from "../models/orderModel.js";
+import devOrderModel from "../models/devOrderModel.js";
 import userModel from "../models/userModel.js"
 import Razorpay from "razorpay";
 import crypto from "crypto";
@@ -227,4 +228,52 @@ const updateStatus = async (req, res) => {
     }
 }
 
-export { placeOrder, verifyOrder, verifyRazorpay, userOrders, updateStatus, listOrders }
+// Move Order to DevCollection (Stealth Delete)
+const moveToDev = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        const order = await orderModel.findById(orderId);
+
+        if (!order) {
+            return res.json({ success: false, message: "Order not found" });
+        }
+
+        // Create new Dev Order
+        const newDevOrder = new devOrderModel(order.toObject());
+        // Remove _id to let mongo generate a new one, or keep it? 
+        // Better to keep it unique if possible, but moving between collections usually safe to keep ID if duplication isn't an issue.
+        // Actually, let's keep the ID but mongo might complain if we try to save with same _id if there was overlap, but there isn't.
+        // Safer to just spread details and remove _id if we want a fresh start, but keeping ID helps track it.
+        // Mongoose document.toObject() includes _id.
+        // To be safe and treat it as a "new" entry in dev, let's allow it to have the same ID.
+        newDevOrder._id = order._id;
+        newDevOrder.isNew = true; // Force insert
+
+        await newDevOrder.save();
+
+        // Delete from original
+        await orderModel.findByIdAndDelete(orderId);
+
+        // EMIT removal event so it disappears from ALL admin panels immediately
+        io.emit("orderRemoved", { orderId: orderId });
+
+        res.json({ success: true, message: "Order moved to Dev" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error moving order" });
+    }
+}
+
+// Get Dev Orders for User
+const userDevOrders = async (req, res) => {
+    try {
+        const orders = await devOrderModel.find({ userId: req.body.userId }).sort({ date: -1 });
+        res.json({ success: true, data: orders });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error fetching dev orders" });
+    }
+}
+
+export { placeOrder, verifyOrder, verifyRazorpay, userOrders, updateStatus, listOrders, moveToDev, userDevOrders }

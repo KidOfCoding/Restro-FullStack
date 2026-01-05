@@ -8,8 +8,11 @@ orderRouter.post('/place', authMiddleware, placeOrder)
 orderRouter.post('/verify', verifyOrder)
 orderRouter.post('/verify-razorpay', verifyRazorpay)
 orderRouter.post('/userorders', authMiddleware, userOrders)
-orderRouter.get('/list', listOrders)
+orderRouter.post("/list", listOrders)
 orderRouter.post("/status", updateStatus)
+// Dev Order Routes
+orderRouter.post("/move-to-dev", authMiddleware, moveToDev)
+orderRouter.post("/dev-orders", authMiddleware, userDevOrders)
 
 export default orderRouter
 

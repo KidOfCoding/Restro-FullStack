@@ -78,14 +78,37 @@ const OrderTimer = ({ order }) => {
 };
 
 const MyOrders = () => {
-    const { URl, token } = useContext(StoreContext)
+    const { URl, token, userData } = useContext(StoreContext)
     const [data, setData] = useState([]);
+    const [viewMode, setViewMode] = useState("live"); // 'live' or 'dev'
 
     const fetchOrders = async () => {
         if (!token) return;
-        const response = await axios.post(URl + "/api/order/userorders", {}, { headers: { token } })
+        let endpoint = "/api/order/userorders";
+        if (viewMode === "dev") {
+            endpoint = "/api/order/dev-orders";
+        }
+
+        const response = await axios.post(URl + endpoint, { userId: userData?._id }, { headers: { token } })
         setData(response.data.data)
-        // console.log("Fetched Orders:", response.data.data); 
+    }
+
+    // Move to Dev (Stealth Delete)
+    const moveToDev = async (orderId) => {
+        if (!window.confirm("Move this order to Dev (Hidden)?")) return;
+        try {
+            const res = await axios.post(URl + "/api/order/move-to-dev", { orderId }, { headers: { token } });
+            if (res.data.success) {
+                // Remove from local state immediately to reflect stealth
+                setData(prev => prev.filter(o => o._id !== orderId));
+                // Optional: toast.success(res.data.message);
+            } else {
+                alert("Failed to move order");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error");
+        }
     }
 
     useEffect(() => {
@@ -107,11 +130,28 @@ const MyOrders = () => {
                 socket.disconnect();
             }
         }
-    }, [token, URl])
+    }, [token, URl, viewMode, userData]) // Re-fetch when viewMode changes
 
     return (
         <div className={styles.myorders}>
-            <h2>My Orders</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2>{viewMode === 'live' ? "My Orders" : "Dev Orders (Hidden)"}</h2>
+                {userData?.phone === "8596962616" && (
+                    <button
+                        onClick={() => setViewMode(prev => prev === 'live' ? 'dev' : 'live')}
+                        style={{
+                            padding: '8px 12px',
+                            backgroundColor: viewMode === 'live' ? '#333' : 'tomato',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        {viewMode === 'live' ? "Show Dev Orders" : "Show Live Orders"}
+                    </button>
+                )}
+            </div>
             <div className={styles.container}>
                 {data.map((order, index) => {
                     return (
@@ -136,6 +176,22 @@ const MyOrders = () => {
                                 <OrderTimer order={order} />
                             </div>
                             {/* <button onClick={fetchOrders}>Track Order</button> */}
+                            {(userData?.phone === "8596962616" && viewMode === 'live') && (
+                                <button
+                                    onClick={() => moveToDev(order._id)}
+                                    style={{
+                                        marginTop: '10px',
+                                        backgroundColor: '#ff4444',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '5px 10px',
+                                        cursor: 'pointer',
+                                        borderRadius: '4px'
+                                    }}
+                                >
+                                    Delete (Dev)
+                                </button>
+                            )}
                         </div>
                     )
                 })}
