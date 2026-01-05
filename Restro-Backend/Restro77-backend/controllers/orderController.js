@@ -48,6 +48,12 @@ const placeOrder = async (req, res) => {
                 const newOrder = new orderModel(newOrderData);
                 await newOrder.save();
 
+                // Add Reward Points immediately for Admin Bypass
+                if (newOrderData.pointsEarned > 0) {
+                    user.points += newOrderData.pointsEarned;
+                    await user.save();
+                }
+
                 // Clear user cart
                 await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
