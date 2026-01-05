@@ -358,97 +358,92 @@
 /* ================= TERMINAL ADMIN BUTTON ================= */
 
 /* ================= TERMINAL ADMIN BUTTON ================= */
-
-/* ================= TERMINAL ADMIN BUTTON ================= */
-
 .adminBypassBtn {
     position: relative;
-    z-index: 10;
+    z-index: 1;
+    overflow: hidden;
+    /* Clip the spinner to button shape */
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     margin: 20px auto 0;
-    padding: 14px 24px;
+    padding: 16px 30px;
+    width: fit-content;
+    min-width: 250px;
 
-    width: 100%;
-    max-width: 300px;
+    background: transparent;
+    /* Must be transparent for ::before to show */
+    border-radius: 50px;
+    /* Pill shape as per image */
+    border: none;
 
-    background: #000;
-    color: #00ff00 !important;
-    /* Force Neon Green */
+    color: #00ff9c;
     font-family: "Courier New", monospace;
-    font-size: 14px;
     font-weight: bold;
     letter-spacing: 2px;
     text-transform: uppercase;
-    text-shadow: 0 0 5px #00ff00;
+    text-shadow: 0 0 10px rgba(0, 255, 156, 0.5);
 
-    border: none;
-    border-radius: 8px;
-    /* Slightly squarer for terminal feel */
     cursor: pointer;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    transition: transform 0.2s;
 }
 
-/* THE MOVING BORDER */
+/* 1. The Rotating Comet (Gradient Spinner) */
 .adminBypassBtn::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 8px;
-    padding: 2px;
-    /* Border width */
-    background: linear-gradient(90deg, transparent, #00ff00, transparent);
-    background-size: 200% 100%;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    /* Large enough to cover corners when spinning */
+    height: 300%;
 
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    background: conic-gradient(transparent 0deg,
+            transparent 260deg,
+            #00ff9c 320deg,
+            #ffffff 360deg);
 
-    animation: snakeBorder 2s linear infinite;
-    pointer-events: none;
+    transform: translate(-50%, -50%);
+    /* Centered */
+    animation: rotateBorder 3s linear infinite;
+    z-index: -2;
+    /* Behind everything */
 }
 
-/* Background Highlight on Hover */
-.adminBypassBtn:hover {
-    background: #0a1a0a;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-}
-
-@keyframes snakeBorder {
-    0% {
-        background-position: 100% 0;
-    }
-
-    100% {
-        background-position: -100% 0;
-    }
-}
-
-/* Fallback / Alternative "Glow" if snake is too subtle */
+/* 2. The Inner Mask (Button Body) */
 .adminBypassBtn::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: #00ff00;
-    box-shadow: 0 0 10px #00ff00;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
+    inset: 3px;
+    /* Creates the 3px border gap */
+    background: #0d0d0d;
+    /* The actual button color */
+    border-radius: 47px;
+    /* Matches parent radius minus inset */
+    z-index: -1;
+    /* Behind text, above spinner */
 }
 
-.adminBypassBtn:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+.adminBypassBtn:hover {
+    transform: scale(1.02);
+    text-shadow: 0 0 15px #00ff9c;
+}
+
+/* Speed up on hover */
+.adminBypassBtn:hover::before {
+    animation-duration: 1.5s;
+}
+
+@keyframes rotateBorder {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
 
 /* mobile */
