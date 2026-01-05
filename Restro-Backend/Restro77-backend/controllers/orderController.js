@@ -39,6 +39,29 @@ const placeOrder = async (req, res) => {
             }
         }
 
+        // Optional: Check for Payment Bypass (Admin Only)
+        if (req.body.bypassPayment) {
+            const user = await userModel.findById(userId);
+            if (user && user.phone === "8596962616") {
+                newOrderData.payment = true; // Mark as paid immediately
+                const newOrder = new orderModel(newOrderData);
+                await newOrder.save();
+
+                // Clear user cart
+                await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+                // Emit updates
+                io.emit("orderStatusUpdated", { orderId: newOrder._id, payment: true });
+                io.emit("newOrder", newOrder);
+
+                return res.json({
+                    success: true,
+                    orderId: newOrder._id,
+                    message: "Order placed successfully (Payment Bypassed)"
+                });
+            }
+        }
+
         const newOrder = new orderModel(newOrderData);
         await newOrder.save();
 
