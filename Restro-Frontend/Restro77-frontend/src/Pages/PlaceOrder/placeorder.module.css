@@ -355,106 +355,91 @@
     }
 }
 
-/* ================= TERMINAL ADMIN BUTTON ================= */
-
-/* ================= TERMINAL ADMIN BUTTON ================= */
-
-/* ================= TERMINAL ADMIN BUTTON (COMET PILL) ================= */
+/* ================= ADMIN BYPASS BUTTON ================= */
 
 .adminBypassBtn {
     position: relative;
-    z-index: 10;
-    overflow: hidden;
-    /* Crucial for clipping */
-
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 
     margin: 20px auto 0;
-    padding: 16px 32px;
-    /* Generous padding for pill shape */
+    padding: 15px 35px;
 
-    background: transparent;
+    background: #000;
     border: none;
-    border-radius: 9999px;
-    /* Full Pill */
+    border-radius: 50px;
 
-    /* Text Styling */
     color: #00ff00;
     font-family: monospace;
-    font-weight: 900;
+    font-weight: bold;
     font-size: 14px;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
 
     cursor: pointer;
-    box-sizing: border-box;
+    overflow: visible;
 }
 
-/* 1. The White Comet Spinner */
+/* Animated white border */
 .adminBypassBtn::before {
-    content: "";
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: -2px;
+    border-radius: 50px;
+    padding: 2px;
 
-    /* Ensure this is much larger than the button */
-    width: 600px;
-    height: 600px;
-
-    /* Pure White Comet: Transparent -> White */
-    background: conic-gradient(from 0deg,
+    background: conic-gradient(from var(--angle),
             transparent 0%,
-            transparent 70%,
-            rgba(255, 255, 255, 0.3) 85%,
-            rgba(255, 255, 255, 1) 95%,
-            #ffffff 100%);
+            transparent 80%,
+            white 100%);
 
-    animation: rotateComet 2s linear infinite;
-    z-index: -2;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    animation: rotate 2s linear infinite;
 }
 
-/* 2. The Inner Black Mask */
-.adminBypassBtn::after {
-    content: "";
-    position: absolute;
-    inset: 2px;
-    /* 2px border thickness */
-    background: #000;
-    /* Solid Black */
-    border-radius: 9999px;
-    /* Match parent */
-    z-index: -1;
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
 }
 
-/* Hover Effects */
-.adminBypassBtn:hover {
-    text-shadow: 0 0 15px #00ff00;
-}
-
-.adminBypassBtn:hover::after {
-    background: #0a0a0a;
-    /* Slightly lighter black on hover */
-}
-
-@keyframes rotateComet {
-    from {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
+@keyframes rotate {
     to {
-        transform: translate(-50%, -50%) rotate(360deg);
+        --angle: 360deg;
     }
 }
 
-/* Mobile Adjustments */
+@supports not (background: conic-gradient(from var(--angle), white, transparent)) {
+    .adminBypassBtn::before {
+        background: conic-gradient(transparent 0deg,
+                transparent 288deg,
+                white 360deg);
+        animation: rotateFallback 2s linear infinite;
+    }
+
+    @keyframes rotateFallback {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+.adminBypassBtn:hover {
+    background: #0a0a0a;
+}
+
 @media (max-width: 480px) {
     .adminBypassBtn {
         font-size: 12px;
-        padding: 14px 24px;
-        width: 100%;
+        padding: 12px 24px;
     }
 }
