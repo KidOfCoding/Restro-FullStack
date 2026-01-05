@@ -359,96 +359,102 @@
 
 /* ================= TERMINAL ADMIN BUTTON ================= */
 
+/* ================= TERMINAL ADMIN BUTTON ================= */
+
 .adminBypassBtn {
     position: relative;
-    z-index: 1;
-
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 20px auto 0;
+    padding: 14px 24px;
 
-    margin: 16px auto 0;
-    padding: 12px 22px;
+    width: 100%;
+    max-width: 300px;
 
-    min-width: 220px;
-    max-width: 90%;
-    width: fit-content;
-
-    background: transparent;
-    /* Changed from #000 to show gradient border */
-    color: #00ff9c;
-
-    font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
-    letter-spacing: 1.5px;
-    text-transform: lowercase;
+    background: #000;
+    color: #00ff00 !important;
+    /* Force Neon Green */
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px #00ff00;
 
     border: none;
-    border-radius: 12px;
-
+    border-radius: 8px;
+    /* Slightly squarer for terminal feel */
     cursor: pointer;
     overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-/* rotating white glow (OUTSIDE) */
+/* THE MOVING BORDER */
 .adminBypassBtn::before {
-    content: "";
+    content: '';
     position: absolute;
-    /* Center the big spinner */
-    top: 50%;
-    left: 50%;
-    width: 600px;
-    height: 600px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    padding: 2px;
+    /* Border width */
+    background: linear-gradient(90deg, transparent, #00ff00, transparent);
+    background-size: 200% 100%;
 
-    background: conic-gradient(transparent 0deg,
-            rgba(0, 255, 156, 0.8) 90deg,
-            /* Changed to match text color green */
-            transparent 180deg,
-            rgba(0, 255, 156, 0.8) 270deg,
-            transparent 360deg);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
 
-    animation: rotateGlow 3s linear infinite;
-    z-index: -2;
+    animation: snakeBorder 2s linear infinite;
+    pointer-events: none;
 }
 
-/* inner black mask (INSIDE) */
+/* Background Highlight on Hover */
+.adminBypassBtn:hover {
+    background: #0a1a0a;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+@keyframes snakeBorder {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* Fallback / Alternative "Glow" if snake is too subtle */
 .adminBypassBtn::after {
-    content: "";
+    content: '';
     position: absolute;
-    inset: 2px;
-    /* 2px border thickness */
-    border-radius: 10px;
-    /* slightly less than parent 12px */
-    background: #0d0d0d;
-    /* Dark gray/black background for button face */
-    z-index: -1;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #00ff00;
+    box-shadow: 0 0 10px #00ff00;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
 }
 
-/* hover speed-up */
-.adminBypassBtn:hover::before {
-    animation-duration: 1.6s;
-}
-
-/* click */
-.adminBypassBtn:active {
-    transform: scale(0.97);
-}
-
-/* animation */
-@keyframes rotateGlow {
-    from {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
-    to {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
+.adminBypassBtn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 /* mobile */
 @media (max-width: 480px) {
     .adminBypassBtn {
-        width: 100%;
         font-size: 12px;
+        padding: 12px;
     }
 }
