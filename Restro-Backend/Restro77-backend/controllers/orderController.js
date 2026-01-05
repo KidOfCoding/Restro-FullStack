@@ -65,7 +65,8 @@ const placeOrder = async (req, res) => {
                 return res.json({
                     success: true,
                     orderId: newOrder._id,
-                    message: "Order placed successfully (Payment Bypassed)"
+                    message: "Order placed successfully (Payment Bypassed)",
+                    pointsEarned: newOrderData.pointsEarned
                 });
             }
         }

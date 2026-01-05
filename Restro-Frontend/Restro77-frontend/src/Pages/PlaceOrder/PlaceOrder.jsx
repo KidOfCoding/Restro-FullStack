@@ -152,6 +152,9 @@ const PlaceOrder = () => {
 
       // Handle Bypass or Immediate Success
       if (res.data.success && !res.data.key) {
+        if (res.data.pointsEarned) {
+          setEarnedPoints(res.data.pointsEarned);
+        }
         setOrderSuccess(true);
         setCartItems({});
         setItems(0);
