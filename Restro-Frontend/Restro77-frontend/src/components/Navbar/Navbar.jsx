@@ -110,7 +110,7 @@ const Navbar = ({ setShowLogin }) => {
                   marginRight: "15px",
                   textShadow: "0 0 5px #00ff00"
                 }}>
-                  Welcome DD 💀
+                  Welcome BOSS 💀
                 </div>
               )}
               <div className={style.searchIcon} onClick={() => { navigate('/'); setTimeout(() => document.getElementById('search-input')?.focus(), 100); }}>
