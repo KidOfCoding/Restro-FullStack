@@ -103,21 +103,14 @@ const Navbar = ({ setShowLogin }) => {
             <>
               {userData?.phone === "8596962616" && (
                 <div style={{
-                  padding: "5px 10px",
-                  borderRadius: "20px",
-                  background: "linear-gradient(45deg, #0f0, #003300)",
-                  color: "#fff",
+                  color: "#00ff00",
                   fontFamily: "monospace",
-                  fontSize: "12px",
                   fontWeight: "bold",
-                  border: "1px solid #0f0",
-                  textShadow: "0 0 5px #0f0",
-                  cursor: "default",
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "10px"
+                  fontSize: "14px",
+                  marginRight: "15px",
+                  textShadow: "0 0 5px #00ff00"
                 }}>
-                  &lt;CreatorMode /&gt;
+                  Welcome DD 💀
                 </div>
               )}
               <div className={style.searchIcon} onClick={() => { navigate('/'); setTimeout(() => document.getElementById('search-input')?.focus(), 100); }}>

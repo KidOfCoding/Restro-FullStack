@@ -31,13 +31,13 @@ const timeAgo = (dateParam) => {
 
 const OrderTimer = ({ order }) => {
     const [timeLeft, setTimeLeft] = useState(null);
+    const [statusText, setStatusText] = useState("Arriving Soon");
 
     useEffect(() => {
         // Run timer if prepTime is set AND status is either "Getting Ready" or "Out for delivery"
         const validStatuses = ["Food is Getting Ready!", "Out for delivery"];
 
         if (validStatuses.includes(order.status) && order.prepTime > 0) {
-            // Use statusDate if available (new logic), otherwise fallback to date (legacy/fallback)
             const baseTime = order.statusDate ? new Date(order.statusDate).getTime() : new Date(order.date).getTime();
             const targetTime = baseTime + order.prepTime * 60000;
 
@@ -46,7 +46,7 @@ const OrderTimer = ({ order }) => {
                 const difference = targetTime - now;
 
                 if (difference <= 0) {
-                    setTimeLeft("Arriving Soon");
+                    setTimeLeft("Arrived"); // Marker for loop
                     return false; // Stop interval
                 } else {
                     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
@@ -56,19 +56,50 @@ const OrderTimer = ({ order }) => {
                 }
             };
 
-            // Initial call
-            if (calculateTime()) {
+            // Loop logic for "Arriving Soon" <-> "Driver is on the way"
+            if (!calculateTime()) {
+                // Already arrived/late, start loop immediately
+                const loopInterval = setInterval(() => {
+                    setStatusText(prev => prev === "Arriving Soon" ? "Driver is on the way" : "Arriving Soon");
+                }, 2000);
+                return () => clearInterval(loopInterval);
+            } else {
+                // Still counting down
                 const interval = setInterval(() => {
-                    if (!calculateTime()) clearInterval(interval);
+                    if (!calculateTime()) {
+                        clearInterval(interval);
+                        // Start loop once finished
+                        // Note: This won't trigger immediately in this render cycle unless we rethink effects, 
+                        // but setTimeLeft("Arrived") will trigger re-render if I handle it right.
+                        // Simpler: Just rely on timeLeft state.
+                    }
                 }, 1000);
                 return () => clearInterval(interval);
             }
         } else {
             setTimeLeft(null);
         }
-    }, [order]); // Re-run if order updates
+    }, [order]);
+
+    // Effect for the loop text when time is up
+    useEffect(() => {
+        if (timeLeft === "Arrived") {
+            const loop = setInterval(() => {
+                setStatusText(prev => prev === "Arriving Soon" ? "Driver is on the way" : "Arriving Soon");
+            }, 2000);
+            return () => clearInterval(loop);
+        }
+    }, [timeLeft]);
 
     if (!timeLeft) return null;
+
+    if (timeLeft === "Arrived") {
+        return (
+            <p style={{ color: 'tomato', fontWeight: 'bold' }}>
+                {statusText}
+            </p>
+        );
+    }
 
     return (
         <p style={{ color: 'tomato', fontWeight: 'bold' }}>
@@ -155,7 +186,7 @@ const MyOrders = () => {
             <div className={styles.container}>
                 {data.map((order, index) => {
                     return (
-                        <div key={index} className={styles.myordersOrder}>
+                        <div key={index} className={styles.myordersOrder} style={{ position: 'relative' }}>
                             <img src={assets.parcel_icon} alt="" />
                             <p>{order.items.map((item, index) => {
                                 if (index === order.items.length - 1) {
@@ -175,36 +206,39 @@ const MyOrders = () => {
                                 <p><span>&#x25cf;</span> <b>{order.status}</b> </p>
                                 <OrderTimer order={order} />
                             </div>
-                            {/* <button onClick={fetchOrders}>Track Order</button> */}
+
                             {(userData?.phone === "8596962616" && viewMode === 'live') && (
                                 <button
                                     onClick={() => moveToDev(order._id)}
                                     title="Stealth Delete"
                                     style={{
-                                        marginTop: '10px',
-                                        backgroundColor: 'transparent',
+                                        position: 'absolute',
+                                        top: '10px',
+                                        right: '10px',
+                                        backgroundColor: 'rgba(255, 68, 68, 0.1)',
                                         color: '#ff4444',
                                         border: '1px solid #ff4444',
-                                        padding: '8px',
+                                        padding: '0',
                                         cursor: 'pointer',
                                         borderRadius: '50%',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        width: '35px',
-                                        height: '35px',
-                                        transition: 'all 0.3s ease'
+                                        width: '24px',
+                                        height: '24px',
+                                        transition: 'all 0.3s ease',
+                                        zIndex: 10
                                     }}
                                     onMouseEnter={(e) => {
                                         e.target.style.backgroundColor = '#ff4444';
                                         e.target.style.color = 'white';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.target.style.backgroundColor = 'transparent';
+                                        e.target.style.backgroundColor = 'rgba(255, 68, 68, 0.1)';
                                         e.target.style.color = '#ff4444';
                                     }}
                                 >
-                                    <FaTrash />
+                                    <FaTrash size={12} />
                                 </button>
                             )}
                         </div>
