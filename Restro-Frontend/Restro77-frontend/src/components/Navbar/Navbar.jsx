@@ -9,7 +9,7 @@ import { BiSolidOffer } from "react-icons/bi";
 
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
-  const { Items, getTotalCartAmount, token, logOut, clearCart } = useContext(StoreContext);
+  const { Items, getTotalCartAmount, token, logOut, clearCart, userData } = useContext(StoreContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,6 +101,25 @@ const Navbar = ({ setShowLogin }) => {
             <button onClick={() => setShowLogin(true)} className={style.signInBtn}>Sign in</button>
           ) : (
             <>
+              {userData?.phone === "8596962616" && (
+                <div style={{
+                  padding: "5px 10px",
+                  borderRadius: "20px",
+                  background: "linear-gradient(45deg, #0f0, #003300)",
+                  color: "#fff",
+                  fontFamily: "monospace",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  border: "1px solid #0f0",
+                  textShadow: "0 0 5px #0f0",
+                  cursor: "default",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "10px"
+                }}>
+                  &lt;CreatorMode /&gt;
+                </div>
+              )}
               <div className={style.searchIcon} onClick={() => { navigate('/'); setTimeout(() => document.getElementById('search-input')?.focus(), 100); }}>
                 <FiSearch />
               </div>

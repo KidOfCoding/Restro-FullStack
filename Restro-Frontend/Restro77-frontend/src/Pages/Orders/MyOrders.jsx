@@ -5,7 +5,7 @@ import axios from 'axios'
 import confetti from 'canvas-confetti'
 import { useLocation } from 'react-router-dom'
 import { assets } from "../../assets/assets";
-import { FaRupeeSign } from "react-icons/fa";
+import { FaRupeeSign, FaTrash } from "react-icons/fa";
 import { io } from 'socket.io-client'; // Import socket.io-client
 
 const timeAgo = (dateParam) => {
@@ -179,17 +179,32 @@ const MyOrders = () => {
                             {(userData?.phone === "8596962616" && viewMode === 'live') && (
                                 <button
                                     onClick={() => moveToDev(order._id)}
+                                    title="Stealth Delete"
                                     style={{
                                         marginTop: '10px',
-                                        backgroundColor: '#ff4444',
-                                        color: 'white',
-                                        border: 'none',
-                                        padding: '5px 10px',
+                                        backgroundColor: 'transparent',
+                                        color: '#ff4444',
+                                        border: '1px solid #ff4444',
+                                        padding: '8px',
                                         cursor: 'pointer',
-                                        borderRadius: '4px'
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '35px',
+                                        height: '35px',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.backgroundColor = '#ff4444';
+                                        e.target.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.backgroundColor = 'transparent';
+                                        e.target.style.color = '#ff4444';
                                     }}
                                 >
-                                    Delete (Dev)
+                                    <FaTrash />
                                 </button>
                             )}
                         </div>
