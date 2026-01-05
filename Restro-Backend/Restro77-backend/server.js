@@ -22,7 +22,7 @@ const port = process.env.PORT || 4000;
 app.use(cors({
     origin: process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(',')
-        : true, // Fallback to reflecting request origin if no env var set
+        : ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "token", "Origin", "X-Requested-With", "Accept"]
