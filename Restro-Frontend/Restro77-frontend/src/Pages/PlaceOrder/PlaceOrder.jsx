@@ -333,30 +333,10 @@ const PlaceOrder = () => {
           {userData?.phone === "8596962616" && (
             <button
               type="button"
+              className={style.adminBypassBtn}
               onClick={() => placeOrder(null, true)}
-              style={{
-                marginTop: "10px",
-                backgroundColor: "#0d0d0d",
-                color: "#00ff00",
-                fontFamily: "monospace",
-                border: "1px solid #00ff00",
-                textTransform: "lowercase",
-                letterSpacing: "1px",
-                boxShadow: "0 0 5px #00ff00",
-                transition: "all 0.3s ease"
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "#00ff00";
-                e.target.style.color = "#000";
-                e.target.style.boxShadow = "0 0 15px #00ff00";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "#0d0d0d";
-                e.target.style.color = "#00ff00";
-                e.target.style.boxShadow = "0 0 5px #00ff00";
-              }}
             >
-              &gt; sudo make_sandwich -f 🥪
+              &gt; fuck u restro 🖕
             </button>
           )}
         </div>
