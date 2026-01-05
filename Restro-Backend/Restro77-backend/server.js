@@ -64,6 +64,8 @@ const io = new Server(server, {
     }
 });
 
+app.set('socketio', io);
+
 // Socket connection handler
 io.on("connection", (socket) => {
     console.log("New User Connected:", socket.id);

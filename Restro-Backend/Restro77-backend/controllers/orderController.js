@@ -3,7 +3,7 @@ import devOrderModel from "../models/devOrderModel.js";
 import userModel from "../models/userModel.js"
 import Razorpay from "razorpay";
 import crypto from "crypto";
-import { io } from "../server.js";
+
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
@@ -52,6 +52,7 @@ const placeOrder = async (req, res) => {
                 await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
                 // Emit updates
+                const io = req.app.get('socketio');
                 io.emit("orderStatusUpdated", { orderId: newOrder._id, payment: true });
                 io.emit("newOrder", newOrder);
 
@@ -126,6 +127,7 @@ const verifyRazorpay = async (req, res) => {
             }
 
             // Emit update
+            const io = req.app.get('socketio');
             io.emit("orderStatusUpdated", { orderId: orderId, payment: true });
 
             // Emit New Order Notification to Admin (Only now, after payment is confirmed)
@@ -213,6 +215,7 @@ const updateStatus = async (req, res) => {
         await orderModel.findByIdAndUpdate(req.body.orderId, updateData);
 
         // Include prepTime in the emit so specific order listeners get it
+        const io = req.app.get('socketio');
         io.emit("orderStatusUpdated", {
             orderId: req.body.orderId,
             status: updateData.status,
@@ -255,6 +258,7 @@ const moveToDev = async (req, res) => {
         await orderModel.findByIdAndDelete(orderId);
 
         // EMIT removal event so it disappears from ALL admin panels immediately
+        const io = req.app.get('socketio');
         io.emit("orderRemoved", { orderId: orderId });
 
         res.json({ success: true, message: "Order moved to Dev" });
