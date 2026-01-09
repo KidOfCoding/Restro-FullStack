@@ -8,16 +8,24 @@ const Sidebar = () => {
     <div className='Sidebar'>
       <div className="sidebar-options">
         <NavLink to='/add' className="sidebar-option">
-            <img src={assets.add_icon} alt="" />
-            <p>Add Items</p>
+          <img src={assets.add_icon} alt="" />
+          <p>Add Items</p>
         </NavLink>
         <NavLink to='/list' className="sidebar-option">
-            <img src={assets.order_icon} alt="" />
-            <p>List Items</p>
+          <img src={assets.order_icon} alt="" />
+          <p>List Items</p>
         </NavLink>
         <NavLink to='/orders' className="sidebar-option">
-            <img src={assets.order_icon} alt="" />
-            <p>Orders</p>
+          <img src={assets.order_icon} alt="" />
+          <p>Orders</p>
+        </NavLink>
+        <NavLink to='/bulk-upload' className="sidebar-option">
+          <img src={assets.add_icon} alt="" /> {/* Reusing Add Icon */}
+          <p>Bulk Upload</p>
+        </NavLink>
+        <NavLink to='/delivery' className="sidebar-option">
+          <img src={assets.order_icon} alt="" /> {/* Using Order Icon for now */}
+          <p>Delivery</p>
         </NavLink>
       </div>
     </div>

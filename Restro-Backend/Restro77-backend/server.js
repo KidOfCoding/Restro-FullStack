@@ -7,6 +7,7 @@ import 'dotenv/config'
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import userRouter from "./routes/userRoute.js";
+import deliveryRouter from "./routes/deliveryRoute.js";
 import { Server } from "socket.io"; // Import socket.io
 import { createServer } from "http"; // Import http
 
@@ -101,6 +102,7 @@ app.use("/api/food", foodRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/user', userRouter)
+app.use('/api/delivery', deliveryRouter)
 
 // Http Requests
 app.get('/', (req, res) => {

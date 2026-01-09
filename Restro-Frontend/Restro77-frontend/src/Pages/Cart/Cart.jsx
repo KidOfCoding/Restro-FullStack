@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { FaRupeeSign } from "react-icons/fa";
 import { ToastContainer, toast } from 'react-toastify';
 import { GiCancel } from "react-icons/gi";
-const Cart = () => {
-  const { cartItem, food_list, removeFromCart, getTotalCartAmount, URl } = useContext(StoreContext);
+import { useState } from 'react';
+
+const Cart = ({ setShowLogin }) => {
+  const { cartItem, food_list, removeFromCart, getTotalCartAmount, URl, token } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
@@ -22,11 +24,10 @@ const Cart = () => {
     }
   }, [cartItem, getTotalCartAmount, navigate, food_list]);
 
+  const [pendingCheckout, setPendingCheckout] = useState(false);
+
   const checkOut = () => {
-    if (getTotalCartAmount() > 0) {
-      navigate('/placeorder');
-    }
-    else {
+    if (getTotalCartAmount() === 0) {
       toast.warn('There is no item', {
         position: "top-center",
         autoClose: 5000,
@@ -37,8 +38,25 @@ const Cart = () => {
         progress: undefined,
         theme: "dark",
       });
+      return;
     }
+
+    if (!token) {
+      setPendingCheckout(true);
+      setShowLogin(true);
+      return;
+    }
+
+    navigate('/placeorder');
   }
+
+  // Auto-Redirect to PlaceOrder if token appears while pendingCheckout
+  useEffect(() => {
+    if (token && pendingCheckout) {
+      setPendingCheckout(false); // Reset
+      navigate('/placeorder');
+    }
+  }, [token, pendingCheckout, navigate]);
 
   return (
     <div className={style.Cart}>
@@ -54,20 +72,37 @@ const Cart = () => {
         <br />
         <hr />
         {food_list.map((item, index) => {
-          if (cartItem[item._id] > 0) {
-            return (
-              <div key={item._id}>
-                <div
-                  className={`${style.CartItemsTitle} ${style.CartItemsItem}`}
-                >
+          // We need to iterate over cart keys, not just food_list, 
+          // because one food item (Paneer Masala) can appear twice (Half & Full)
+          return null;
+        })}
+        {/* Iterate over Cart Items directly */}
+        {Object.keys(cartItem).map((key) => {
+          if (cartItem[key] > 0) {
+            const [itemId, variantName] = key.split('-');
+            const item = food_list.find(f => f._id === itemId);
 
-                  <p>{item.name}</p>
-                  <p><FaRupeeSign />{item.price}</p>
-                  <p>{cartItem[item._id]}</p>
-                  <p><FaRupeeSign />{item.price * cartItem[item._id]}</p>
+            if (!item) return null;
+
+            let price = item.price;
+            let displayName = item.name;
+
+            if (variantName) {
+              displayName += ` (${variantName})`;
+              const v = item.variants?.find(v => v.name === variantName);
+              if (v) price = v.price;
+            }
+
+            return (
+              <div key={key}>
+                <div className={`${style.CartItemsTitle} ${style.CartItemsItem}`}>
+                  <p>{displayName}</p>
+                  <p><FaRupeeSign />{price}</p>
+                  <p>{cartItem[key]}</p>
+                  <p><FaRupeeSign />{price * cartItem[key]}</p>
                   <p
                     className={style.Cross}
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => removeFromCart(itemId, variantName)}
                   >
                     <GiCancel color="red" />
                   </p>

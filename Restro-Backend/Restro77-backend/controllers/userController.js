@@ -243,7 +243,7 @@ const updateaddress = async (req, res) => {
 }
 
 const saveAddress = async (req, res) => {
-    const { userId, address, label } = req.body;
+    const { userId, address, label, latitude, longitude } = req.body;
     try {
         const user = await userModel.findById(userId);
         if (!user) return res.json({ success: false, message: "User not found" });
@@ -251,7 +251,7 @@ const saveAddress = async (req, res) => {
         if (!user.addresses) user.addresses = [];
 
         // Add new address
-        user.addresses.push({ address, label: label || 'Home' });
+        user.addresses.push({ address, label: label || 'Home', latitude, longitude });
         await user.save();
 
         res.json({ success: true, message: "Address Saved", addresses: user.addresses });

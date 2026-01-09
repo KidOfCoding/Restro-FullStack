@@ -1,0 +1,30 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.gap-20 {
+    gap: 20px;
+}
+
+.list-table.format {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 0.5fr;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border: 1px solid #cacaca;
+    font-size: 13px;
+}
+
+.list-table.title {
+    background-color: #f9f9f9;
+    margin-top: 20px;
+}
+
+.add-product-name,
+.add-product-description {
+    width: 100%;
+    /* Ensure full width in form container */
+    max-width: 500px;
+}

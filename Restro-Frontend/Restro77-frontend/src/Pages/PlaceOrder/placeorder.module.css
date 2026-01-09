@@ -17,7 +17,7 @@
 .placeOrder {
     display: flex;
     max-width: 1100px;
-    margin: 60px auto 40px;
+    margin: 20px auto 40px;
     padding: 0 14px;
     gap: 24px;
     box-sizing: border-box;
@@ -133,6 +133,15 @@
     /* REMOVE DEFAULT OFFSET */
     flex-shrink: 0;
     accent-color: var(--accent);
+}
+
+/* ================= LOCATION BADGE ================= */
+.distanceBadge {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 /* ================= INFO BOX ================= */
@@ -275,8 +284,9 @@
 
     /* Optional premium feel */
     .placeOrderRight {
-        position: sticky;
-        bottom: 10px;
+        /* position: sticky; REMOVED to prevent overlap */
+        /* bottom: 10px; */
+        position: relative;
     }
 }
 

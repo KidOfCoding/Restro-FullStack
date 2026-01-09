@@ -9,7 +9,9 @@ const userSchema = new mongoose.Schema({
     addresses: [
         {
             address: { type: String, required: true },
-            label: { type: String, default: 'Home' }
+            label: { type: String, default: 'Home' },
+            latitude: { type: Number },
+            longitude: { type: Number }
         }
     ],
     cartData: { type: Object, default: {} },

@@ -2,7 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import style from "./fooddisplay.module.css";
 import { StoreContext } from "../../context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
-import { FaFilter, FaTimes } from "react-icons/fa";
+import { FaFilter, FaTimes, FaLeaf } from "react-icons/fa";
+import { GiChickenLeg } from "react-icons/gi";
 
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
@@ -12,7 +13,7 @@ const FoodDisplay = ({ category }) => {
 
   // Advanced Filter States
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filterType, setFilterType] = useState("all"); // "all", "veg", "nonVeg"
+  const [filterType, setFilterType] = useState("all"); // "all", "veg", "non-veg"
 
   // Sync with ExploreMenu category prop
   useEffect(() => {
@@ -31,6 +32,13 @@ const FoodDisplay = ({ category }) => {
     );
   };
 
+  // Toggle Handler: All -> Veg -> Non-Veg -> All
+  const handleToggle = () => {
+    if (filterType === "all") setFilterType("veg");
+    else if (filterType === "veg") setFilterType("non-veg");
+    else setFilterType("all");
+  };
+
   // Get all unique categories for the filter list
   const allCategories = [...new Set(food_list.map(item => item.category))];
 
@@ -40,17 +48,30 @@ const FoodDisplay = ({ category }) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
 
     // 2. Category Filter (empty means All)
-    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(item.category);
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(cat => item.category.toLowerCase() === cat.toLowerCase());
 
     // 3. Type Filter
-    const matchesType = filterType === "all" || item.type === filterType;
+    let matchesType = true;
+    if (filterType === "veg") matchesType = item.type === "veg";
+    if (filterType === "non-veg") matchesType = (item.type === "non-veg" || item.type === "nonVeg");
 
     return matchesSearch && matchesCategory && matchesType;
   });
 
   // Get unique categories of the RESULT for section rendering
   const resultCategories = [
-    ...new Set(filteredFood.map((item) => item.category)),
+    ...new Set(filteredFood.map((item) => {
+      let cat = item.category || "";
+      // Normalize: Title Case + Trim
+      cat = cat.trim().charAt(0).toUpperCase() + cat.trim().slice(1).toLowerCase();
+
+      // Manual Fixes for Singular/Plural
+      if (cat === "Starter") cat = "Starters";
+      if (cat === "Roll") cat = "Rolls";
+      if (cat === "Noodle") cat = "Noodles";
+
+      return cat;
+    })),
   ];
 
   const formatCategory = (cat) => {
@@ -69,13 +90,11 @@ const FoodDisplay = ({ category }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => {
-              // Delay blur to allow clicking on the hint/filter button if needed, although clicking specific elements should be fine
               setTimeout(() => setIsSearchFocused(false), 200);
             }}
             className={style.searchInput}
           />
 
-          {/* Instruction Hint - Show when searching OR focused, AND filters are NOT showing AND no filters applied */}
           {(searchTerm.length > 0 || isSearchFocused) && !showFilter && selectedCategories.length === 0 && filterType === "all" && (
             <div className={style.searchHint}>
               Apply Filters
@@ -110,8 +129,8 @@ const FoodDisplay = ({ category }) => {
                   onClick={() => setFilterType("veg")}
                 >Veg</button>
                 <button
-                  className={filterType === "nonVeg" ? style.selectedType : ""}
-                  onClick={() => setFilterType("nonVeg")}
+                  className={filterType === "non-veg" ? style.selectedType : ""}
+                  onClick={() => setFilterType("non-veg")}
                 >Non-Veg</button>
               </div>
             </div>
@@ -143,18 +162,50 @@ const FoodDisplay = ({ category }) => {
       </div>
 
       <div className={style.FoodDisplayList}>
-        {resultCategories.map((catString, index) => (
-          <section key={index}>
-            <h2 className={style.sectionTitle}>{formatCategory(catString)}</h2>
-            <div className={style.menuGrid}>
-              {filteredFood
-                .filter((item) => item.category === catString)
-                .map((item) => (
-                  <FoodItem key={item._id} item={item} />
-                ))}
-            </div>
-          </section>
-        ))}
+        {resultCategories.map((catString, index) => {
+          return (
+            <section key={index}>
+              <div className={style.sectionHeader}>
+                <h2 className={style.sectionTitle}>{formatCategory(catString)}</h2>
+
+                {/* 3-State Toggle Switch (Middle Default) */}
+                <div className={style.toggleWrapper} onClick={handleToggle}>
+                  <div className={`${style.toggleTrack} ${filterType === "veg" ? style.veg : filterType === "non-veg" ? style.nonVeg : ""}`}>
+                    {/* Background Icons (Always visible or fading?) */}
+                    <div className={style.trackIconLeft}><FaLeaf /></div>
+                    <div className={style.trackIconRight}><GiChickenLeg /></div>
+
+                    {/* Sliding Knob */}
+                    <div className={`${style.toggleKnob} ${filterType === "all" ? style.center : filterType === "veg" ? style.left : style.right}`}>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={style.menuGrid}>
+                {filteredFood
+                  .filter((item) => {
+                    let itemCat = (item.category || "").trim().charAt(0).toUpperCase() + (item.category || "").trim().slice(1).toLowerCase();
+                    if (itemCat === "Starter") itemCat = "Starters";
+                    if (itemCat === "Roll") itemCat = "Rolls";
+                    if (itemCat === "Noodle") itemCat = "Noodles";
+
+                    if (itemCat !== catString) return false;
+
+                    // Filter Logic
+                    if (filterType === "all") return true;
+                    if (filterType === "veg" && item.type === "veg") return true;
+                    if (filterType === "non-veg" && (item.type === "non-veg" || item.type === "nonVeg")) return true;
+
+                    return false;
+                  })
+                  .map((item) => (
+                    <FoodItem key={item._id} item={item} />
+                  ))}
+              </div>
+            </section>
+          )
+        })}
         {resultCategories.length === 0 && (
           <p className={style.noResults}>No food found matching your criteria.</p>
         )}

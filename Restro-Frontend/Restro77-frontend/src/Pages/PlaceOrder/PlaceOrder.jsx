@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import confetti from "canvas-confetti";
 
+const RESTAURANT_COORDS = { lat: 20.214642744864992, lng: 85.73559221488036 };
+
 const PlaceOrder = () => {
   const {
     getTotalCartAmount,
@@ -35,23 +37,130 @@ const PlaceOrder = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [earnedPoints, setEarnedPoints] = useState(0);
 
-  /* ---------------- FETCH SAVED ADDRESSES ---------------- */
+  // DELIVERY LOGIC
+  const [deliveryPoints, setDeliveryPoints] = useState([]);
+  const [selectedPoint, setSelectedPoint] = useState(""); // ID of selected point
+  const [userLocation, setUserLocation] = useState(null); // { lat, lng }
+  const [distance, setDistance] = useState(0); // in km
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [isCalculating, setIsCalculating] = useState(false);
+
+  /* ---------------- FETCH SAVED ADDRESSES & POINTS ---------------- */
   const fetchSavedAddresses = async () => {
     try {
-      const res = await axios.get(URl + "/api/user/get-profile", {
-        headers: { token }
-      });
+      const res = await axios.get(URl + "/api/user/get-profile", { headers: { token } });
       if (res.data.success && res.data.userData.addresses) {
         setSavedAddresses(res.data.userData.addresses);
       }
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
+  };
+
+  const fetchDeliveryPoints = async () => {
+    try {
+      const res = await axios.get(URl + "/api/delivery/list");
+      if (res.data.success) {
+        setDeliveryPoints(res.data.data);
+      }
+    } catch (err) { console.error(err); }
   };
 
   useEffect(() => {
     if (token) fetchSavedAddresses();
+    fetchDeliveryPoints();
   }, [token]);
+
+  /* ---------------- CALCULATE FEE ---------------- */
+  // Hybrid Logic: BaseCost + (max(0, Actual - BaseDist) * Rate)
+  // Rate = 4 Rs/km
+  const calculateFee = (distKm, pointId) => {
+    let fee = 0;
+    const ratePerKm = 4;
+
+    if (pointId) {
+      const point = deliveryPoints.find(p => p._id === pointId);
+      if (point) {
+        const excessDist = Math.max(0, distKm - point.defaultDistance);
+        fee = point.baseCost + (excessDist * ratePerKm);
+      }
+    } else {
+      fee = Math.round(distKm) * ratePerKm;
+    }
+    setDeliveryFee(Math.max(0, Math.round(fee)));
+  };
+
+  useEffect(() => {
+    if (distance > 0) {
+      calculateFee(distance, selectedPoint);
+    }
+  }, [distance, selectedPoint]);
+
+
+  /* ---------------- LOCATION SERVICES ---------------- */
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+    setIsCalculating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ lat: latitude, lng: longitude });
+
+        // Reverse Geocoding for Address Text (Optional but nice)
+        try {
+          const res = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+          if (res.data && res.data.display_name) {
+            setAddress(res.data.display_name); // Auto-fill address
+          }
+        } catch (e) { console.log("Reverse geo error", e) }
+
+        await calculateOSRMDistance(latitude, longitude);
+        setIsCalculating(false);
+      },
+      () => {
+        toast.error("Unable to retrieve your location");
+        setIsCalculating(false);
+      }
+    );
+  };
+
+  const calculateOSRMDistance = async (userLat, userLng) => {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${RESTAURANT_COORDS.lng},${RESTAURANT_COORDS.lat};${userLng},${userLat}?overview=false`;
+      const response = await axios.get(url);
+
+      if (response.data.routes && response.data.routes.length > 0) {
+        const distMeters = response.data.routes[0].distance;
+        const distKm = (distMeters / 1000).toFixed(2);
+        setDistance(parseFloat(distKm));
+        toast.success(`Distance Calculated: ${distKm} km`);
+      } else {
+        // Fallback to Haversine
+        fallbackHaversine(userLat, userLng);
+      }
+    } catch (error) {
+      console.error("OSRM Error", error);
+      fallbackHaversine(userLat, userLng);
+    }
+  };
+
+  const fallbackHaversine = (lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - RESTAURANT_COORDS.lat);
+    const dLon = deg2rad(lon2 - RESTAURANT_COORDS.lng);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(RESTAURANT_COORDS.lat)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    const roadDistance = (d * 1.4).toFixed(2); // Estimate road logic
+    setDistance(parseFloat(roadDistance));
+    toast.info(`Estimated Distance: ${roadDistance} km`);
+  };
+
+  const deg2rad = (deg) => deg * (Math.PI / 180);
 
   /* ---------------- REDIRECT GUARDS ---------------- */
   useEffect(() => {
@@ -65,7 +174,18 @@ const PlaceOrder = () => {
     const id = e.target.value;
     setSelectedAddressId(id);
     const found = savedAddresses.find((a) => a._id === id);
-    setAddress(found ? found.address : "");
+    if (found) {
+      setAddress(found.address);
+      // Use saved coordinates if available to Recalculate Distance
+      if (found.latitude && found.longitude) {
+        setUserLocation({ lat: found.latitude, lng: found.longitude });
+        calculateOSRMDistance(found.latitude, found.longitude);
+      }
+    } else {
+      setAddress("");
+      setDistance(0);
+      setDeliveryFee(0);
+    }
   };
 
   /* ---------------- RAZORPAY ---------------- */
@@ -92,10 +212,16 @@ const PlaceOrder = () => {
     try {
       if (!token) return;
 
+      // Save Address Logic (Updated to include Lat/Lng if available)
       if (orderType === "Delivery" && saveThisAddress && address) {
         await axios.post(
           URl + "/api/user/save-address",
-          { address, label: addressLabel },
+          {
+            address,
+            label: addressLabel,
+            latitude: userLocation?.lat,
+            longitude: userLocation?.lng
+          },
           { headers: { token } }
         );
       }
@@ -110,32 +236,32 @@ const PlaceOrder = () => {
       const finalAddress =
         orderType === "Delivery"
           ? {
-            street: address,
+            street: address + (selectedPoint ? ` (Near ${deliveryPoints.find(p => p._id === selectedPoint)?.name})` : ""),
             firstName: userData?.name || "Guest",
             lastName: "",
             email: userData?.email || "",
             phone: userData?.phone || ""
           }
           : {
-            street:
-              orderType === "Dine-in"
-                ? `Table: ${address}`
-                : "Takeaway Order",
+            street: orderType === "Dine-in" ? `Table: ${address}` : "Takeaway Order",
             firstName: userData?.name || "Guest",
             lastName: `(${orderType})`,
             email: userData?.email || "",
             phone: userData?.phone || ""
           };
 
+      // Use Delivery Fee in Total
+      const cartTotal = getTotalCartAmount();
+      const pointsDiscount = usePoints ? userPoints : 0;
+      const finalAmount = Math.max(0, cartTotal - pointsDiscount + deliveryFee);
+
       const orderData = {
         address: finalAddress,
         items,
         orderType,
         pointsToUse: usePoints ? userPoints : 0,
-        amount: Math.max(
-          0,
-          getTotalCartAmount() - (usePoints ? userPoints : 0)
-        ),
+        amount: finalAmount,
+        deliveryFee: deliveryFee, // New Field
         bypassPayment: bypass
       };
 
@@ -150,11 +276,8 @@ const PlaceOrder = () => {
         return;
       }
 
-      // Handle Bypass or Immediate Success
       if (res.data.success && !res.data.key) {
-        if (res.data.pointsEarned) {
-          setEarnedPoints(res.data.pointsEarned);
-        }
+        if (res.data.pointsEarned) setEarnedPoints(res.data.pointsEarned);
         setOrderSuccess(true);
         setCartItems({});
         setItems(0);
@@ -179,10 +302,7 @@ const PlaceOrder = () => {
           try {
             const verify = await axios.post(
               URl + "/api/order/verify-razorpay",
-              {
-                ...response,
-                orderId: res.data.orderId
-              }
+              { ...response, orderId: res.data.orderId }
             );
 
             if (verify.data.success) {
@@ -211,11 +331,7 @@ const PlaceOrder = () => {
       new window.Razorpay(options).open();
     } catch (error) {
       console.error("Place Order Error:", error);
-      if (error.response && error.response.status === 429) {
-        toast.error("Server busy (Too Many Requests). Please wait a moment and try again.");
-      } else {
-        toast.error("Something went wrong while placing the order.");
-      }
+      toast.error("Something went wrong while placing the order.");
     }
   };
 
@@ -237,6 +353,8 @@ const PlaceOrder = () => {
                 onChange={() => {
                   setOrderType(type);
                   setAddress("");
+                  setDistance(0);
+                  setDeliveryFee(0);
                 }}
               />
               {type}
@@ -246,6 +364,31 @@ const PlaceOrder = () => {
 
         {orderType === "Delivery" && (
           <>
+            {/* Location & Distance Section */}
+            <div className={style.locationSection}>
+              <button type="button" className={style.locationBtn} onClick={getCurrentLocation} disabled={isCalculating}>
+                {isCalculating ? "Calculating..." : "📍 Use Current Location"}
+              </button>
+              {distance > 0 && <span className={style.distanceBadge}>{distance} km from Restaurant</span>}
+            </div>
+
+            {/* Delivery Point Dropdown (Hybrid) */}
+            {deliveryPoints.length > 0 && (
+              <select
+                className={style.pointSelect}
+                value={selectedPoint}
+                onChange={(e) => setSelectedPoint(e.target.value)}
+              >
+                <option value="">Select Nearby Landmark (Optional)</option>
+                {deliveryPoints.map((p) => (
+                  <option key={p._id} value={p._id}>
+                    {p.name} (Base: {p.defaultDistance}km / ₹{p.baseCost})
+                  </option>
+                ))}
+              </select>
+            )}
+
+
             {savedAddresses.length > 0 && (
               <select value={selectedAddressId} onChange={handleAddressSelect}>
                 <option value="">Select saved address</option>
@@ -311,6 +454,13 @@ const PlaceOrder = () => {
             <span>₹{getTotalCartAmount()}</span>
           </div>
 
+          {orderType === "Delivery" && (
+            <div className={cartStyle.cartTotalDetails}>
+              <span>Delivery Fee : </span>
+              <span>₹{deliveryFee}</span>
+            </div>
+          )}
+
           {(userPoints > 0 && getTotalCartAmount() >= 50) && (
             <label className={style.checkboxRow}>
               <input
@@ -325,7 +475,7 @@ const PlaceOrder = () => {
           <div className={cartStyle.cartTotalDetails}>
             <b>Total :</b>
             <b>
-              &nbsp; ₹{Math.max(0, getTotalCartAmount() - (usePoints ? userPoints : 0))}
+              &nbsp; ₹{Math.max(0, getTotalCartAmount() - (usePoints ? userPoints : 0) + (orderType === "Delivery" ? deliveryFee : 0))}
             </b>
           </div>
 
@@ -359,4 +509,4 @@ const PlaceOrder = () => {
   );
 };
 
-export default PlaceOrder
+export default PlaceOrder;

@@ -252,7 +252,8 @@
     font-size: max(2vw, 24px);
     font-weight: 600;
     color: #fff;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
+    /* Handled by sectionHeader */
     text-transform: capitalize;
     border-left: 5px solid #ef4f5f;
     padding-left: 15px;
@@ -276,4 +277,138 @@
     .menuGrid {
         grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
     }
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    /* Move margin here */
+}
+
+/* 3-State Toggle Styles (Premium) */
+.toggleWrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.toggleTrack {
+    width: 68px;
+    height: 32px;
+    border-radius: 40px;
+    background-color: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+    /* Space for knob to not hit edge immediately */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Icons inside Track */
+.trackIconLeft,
+.trackIconRight {
+    font-size: 14px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.trackIconLeft {
+    color: #ccc;
+}
+
+.trackIconRight {
+    color: #ccc;
+}
+
+.toggleKnob {
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    /* Subtle border via shadow */
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    /* Smooth snap */
+    z-index: 2;
+}
+
+/* POSITIONS */
+
+/* Center (All) */
+.toggleKnob.center {
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Left (Veg) */
+.toggleKnob.left {
+    left: 4px;
+    transform: translateY(-50%);
+}
+
+/* Right (Non-Veg) */
+.toggleKnob.right {
+    left: calc(100% - 28px);
+    transform: translateY(-50%);
+}
+
+/* STATES & COLORS */
+
+/* VEG ACTIVE */
+.toggleTrack.veg {
+    background-color: #e8f5e9;
+    /* Light Green Bg */
+    border-color: #66bb6a;
+}
+
+.toggleTrack.veg .trackIconLeft {
+    color: #2ecc71;
+    transform: scale(1.1);
+}
+
+.toggleTrack.veg .toggleKnob {
+    background-color: #2ecc71;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.4);
+}
+
+/* NON-VEG ACTIVE */
+.toggleTrack.nonVeg {
+    background-color: #ffebee;
+    /* Light Red Bg */
+    border-color: #ef5350;
+}
+
+.toggleTrack.nonVeg .trackIconRight {
+    color: #e74c3c;
+    transform: scale(1.1);
+}
+
+.toggleTrack.nonVeg .toggleKnob {
+    background-color: #e74c3c;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+}
+
+/* Default (All) Icons */
+.toggleTrack:not(.veg):not(.nonVeg) .trackIconLeft {
+    opacity: 0.4;
+}
+
+.toggleTrack:not(.veg):not(.nonVeg) .trackIconRight {
+    opacity: 0.4;
 }

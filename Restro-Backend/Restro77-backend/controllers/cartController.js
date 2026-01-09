@@ -68,4 +68,29 @@ const clearCart = async (req, res) => {
     }
 }
 
-export { addToCart, removeFromCart, getCart, clearCart }
+// Merge Guest Cart
+const mergeCart = async (req, res) => {
+    try {
+        const { cartData: guestCart } = req.body;
+        let userData = await userModel.findById(req.body.userId);
+        let userCart = userData.cartData || {};
+
+        // Merge logic: Add guest quantities to user quantities
+        for (const [itemId, quantity] of Object.entries(guestCart)) {
+            if (userCart[itemId]) {
+                userCart[itemId] += quantity;
+            } else {
+                userCart[itemId] = quantity;
+            }
+        }
+
+        await userModel.findByIdAndUpdate(req.body.userId, { cartData: userCart });
+        res.json({ success: true, message: "Cart Merged" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error" });
+    }
+}
+
+export { addToCart, removeFromCart, getCart, clearCart, mergeCart }

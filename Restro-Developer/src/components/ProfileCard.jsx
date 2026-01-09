@@ -160,7 +160,7 @@ const ProfileCard = () => {
                             width: '100%'
                         }}
                     >
-                        Visit Portfolio
+                        Visit Protofolio
                     </motion.button>
                 </a>
             </div>

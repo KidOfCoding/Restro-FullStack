@@ -51,35 +51,35 @@ export const assets = {
 
 export const menu_list = [
     {
-        menu_name: "noodles",
+        menu_name: "Noodles",
         menu_image: menu_8
     },
     {
-        menu_name: "rice",
+        menu_name: "Rice",
         menu_image: menu_6
     },
     {
-        menu_name: "rolls",
+        menu_name: "Rolls",
         menu_image: menu_2
     },
     {
-        menu_name: "starter",
+        menu_name: "Starters",
         menu_image: menu_1
     },
     {
-        menu_name: "mainCourse",
+        menu_name: "Main Course",
         menu_image: menu_3
     },
     {
-        menu_name: "breads",
+        menu_name: "Breads",
         menu_image: menu_4
     },
     {
-        menu_name: "pasta",
+        menu_name: "Pasta",
         menu_image: menu_7
     },
     {
-        menu_name: "combo",
+        menu_name: "Special Combos",
         menu_image: menu_5
     }]
 

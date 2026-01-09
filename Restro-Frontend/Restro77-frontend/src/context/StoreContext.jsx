@@ -1,10 +1,22 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useRef } from "react";
 export const StoreContext = createContext(null);
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import foodListJSON from "../assets/foods_data.json";
+import { io } from "socket.io-client";
 
 const StoreContextProvider = (props) => {
+    const URl = (import.meta.env.VITE_BACKEND_URL || "http://localhost:4000").replace(/\/$/, "");
+
+    // Initialize Socket
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        const newSocket = io(URl);
+        setSocket(newSocket);
+        return () => newSocket.close();
+    }, [URl]);
+
     const [cartItem, setCartItems] = useState(() => {
         try {
             const savedCart = localStorage.getItem("cartItem");
@@ -14,8 +26,6 @@ const StoreContextProvider = (props) => {
             return {};
         }
     });
-
-    const URl = (import.meta.env.VITE_BACKEND_URL || "http://localhost:4000").replace(/\/$/, "");
 
     // Optimistic UI: Initialize token directly from localStorage to prevent flicker
     const [token, setToken] = useState(localStorage.getItem("token") || "")
@@ -29,41 +39,48 @@ const StoreContextProvider = (props) => {
         localStorage.setItem("cartItem", JSON.stringify(cartItem));
     }, [cartItem]);
 
-    const addToCart = async (itemId) => {
-        if (!token) {
-            toast.warn('Please Signin to Proceed', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            return;
-        }
+    // Variant-aware Key Helper
+    const getKey = (itemId, variant) => variant ? `${itemId}-${variant}` : itemId;
+
+    const addToCart = async (itemId, variant = null) => {
+        const key = getKey(itemId, variant);
 
         setItems((prev) => prev + 1);
-        if (!cartItem[itemId]) {
-            setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
 
-        } else {
-            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-        }
+        setCartItems((prev) => {
+            const updated = { ...prev };
+            updated[key] = (updated[key] || 0) + 1;
+            return updated;
+        });
 
         if (token) {
-            await axios.post(URl + "/api/cart/add", { itemId }, { headers: { token } })
+            // Send structure: { itemId, variant } or composite key?
+            // Existing backend expects { itemId }. 
+            // We need to update backend cartController to handle variants too?
+            // Ideally yes. But strict schema on backend might limit us.
+            // Plan: Send "itemId" as usual if no variant. 
+            // If variant, we might need a workaround or schema update on Backend Cart.
+            // For now, let's assume we send JSON body with extra info or just update local.
+            // Actually, backend cart is Map<String, Number>. So we can store "id-variant" string as key!
+            await axios.post(URl + "/api/cart/add", { itemId: key }, { headers: { token } })
         }
-
     };
 
-    const removeFromCart = async (itemId) => {
+    const removeFromCart = async (itemId, variant = null) => {
+        const key = getKey(itemId, variant);
+
         setItems((prev) => prev - 1);
         if (Object.keys(cartItem).length == 0) { setItems(0) }
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+
+        setCartItems((prev) => {
+            const updated = { ...prev };
+            updated[key] -= 1;
+            if (updated[key] <= 0) delete updated[key];
+            return updated;
+        });
+
         if (token) {
-            await axios.post(URl + "/api/cart/remove", { itemId }, { headers: { token } })
+            await axios.post(URl + "/api/cart/remove", { itemId: key }, { headers: { token } })
         }
     };
 
@@ -78,47 +95,52 @@ const StoreContextProvider = (props) => {
     const getTotalCartAmount = () => {
         let totalAmount = 0;
 
-        for (const itemId in cartItem) {
-            const quantity = cartItem[itemId];
-
+        for (const key in cartItem) {
+            const quantity = cartItem[key];
             if (quantity > 0) {
-                const itemInfo = food_list.find(
-                    (product) => product._id.toString() === itemId
-                );
+                // Parse Key
+                const [itemId, variantName] = key.split('-');
+
+                const itemInfo = food_list.find((product) => product._id === itemId);
+
                 if (itemInfo) {
-                    totalAmount += itemInfo.price * quantity;
+                    let price = itemInfo.price;
+
+                    if (variantName && itemInfo.variants) {
+                        const v = itemInfo.variants.find(v => v.name === variantName);
+                        if (v) price = v.price;
+                    }
+
+                    totalAmount += price * quantity;
                 }
             }
         }
-
-        console.log(totalAmount);
         return totalAmount;
     };
 
 
     const fetchFoodList = async () => {
-        // const response = await axios.get(URl + "/api/food/list")
-        // setFoodList(response.data.data)
-        // setFoodList(response.data.data)
-
-        const keepTest = import.meta.env.VITE_KEEP_TEST;
-
-        if (keepTest === '1') {
-            const testItem = {
-                _id: "test_item_1",
-                name: "Test Verification Item (₹2)",
-                image: "food_1.png", // Kept for compatibility if needed later
-                price: 2,
-                description: "A dummy item to verify payment flow",
-                category: "noodles", // Appear in first category
-                type: "veg"
-            };
-            // Add test item to the beginning
-            setFoodList([testItem, ...foodListJSON])
-        } else {
-            setFoodList(foodListJSON);
+        try {
+            const response = await axios.get(URl + "/api/food/list")
+            if (response.data.success) {
+                setFoodList(response.data.data)
+            } else {
+                // Fallback if needed, or handle error
+            }
+        } catch (error) {
+            // console.error(error);
         }
     }
+
+    // Real-time Updates
+    useEffect(() => {
+        if (socket) {
+            socket.on("foodListUpdated", () => {
+                fetchFoodList();
+                // toast.info("Menu Updated!"); // Optional notification
+            });
+        }
+    }, [socket]);
 
     const loadcartData = async (token) => {
         try {
@@ -163,7 +185,7 @@ const StoreContextProvider = (props) => {
 
     const logOut = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("cartItem");
+        // localStorage.removeItem("cartItem"); // Optional: Keep cart on logout? Usually better to clear.
         setToken("");
         setCartItems({});
         setItems(0);
@@ -171,31 +193,73 @@ const StoreContextProvider = (props) => {
         setUserPoints(0);
     }
 
-    // To not logout When refreshed
+    // To not logout When refreshed - consolidated logic
     useEffect(() => {
         async function loaddata() {
-            await fetchFoodList()
+            await fetchFoodList();
             if (token) {
-                // Token is already set from state initialization, just load data
-                await loadcartData(token);
                 await fetchUserPoints(token);
+                await loadcartData(token);
             }
         }
-        loaddata()
-    }, [])
+        loaddata();
+    }, []);
 
-    // Refresh points and cart when token changes
+    // Refresh points and cart and Sync when token changes
+    // Fix: Use a separate effect for MERGING only when logging in (transition from no token to token)
+    // The previous logic ran on mount (refresh), merging local cache (which was already synced) back to server.
     useEffect(() => {
-        if (token) {
-            fetchUserPoints(token);
-            loadcartData(token);
-        } else {
-            setUserPoints(0);
-            setUserData(null);
-            setCartItems({});
-            setItems(0);
+        const handleTokenChange = async () => {
+            // Only if token exists and we are NOT on the very first mount (handled above), 
+            // but we can't easily distinguish mount vs change here without a ref.
+            // However, separating the "Load Data" (Mount) from "Merge" (Login) is safer.
         }
-    }, [token])
+    }, [token]);
+
+    // We already handle Initial Load in the [] effect.
+    // We need to handle "User Logged In" event (Token changed from "" to "val").
+    // We can't rely on [token] effect alone because it runs on mount.
+
+    // REVISED STRATEGY: 
+    // 1. Keep the [] effect for Initial Data Fetching (Server Source of Truth).
+    // 2. Modify the Login component to call a "merge" function? No, Context should handle it.
+    // 3. Use a Ref to track if it's a "Login Action" vs "Refresh".
+
+    // Let's implement a ref to skip the merge on the first render if a token exists.
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        const syncAndLoad = async () => {
+            if (token) {
+                // If it's the first render (Refresh) and we have a token, 
+                // we assume local cart is just a cache of server cart. DO NOT MERGE.
+                if (isFirstRender.current) {
+                    isFirstRender.current = false;
+                    // Just load data (handled by the specific [] effect or here to be safe)
+                    await fetchUserPoints(token);
+                    await loadcartData(token);
+                    return;
+                }
+
+                // If not first render, it means token CHANGED (Login happened).
+                // Now we merge guest cart.
+                const localCount = Object.keys(cartItem).reduce((a, b) => a + cartItem[b], 0);
+                if (localCount > 0) {
+                    try {
+                        await axios.post(URl + "/api/cart/merge", { cartData: cartItem }, { headers: { token } });
+                    } catch (err) {
+                        console.error("Cart Sync Error", err);
+                    }
+                }
+                await fetchUserPoints(token);
+                await loadcartData(token);
+            } else {
+                setUserPoints(0);
+                setUserData(null);
+            }
+        }
+        syncAndLoad();
+    }, [token]);
 
 
     const contextValue = {
