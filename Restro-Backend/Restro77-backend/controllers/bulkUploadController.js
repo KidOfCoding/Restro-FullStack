@@ -20,6 +20,8 @@ const bulkUpload = async (req, res) => {
         const bulkOps = [];
         let currentSection = "Uncategorized"; // Default category
 
+        const processedItemNames = [];
+
         // Skip Header Row (Index 0)
         for (let i = 1; i < data.length; i++) {
             const row = data[i];
@@ -44,6 +46,7 @@ const bulkUpload = async (req, res) => {
             if (col0) currentSection = col0;
 
             const itemName = col1;
+            processedItemNames.push(itemName);
 
             // Check if it is a variant row (containing "Half"/"Full" price structure)
             // The excel scan showed:
@@ -127,6 +130,13 @@ const bulkUpload = async (req, res) => {
 
         if (bulkOps.length > 0) {
             await foodModel.bulkWrite(bulkOps);
+
+            // ================== SYNC LOGIC (Delete Missing Items) ==================
+            // Comment out the block below to revert to "Merge" mode (Keep existing items)
+            if (processedItemNames.length > 0) {
+                await foodModel.deleteMany({ name: { $nin: processedItemNames } });
+            }
+            // =======================================================================
         }
 
         // Emit Socket Event
