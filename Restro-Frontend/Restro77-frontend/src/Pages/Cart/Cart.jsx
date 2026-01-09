@@ -117,16 +117,16 @@ const Cart = ({ setShowLogin }) => {
         <div className={style.CartTotal}>
           <h2>Cart Total</h2>
           <div>
-            <div className={style.CartTotalDetails}>
+            {/* <div className={style.CartTotalDetails}>
               <p>Subtotal</p>
               <p><FaRupeeSign />{getTotalCartAmount()}</p>
-            </div>
-            <hr />
+            </div> */}
+            {/* <hr />
             <div className={style.CartTotalDetails}>
               <p>Delivery Fee</p>
               <p><FaRupeeSign />{getTotalCartAmount() === 0 ? 0 : Number(import.meta.env.VITE_DELIVERY_FEE || 0)}</p>
             </div>
-            <hr />
+            <hr /> */}
             <div className={style.CartTotalDetails}>
               <b>Total</b>
               <b><FaRupeeSign />{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + Number(import.meta.env.VITE_DELIVERY_FEE || 0)}</b>
