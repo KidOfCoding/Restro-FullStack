@@ -42,7 +42,7 @@ const FoodDisplay = ({ category }) => {
   // Get all unique categories for the filter list
   const allCategories = [...new Set(food_list.map(item => item.category))];
 
-  // Deep Search Logic
+  // Deep Search Logic (With Type)
   const filteredFood = food_list.filter((item) => {
     // 1. Search Term
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -58,9 +58,18 @@ const FoodDisplay = ({ category }) => {
     return matchesSearch && matchesCategory && matchesType;
   });
 
-  // Get unique categories of the RESULT for section rendering
+  // STABLE LAYOUT LOGIC:
+  // Get items matching Search + Category Select (ignoring Type)
+  // This ensures sections don't disappear just because the toggle is switched.
+  const baseFilteredFood = food_list.filter((item) => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(cat => item.category.toLowerCase() === cat.toLowerCase());
+    return matchesSearch && matchesCategory;
+  });
+
+  // Get unique categories for section rendering (based on STABLE base list)
   const resultCategories = [
-    ...new Set(filteredFood.map((item) => {
+    ...new Set(baseFilteredFood.map((item) => {
       let cat = item.category || "";
       // Normalize: Title Case + Trim
       cat = cat.trim().charAt(0).toUpperCase() + cat.trim().slice(1).toLowerCase();
@@ -203,7 +212,7 @@ const FoodDisplay = ({ category }) => {
               </div>
 
               <div className={style.menuGrid}>
-                {filteredFood
+                {baseFilteredFood
                   .filter((item) => {
                     let itemCat = (item.category || "").trim().charAt(0).toUpperCase() + (item.category || "").trim().slice(1).toLowerCase();
                     if (itemCat === "Starter") itemCat = "Starters";
@@ -226,7 +235,7 @@ const FoodDisplay = ({ category }) => {
             </section>
           )
         })}
-        {resultCategories.length === 0 && (
+        {filteredFood.length === 0 && (
           <p className={style.noResults}>No food found matching your criteria.</p>
         )}
       </div>
