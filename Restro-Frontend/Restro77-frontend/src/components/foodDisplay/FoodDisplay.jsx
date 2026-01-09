@@ -2,8 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import style from "./fooddisplay.module.css";
 import { StoreContext } from "../../context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
-import { FaFilter, FaTimes, FaLeaf } from "react-icons/fa";
-import { GiChickenLeg } from "react-icons/gi";
+import { FaFilter, FaTimes } from "react-icons/fa";
 
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
@@ -33,6 +32,7 @@ const FoodDisplay = ({ category }) => {
   };
 
   // Toggle Handler: All -> Veg -> Non-Veg -> All
+  // Logic: If on Neutral (All), go to Veg. If on Veg, go to Non-Veg. If on Non-Veg, go to Neutral.
   const handleToggle = () => {
     if (filterType === "all") setFilterType("veg");
     else if (filterType === "veg") setFilterType("non-veg");
@@ -168,17 +168,37 @@ const FoodDisplay = ({ category }) => {
               <div className={style.sectionHeader}>
                 <h2 className={style.sectionTitle}>{formatCategory(catString)}</h2>
 
-                {/* 3-State Toggle Switch (Middle Default) */}
-                <div className={style.toggleWrapper} onClick={handleToggle}>
-                  <div className={`${style.toggleTrack} ${filterType === "veg" ? style.veg : filterType === "non-veg" ? style.nonVeg : ""}`}>
-                    {/* Background Icons (Always visible or fading?) */}
-                    <div className={style.trackIconLeft}><FaLeaf /></div>
-                    <div className={style.trackIconRight}><GiChickenLeg /></div>
+                {/* Segmented Toggle Control (User Snippet) */}
+                <div className={style.foodToggleContainer}>
+                  <div
+                    className={style.toggleSlider}
+                    style={{
+                      left: filterType === "veg" ? "2px" : filterType === "all" ? "calc(33.333% + 0.6px)" : "calc(66.666% - 0.6px)",
+                      backgroundColor: filterType === "veg" ? "#2ecc71" : filterType === "all" ? "#95a5a6" : "#e74c3c"
+                    }}
+                    onClick={handleToggle}
+                  ></div>
 
-                    {/* Sliding Knob */}
-                    <div className={`${style.toggleKnob} ${filterType === "all" ? style.center : filterType === "veg" ? style.left : style.right}`}>
-                    </div>
-                  </div>
+                  <button
+                    className={`${style.toggleBtn} ${filterType === "veg" ? style.activeBtn : ""}`}
+                    onClick={() => setFilterType("veg")}
+                  >
+                    <span>🌱</span> <span className={style.toggleLabel}>Veg</span>
+                  </button>
+
+                  <button
+                    className={`${style.toggleBtn} ${filterType === "all" ? style.activeBtn : ""}`}
+                    onClick={() => setFilterType("all")}
+                  >
+                    <span>⚪</span> <span className={style.toggleLabel}>Neutral</span>
+                  </button>
+
+                  <button
+                    className={`${style.toggleBtn} ${filterType === "non-veg" ? style.activeBtn : ""}`}
+                    onClick={() => setFilterType("non-veg")}
+                  >
+                    <span>🍗</span> <span className={style.toggleLabel}>Non-Veg</span>
+                  </button>
                 </div>
               </div>
 
