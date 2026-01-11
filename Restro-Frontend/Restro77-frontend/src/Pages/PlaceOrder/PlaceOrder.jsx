@@ -75,15 +75,19 @@ const PlaceOrder = () => {
   const calculateFee = (distKm, pointId) => {
     let fee = 0;
     const ratePerKm = 4;
+    const roundTrip = 2; // Multiplier for returning cost
 
     if (pointId) {
       const point = deliveryPoints.find(p => p._id === pointId);
       if (point) {
         const excessDist = Math.max(0, distKm - point.defaultDistance);
-        fee = point.baseCost + (excessDist * ratePerKm);
+        // Base cost * 2 + Excess * 2 * Rate
+        // Expl: BaseCost covers 1-way of default dist. we need return too.
+        fee = (point.baseCost * roundTrip) + (excessDist * roundTrip * ratePerKm);
       }
     } else {
-      fee = Math.round(distKm) * ratePerKm;
+      // (Distance * 2) * Rate
+      fee = Math.round(distKm * roundTrip) * ratePerKm;
     }
     setDeliveryFee(Math.max(0, Math.round(fee)));
   };
@@ -211,6 +215,21 @@ const PlaceOrder = () => {
     if (e) e.preventDefault();
     try {
       if (!token) return;
+
+      // Validation: Block if Out of Range
+      if (orderType === "Delivery") {
+        if (distance > 15 || selectedPoint === "FAR_RANGE") {
+          toast.error("Sorry, we do not deliver to locations > 15km away.");
+          return;
+        }
+        // Validation: Enforce Landmark if GPS not used (userLocation is null)
+        // If distance is 0, it means no GPS used.
+        // If distance is 0 AND no landmark selected, we must block.
+        if (distance === 0 && !selectedPoint) {
+          toast.error("Please select a nearby Landmark or use Current Location.");
+          return;
+        }
+      }
 
       // Save Address Logic (Updated to include Lat/Lng if available)
       if (orderType === "Delivery" && saveThisAddress && address) {
@@ -385,6 +404,9 @@ const PlaceOrder = () => {
                     {p.name} (Base: {p.defaultDistance}km / ₹{p.baseCost})
                   </option>
                 ))}
+                <option value="FAR_RANGE" style={{ color: "red", fontWeight: "bold" }}>
+                  📍 Far than 15km (Out of Range)
+                </option>
               </select>
             )}
 
@@ -457,7 +479,13 @@ const PlaceOrder = () => {
           {orderType === "Delivery" && (
             <div className={cartStyle.cartTotalDetails}>
               <span>Delivery Fee : </span>
-              <span>₹{deliveryFee}</span>
+              <span>
+                {selectedPoint === "FAR_RANGE" || distance > 15 ? (
+                  <span style={{ color: "red", fontWeight: "bold" }}>Out of Delivery Area</span>
+                ) : (
+                  distance > 0 ? `₹${deliveryFee}` : <span style={{ color: "orange", fontSize: "12px" }}>Calculated at delivery</span>
+                )}
+              </span>
             </div>
           )}
 
@@ -478,8 +506,20 @@ const PlaceOrder = () => {
               &nbsp; ₹{Math.max(0, getTotalCartAmount() - (usePoints ? userPoints : 0) + (orderType === "Delivery" ? deliveryFee : 0))}
             </b>
           </div>
+          {orderType === "Delivery" && distance === 0 && selectedPoint !== "FAR_RANGE" && (
+            <p style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+              * Delivery fee will be calculated at the time of delivery.
+            </p>
+          )}
+          {orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE") && (
+            <p style={{ color: "red", fontSize: "12px", marginTop: "5px", fontWeight: "bold" }}>
+              * Sorry, we do not deliver to this location (Max 15km).
+            </p>
+          )}
 
-          <button type="submit">Proceed to Payment</button>
+          <button type="submit" disabled={orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE")}>
+            {orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE") ? "Out of Range" : "Proceed to Payment"}
+          </button>
           {userData?.phone === "8596962616" && (
             <button
               type="button"

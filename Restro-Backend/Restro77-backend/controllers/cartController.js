@@ -69,23 +69,15 @@ const clearCart = async (req, res) => {
 }
 
 // Merge Guest Cart
+// Merge Guest Cart (Now actually Overrides/Sets Cart)
 const mergeCart = async (req, res) => {
     try {
         const { cartData: guestCart } = req.body;
-        let userData = await userModel.findById(req.body.userId);
-        let userCart = userData.cartData || {};
+        // Logic Update: User wants the "Just Selected" cart (Guest Cart) to replace the specific stored cart.
+        // So we strictly Replace userCart with guestCart.
 
-        // Merge logic: Add guest quantities to user quantities
-        for (const [itemId, quantity] of Object.entries(guestCart)) {
-            if (userCart[itemId]) {
-                userCart[itemId] += quantity;
-            } else {
-                userCart[itemId] = quantity;
-            }
-        }
-
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData: userCart });
-        res.json({ success: true, message: "Cart Merged" });
+        await userModel.findByIdAndUpdate(req.body.userId, { cartData: guestCart });
+        res.json({ success: true, message: "Cart Synced (Overwritten)" });
 
     } catch (error) {
         console.log(error);
