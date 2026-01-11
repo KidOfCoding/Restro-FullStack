@@ -3,6 +3,14 @@ import style from './about.module.css';
 import { assets } from '../../assets/assets';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
+import img3132 from '../../assets/Restro_Images/IMG_3132.JPG';
+import img3133 from '../../assets/Restro_Images/IMG_3133.JPG';
+import img3134 from '../../assets/Restro_Images/IMG_3134.JPG';
+import img3135 from '../../assets/Restro_Images/IMG_3135.JPG';
+import img3136 from '../../assets/Restro_Images/IMG_3136.JPG';
+import img3137 from '../../assets/Restro_Images/IMG_3137.JPG';
+import img3138 from '../../assets/Restro_Images/IMG_3138.JPG';
+
 const About = () => {
     // We'll use food_list images for the carousel or static placeholders
     // Since we might not have a dedicated "gallery", let's use some food images from assets if available
@@ -19,11 +27,13 @@ const About = () => {
 
     // Mock images (You can replace these with your actual gallery/restro images)
     const gallery = [
-        assets.food_1 || "https://img.restaurantguru.com/r1a0-Restro77-interior.jpg?w=500&q=80",
-        assets.food_2 || "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500&q=80",
-        assets.header_img || "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=500&q=80", // Focusing on "Restro" vibe
-        assets.food_3 || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&q=80",
-        assets.food_4 || "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"
+        img3132,
+        img3133,
+        img3134,
+        img3135,
+        img3136,
+        img3137,
+        img3138
     ].filter(Boolean); // Ensure no undefined
 
     // For better carousel, let's ensure we have at least 5 items by duplicating if needed
