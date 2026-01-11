@@ -257,7 +257,7 @@ const FoodDisplay = ({ category }) => {
             </section>
           )
         })}
-        {filteredFood.length === 0 && (
+        {!hasVisibleItems && (
           <p className={style.noResults}>No food found matching your criteria.</p>
         )}
       </div>
