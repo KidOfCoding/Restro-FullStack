@@ -12,7 +12,8 @@ const FoodDisplay = ({ category }) => {
 
   // Advanced Filter States
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filterType, setFilterType] = useState("all"); // "all", "veg", "non-veg"
+  const [defaultFilter, setDefaultFilter] = useState("all"); // Global fallback
+  const [sectionFilters, setSectionFilters] = useState({}); // Per-category overrides
 
   // Sync with ExploreMenu category prop
   useEffect(() => {
@@ -31,36 +32,38 @@ const FoodDisplay = ({ category }) => {
     );
   };
 
-  // Toggle Handler: All -> Veg -> Non-Veg -> All
-  // Logic: If on Neutral (All), go to Veg. If on Veg, go to Non-Veg. If on Non-Veg, go to Neutral.
-  const handleToggle = () => {
-    if (filterType === "all") setFilterType("veg");
-    else if (filterType === "veg") setFilterType("non-veg");
-    else setFilterType("all");
+  // Helper to get effective filter for a category
+  const getFilterForCategory = (cat) => {
+    return sectionFilters[cat] || defaultFilter;
   };
+
+  // Toggle Handler for a specific category
+  const handleSectionToggle = (cat) => {
+    const current = getFilterForCategory(cat);
+    let next = "all";
+    if (current === "all") next = "veg";
+    else if (current === "veg") next = "non-veg";
+    else next = "all";
+
+    setSectionFilters(prev => ({ ...prev, [cat]: next }));
+  };
+
+  // Global Filter Handlers
+  const setGlobalFilter = (type) => {
+    setDefaultFilter(type);
+    setSectionFilters({}); // Reset local overrides to enforce global
+  };
+
 
   // Get all unique categories for the filter list
   const allCategories = [...new Set(food_list.map(item => item.category))];
 
-  // Deep Search Logic (With Type)
-  const filteredFood = food_list.filter((item) => {
-    // 1. Search Term
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-    // 2. Category Filter (empty means All)
-    const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(cat => item.category.toLowerCase() === cat.toLowerCase());
-
-    // 3. Type Filter
-    let matchesType = true;
-    if (filterType === "veg") matchesType = item.type === "veg";
-    if (filterType === "non-veg") matchesType = (item.type === "non-veg" || item.type === "nonVeg");
-
-    return matchesSearch && matchesCategory && matchesType;
-  });
+  // Deep Search Logic (With Type - purely for "No Result" check if needed, but tricky with mixed filters)
+  // Actually, for the "No food found" text, we need to know if ANY section has items.
+  // We'll calculate emptiness during render.
 
   // STABLE LAYOUT LOGIC:
   // Get items matching Search + Category Select (ignoring Type)
-  // This ensures sections don't disappear just because the toggle is switched.
   const baseFilteredFood = food_list.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(cat => item.category.toLowerCase() === cat.toLowerCase());
@@ -87,6 +90,23 @@ const FoodDisplay = ({ category }) => {
     return cat.charAt(0).toUpperCase() + cat.slice(1).replace(/([A-Z])/g, ' $1').trim();
   };
 
+  // Calculate if we have any items visible across all sections
+  const hasVisibleItems = resultCategories.some(catString => {
+    const filter = getFilterForCategory(catString);
+    return baseFilteredFood.some(item => {
+      let itemCat = (item.category || "").trim().charAt(0).toUpperCase() + (item.category || "").trim().slice(1).toLowerCase();
+      if (itemCat === "Starter") itemCat = "Starters";
+      if (itemCat === "Roll") itemCat = "Rolls";
+      if (itemCat === "Noodle") itemCat = "Noodles";
+      if (itemCat !== catString) return false;
+
+      if (filter === "all") return true;
+      if (filter === "veg" && item.type === "veg") return true;
+      if (filter === "non-veg" && (item.type === "non-veg" || item.type === "nonVeg")) return true;
+      return false;
+    });
+  });
+
   return (
     <div className={style.FoodDisplay} id="fooddisplay">
       <div className={style.searchWrapper}>
@@ -104,14 +124,14 @@ const FoodDisplay = ({ category }) => {
             className={style.searchInput}
           />
 
-          {(searchTerm.length > 0 || isSearchFocused) && !showFilter && selectedCategories.length === 0 && filterType === "all" && (
+          {(searchTerm.length > 0 || isSearchFocused) && !showFilter && selectedCategories.length === 0 && defaultFilter === "all" && (
             <div className={style.searchHint}>
               Apply Filters
             </div>
           )}
 
           <button
-            className={`${style.filterBtn} ${showFilter || selectedCategories.length > 0 || filterType !== "all" ? style.activeFilter : ""}`}
+            className={`${style.filterBtn} ${showFilter || selectedCategories.length > 0 || defaultFilter !== "all" ? style.activeFilter : ""}`}
             onClick={() => setShowFilter(!showFilter)}
           >
             <FaFilter />
@@ -130,16 +150,16 @@ const FoodDisplay = ({ category }) => {
               <h4>Type</h4>
               <div className={style.typeOptions}>
                 <button
-                  className={filterType === "all" ? style.selectedType : ""}
-                  onClick={() => setFilterType("all")}
+                  className={defaultFilter === "all" ? style.selectedType : ""}
+                  onClick={() => setGlobalFilter("all")}
                 >All</button>
                 <button
-                  className={filterType === "veg" ? style.selectedType : ""}
-                  onClick={() => setFilterType("veg")}
+                  className={defaultFilter === "veg" ? style.selectedType : ""}
+                  onClick={() => setGlobalFilter("veg")}
                 >Veg</button>
                 <button
-                  className={filterType === "non-veg" ? style.selectedType : ""}
-                  onClick={() => setFilterType("non-veg")}
+                  className={defaultFilter === "non-veg" ? style.selectedType : ""}
+                  onClick={() => setGlobalFilter("non-veg")}
                 >Non-Veg</button>
               </div>
             </div>
@@ -163,7 +183,7 @@ const FoodDisplay = ({ category }) => {
             <div className={style.filterFooter}>
               <button className={style.clearBtn} onClick={() => {
                 setSelectedCategories([]);
-                setFilterType("all");
+                setGlobalFilter("all");
               }}>Clear Filters</button>
             </div>
           </div>
@@ -172,6 +192,8 @@ const FoodDisplay = ({ category }) => {
 
       <div className={style.FoodDisplayList}>
         {resultCategories.map((catString, index) => {
+          const currentSectionFilter = getFilterForCategory(catString);
+
           return (
             <section key={index}>
               <div className={style.sectionHeader}>
@@ -182,29 +204,29 @@ const FoodDisplay = ({ category }) => {
                   <div
                     className={style.toggleSlider}
                     style={{
-                      left: filterType === "veg" ? "2px" : filterType === "all" ? "calc(33.333% + 0.6px)" : "calc(66.666% - 0.6px)",
-                      backgroundColor: filterType === "veg" ? "#2ecc71" : filterType === "all" ? "#95a5a6" : "#e74c3c"
+                      left: currentSectionFilter === "veg" ? "2px" : currentSectionFilter === "all" ? "calc(33.333% + 0.6px)" : "calc(66.666% - 0.6px)",
+                      backgroundColor: currentSectionFilter === "veg" ? "#2ecc71" : currentSectionFilter === "all" ? "#95a5a6" : "#e74c3c"
                     }}
-                    onClick={handleToggle}
+                    onClick={() => handleSectionToggle(catString)}
                   ></div>
 
                   <button
-                    className={`${style.toggleBtn} ${filterType === "veg" ? style.activeBtn : ""}`}
-                    onClick={() => setFilterType("veg")}
+                    className={`${style.toggleBtn} ${currentSectionFilter === "veg" ? style.activeBtn : ""}`}
+                    onClick={() => setSectionFilters(prev => ({ ...prev, [catString]: "veg" }))}
                   >
                     <span>🌱</span> <span className={style.toggleLabel}>Veg</span>
                   </button>
 
                   <button
-                    className={`${style.toggleBtn} ${filterType === "all" ? style.activeBtn : ""}`}
-                    onClick={() => setFilterType("all")}
+                    className={`${style.toggleBtn} ${currentSectionFilter === "all" ? style.activeBtn : ""}`}
+                    onClick={() => setSectionFilters(prev => ({ ...prev, [catString]: "all" }))}
                   >
                     <span>⚪</span> <span className={style.toggleLabel}>Neutral</span>
                   </button>
 
                   <button
-                    className={`${style.toggleBtn} ${filterType === "non-veg" ? style.activeBtn : ""}`}
-                    onClick={() => setFilterType("non-veg")}
+                    className={`${style.toggleBtn} ${currentSectionFilter === "non-veg" ? style.activeBtn : ""}`}
+                    onClick={() => setSectionFilters(prev => ({ ...prev, [catString]: "non-veg" }))}
                   >
                     <span>🍗</span> <span className={style.toggleLabel}>Non-Veg</span>
                   </button>
@@ -221,10 +243,10 @@ const FoodDisplay = ({ category }) => {
 
                     if (itemCat !== catString) return false;
 
-                    // Filter Logic
-                    if (filterType === "all") return true;
-                    if (filterType === "veg" && item.type === "veg") return true;
-                    if (filterType === "non-veg" && (item.type === "non-veg" || item.type === "nonVeg")) return true;
+                    // Filter Logic using LOCAL section filter
+                    if (currentSectionFilter === "all") return true;
+                    if (currentSectionFilter === "veg" && item.type === "veg") return true;
+                    if (currentSectionFilter === "non-veg" && (item.type === "non-veg" || item.type === "nonVeg")) return true;
 
                     return false;
                   })
