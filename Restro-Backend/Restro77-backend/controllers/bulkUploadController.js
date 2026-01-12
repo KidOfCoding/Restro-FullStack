@@ -9,8 +9,7 @@ const bulkUpload = async (req, res) => {
             return res.json({ success: false, message: "No file uploaded" });
         }
 
-        const filePath = req.file.path;
-        const workbook = xlsx.readFile(filePath);
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
 
@@ -143,8 +142,8 @@ const bulkUpload = async (req, res) => {
         const io = req.app.get('socketio');
         if (io) io.emit("foodListUpdated");
 
-        // Clean up uploaded file
-        fs.unlinkSync(filePath);
+        // Clean up uploaded file - REMOVED (Memory Storage)
+        // fs.unlinkSync(filePath);
 
         res.json({ success: true, message: `Processed ${bulkOps.length} items.` });
 

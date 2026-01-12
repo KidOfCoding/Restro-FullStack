@@ -6,14 +6,8 @@ import multer from 'multer'
 const foodRouter = express.Router();
 
 // Multer Config
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads') // Store in uploads folder (ensure it exists or root)
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`)
-    }
-})
+// Multer Config
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage })
 
 foodRouter.post('/add', addFood)
