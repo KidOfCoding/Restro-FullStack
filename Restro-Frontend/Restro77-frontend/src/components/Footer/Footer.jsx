@@ -2,7 +2,7 @@ import React from 'react'
 import style from './footer.module.css'
 import { assets } from '../../assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -30,9 +30,10 @@ const Footer = () => {
             </Link>
           </p>
           <div className={style.FooterSocial}>
-            <div className={style.socialIcon}><FaFacebookF /></div>
-            <div className={style.socialIcon}><FaInstagram /></div>
-            <div className={style.socialIcon}><FaLinkedinIn /></div>
+            <div className={style.socialIcon} onClick={() => window.open('https://www.instagram.com/restro77', '_blank')} style={{ cursor: 'pointer' }}><FaFacebookF /></div>
+            <div className={style.socialIcon} onClick={() => window.open('https://www.instagram.com/restro77', '_blank')} style={{ cursor: 'pointer' }}><FaInstagram /></div>
+            <div className={style.socialIcon} onClick={() => window.open('https://wa.me/917008939551', '_blank')} style={{ cursor: 'pointer' }}><FaWhatsapp /></div>
+            {/* <div className={style.socialIcon}><FaLinkedinIn /></div> */}
           </div>
         </div>
         <div className={style.FooterContentMiddle}>
