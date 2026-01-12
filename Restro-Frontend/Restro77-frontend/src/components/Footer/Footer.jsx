@@ -52,8 +52,8 @@ const Footer = () => {
             <li>In front of CGU Backgate</li>
             <li>Mahura, Bhubaneswar – 752054</li>
             <li>Odisha, India</li>
-            <li>📞 7008939551</li>
-            <li>📧 restro77bbsr@gmail.com</li>
+            <li>📞 <a href="tel:7008939551">7008939551</a></li>
+            <li>📧 <a href="mailto:restro77bbsr@gmail.com">restro77bbsr@gmail.com</a></li>
           </ul>
         </div>
       </div>
