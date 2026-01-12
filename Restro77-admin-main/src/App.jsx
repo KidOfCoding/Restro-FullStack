@@ -14,7 +14,12 @@ import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
 
   const URl = (import.meta.env.VITE_BACKEND_URL || "http://localhost:4000").replace(/\/$/, "");
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("token", token);
+  }, [token]);
 
   return (
     <div>
