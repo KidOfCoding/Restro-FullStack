@@ -5,6 +5,19 @@
     padding: 8px 4%;
 }
 
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.sidebar-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
 .Navbar .logo {
     width: max(17%, 80px);
 }
@@ -33,4 +46,10 @@
 .logout-btn:hover {
     background: tomato;
     color: white;
+}
+
+@media (max-width: 900px) {
+    .sidebar-toggle {
+        display: block;
+    }
 }

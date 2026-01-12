@@ -1,4 +1,4 @@
-.Sidebar{
+.Sidebar {
     width: 18%;
     min-height: 100vh;
     border: 1.5px solid #a9a9a9;
@@ -6,16 +6,16 @@
     font-size: max(1vw, 10px);
 }
 
-.sidebar-options{
+.sidebar-options {
     padding-top: 50px;
     padding-left: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    
+
 }
 
-.sidebar-option{
+.sidebar-option {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -27,18 +27,35 @@
     background-color: #fff;
 }
 
-.sidebar-option p{
+.sidebar-option p {
     color: black;
 }
 
-.sidebar-option.active{
+.sidebar-option.active {
     background-color: #eded05;
     border-color: red;
 }
 
 
 @media (max-width:900px) {
-    .sidebar-option p{
+    .Sidebar {
         display: none;
-    }    
+        position: absolute;
+        top: 80px;
+        left: 0;
+        z-index: 100;
+        width: 250px;
+        background: #fff;
+        height: min-content;
+        min-height: auto;
+        border-right: 2px solid #a9a9a9;
+    }
+
+    .Sidebar.open {
+        display: block;
+    }
+
+    .sidebar-option p {
+        display: block;
+    }
 }

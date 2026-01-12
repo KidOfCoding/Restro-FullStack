@@ -1,30 +1,31 @@
 import React from 'react'
 import './SideBar.css'
-import { assets } from '../../assets/assets'
 import { NavLink } from 'react-router-dom'
+import { FaPlus, FaList, FaTruck, FaCloudUploadAlt } from 'react-icons/fa'
+import { MdOutlinePlaylistAddCheck } from "react-icons/md";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, closeSidebar }) => {
   return (
-    <div className='Sidebar'>
+    <div className={`Sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-options">
-        <NavLink to='/add' className="sidebar-option">
-          <img src={assets.add_icon} alt="" />
+        <NavLink to='/add' className="sidebar-option" onClick={closeSidebar}>
+          <FaPlus />
           <p>Add Items</p>
         </NavLink>
-        <NavLink to='/list' className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
+        <NavLink to='/list' className="sidebar-option" onClick={closeSidebar}>
+          <FaList />
           <p>List Items</p>
         </NavLink>
-        <NavLink to='/orders' className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
+        <NavLink to='/orders' className="sidebar-option" onClick={closeSidebar}>
+          <MdOutlinePlaylistAddCheck />
           <p>Orders</p>
         </NavLink>
-        <NavLink to='/bulk-upload' className="sidebar-option">
-          <img src={assets.add_icon} alt="" /> {/* Reusing Add Icon */}
+        <NavLink to='/bulk-upload' className="sidebar-option" onClick={closeSidebar}>
+          <FaCloudUploadAlt />
           <p>Bulk Upload</p>
         </NavLink>
-        <NavLink to='/delivery' className="sidebar-option">
-          <img src={assets.order_icon} alt="" /> {/* Using Order Icon for now */}
+        <NavLink to='/delivery' className="sidebar-option" onClick={closeSidebar}>
+          <FaTruck />
           <p>Delivery</p>
         </NavLink>
       </div>

@@ -18,6 +18,7 @@ input,
 select,
 textarea {
   color: black;
+  background-color: white;
   /* Ensure inputs are readable */
 }
 

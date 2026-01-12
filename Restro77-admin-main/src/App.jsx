@@ -14,11 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
 
   const URl = (import.meta.env.VITE_BACKEND_URL || "http://localhost:4000").replace(/\/$/, "");
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
-
-  useEffect(() => {
-    localStorage.setItem("token", token);
-  }, [token]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div>
@@ -27,10 +23,10 @@ const App = () => {
         <Login setToken={setToken} URl={URl} />
       ) : (
         <>
-          <Navbar setToken={setToken} />
+          <Navbar setToken={setToken} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
           <hr />
           <div className="app-content">
-            <Sidebar />
+            <Sidebar isOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} />
             <Routes>
               <Route path='/add' element={<Add URl={URl} />} />
               <Route path='/list' element={<List URl={URl} />} />
