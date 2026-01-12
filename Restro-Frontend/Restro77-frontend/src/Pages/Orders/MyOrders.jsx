@@ -205,6 +205,15 @@ const MyOrders = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                 <p><span>&#x25cf;</span> <b>{order.status}</b> </p>
                                 <OrderTimer order={order} />
+                                {order.deliveryBoy && (
+                                    <div style={{ marginTop: '8px', fontSize: '12px', padding: '5px', backgroundColor: '#f9f9f9', borderRadius: '4px', border: '1px solid #eee' }}>
+                                        <p style={{ margin: 0, color: '#555' }}>Delivery Partner:</p>
+                                        <p style={{ margin: '2px 0 0 0', fontWeight: 'bold', color: '#333' }}>{order.deliveryBoy.name}</p>
+                                        <a href={`tel:${order.deliveryBoy.phone}`} style={{ display: 'block', marginTop: '2px', color: 'tomato', fontWeight: 'bold', textDecoration: 'none' }}>
+                                            📞 {order.deliveryBoy.phone}
+                                        </a>
+                                    </div>
+                                )}
                             </div>
 
                             {(userData?.phone === "8596962616" && viewMode === 'live') && (

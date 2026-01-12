@@ -219,6 +219,10 @@ const updateStatus = async (req, res) => {
             updateData.prepTime = req.body.prepTime;
         }
 
+        if (req.body.deliveryBoy) {
+            updateData.deliveryBoy = req.body.deliveryBoy;
+        }
+
         await orderModel.findByIdAndUpdate(req.body.orderId, updateData);
 
         // Include prepTime in the emit so specific order listeners get it
@@ -227,7 +231,8 @@ const updateStatus = async (req, res) => {
             orderId: req.body.orderId,
             status: updateData.status,
             prepTime: updateData.prepTime,
-            statusDate: updateData.statusDate
+            statusDate: updateData.statusDate,
+            deliveryBoy: updateData.deliveryBoy
         });
 
         res.json({ success: true, message: "Status Updated" })

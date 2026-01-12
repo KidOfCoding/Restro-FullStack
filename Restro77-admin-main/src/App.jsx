@@ -31,6 +31,7 @@ const App = () => {
           <Navbar setToken={setToken} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
           <hr />
           <div className="app-content">
+            {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)}></div>}
             <Sidebar isOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} />
             <Routes>
               <Route path='/add' element={<Add URl={URl} />} />

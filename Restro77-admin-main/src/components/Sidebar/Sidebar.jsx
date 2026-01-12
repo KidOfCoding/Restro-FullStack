@@ -1,12 +1,15 @@
 import React from 'react'
 import './SideBar.css'
 import { NavLink } from 'react-router-dom'
-import { FaPlus, FaList, FaTruck, FaCloudUploadAlt } from 'react-icons/fa'
+import { FaPlus, FaList, FaTruck, FaCloudUploadAlt, FaTimes } from 'react-icons/fa'
 import { MdOutlinePlaylistAddCheck } from "react-icons/md";
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
   return (
     <div className={`Sidebar ${isOpen ? 'open' : ''}`}>
+      <div className="sidebar-close-btn" onClick={closeSidebar}>
+        <FaTimes />
+      </div>
       <div className="sidebar-options">
         <NavLink to='/add' className="sidebar-option" onClick={closeSidebar}>
           <FaPlus />

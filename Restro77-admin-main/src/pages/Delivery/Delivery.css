@@ -28,3 +28,30 @@
     /* Ensure full width in form container */
     max-width: 500px;
 }
+
+@media (max-width: 600px) {
+
+    /* Stack elements vertically on mobile */
+    .flex-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Full width inputs */
+    .add-product-name,
+    .add-product-description,
+    .flex-col {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .add-btn {
+        width: 100% !important;
+        /* Force full width button */
+    }
+
+    /* Make table scrollable or stack */
+    .list-table.format {
+        font-size: 11px;
+    }
+}

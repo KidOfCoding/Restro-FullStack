@@ -8,18 +8,16 @@ import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import userRouter from "./routes/userRoute.js";
 import deliveryRouter from "./routes/deliveryRoute.js";
-import { Server } from "socket.io"; // Import socket.io
-import { createServer } from "http"; // Import http
+import deliveryBoyRouter from "./routes/deliveryBoyRoute.js";
 
-import rateLimit from 'express-rate-limit'
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 // app configurations
 const app = express();
 const port = process.env.PORT || 4000;
 
 // CORS - Must be first middleware
-// const allowedOrigins = ["https://www.restro77.com", "https://admin.restro77.com", "http://localhost:5173", "http://localhost:5174"];
-
 app.use(cors({
     origin: process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(',')
@@ -29,32 +27,10 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "token", "Origin", "X-Requested-With", "Accept"]
 }));
 
-app.options('*', cors()); // Enable pre-flight for all routes
-
-/*
-// Manual Headers Fallback for Preflight (Commented out to prevent duplicate headers)
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    }
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,token');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    
-    // Handle Preflight
-    if (req.method === "OPTIONS") {
-        return res.status(200).end();
-    }
-    next();
-});
-*/
-
-// Create HTTP server
-const server = createServer(app);
+app.options('*', cors());
 
 // Initialize Socket.io
-
+const server = createServer(app);
 const io = new Server(server, {
     cors: {
         origin: process.env.ALLOWED_ORIGINS
@@ -76,23 +52,9 @@ io.on("connection", (socket) => {
     });
 });
 
-// Rate Limiting
-// Rate Limiting (Removed per user request)
-/*
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 1000,
-    message: "Too many requests from this IP, please try again after 15 minutes",
-    standardHeaders: true,
-    legacyHeaders: false,
-})
-app.use(limiter)
-*/
-
-//middleware 
+// middleware 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-
 
 // DB Connection 
 connectDB();
@@ -103,6 +65,7 @@ app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/user', userRouter)
 app.use('/api/delivery', deliveryRouter)
+app.use('/api/deliveryBoy', deliveryBoyRouter)
 
 // Http Requests
 app.get('/', (req, res) => {

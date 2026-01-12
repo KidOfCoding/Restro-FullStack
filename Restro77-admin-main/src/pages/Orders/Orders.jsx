@@ -7,23 +7,31 @@ import { assets } from "../../assets/assets"
 import { FaRupeeSign } from "react-icons/fa";
 import { io } from 'socket.io-client';
 
-// Sub-component for individual order items to manage local state (Timer Input)
-const OrderItem = ({ order, statusHandler, prepTimeHandler }) => {
+// Sub-component for individual order items
+const OrderItem = ({ order, statusHandler, prepTimeHandler, deliveryBoys }) => {
   const [prepTime, setPrepTime] = useState(order.prepTime || 0);
-  const [isSet, setIsSet] = useState(false); // To toggle button color
+  const [isSet, setIsSet] = useState(false);
+  const [selectedBoy, setSelectedBoy] = useState(order.deliveryBoy ? order.deliveryBoy._id : "");
 
-  // Update local state if order prop updates (e.g. from socket refresh)
   useEffect(() => {
     setPrepTime(order.prepTime || 0);
-  }, [order.prepTime]);
+    if (order.deliveryBoy) setSelectedBoy(order.deliveryBoy._id);
+  }, [order.prepTime, order.deliveryBoy]);
 
   const handleSetTime = async () => {
     await prepTimeHandler(order._id, prepTime);
     setIsSet(true);
-    // Reset color after a while? Or keep it? User said "when pressed it will be golden".
-    // Let's keep it golden to show it's "Active/Set".
-    setTimeout(() => setIsSet(false), 2000); // Optional: revert or keep. Let's keep it simple.
+    setTimeout(() => setIsSet(false), 2000);
   };
+
+  const handleBoyChange = (e) => {
+    const boyId = e.target.value;
+    setSelectedBoy(boyId);
+    // Find full boy object
+    const boy = deliveryBoys.find(b => b._id === boyId);
+    // Trigger status update with delivery boy
+    statusHandler(null, order._id, boy);
+  }
 
   return (
     <div className="order-item">
@@ -52,6 +60,14 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler }) => {
           Type: {order.orderType || "Delivery"}
         </p>
 
+        {/* Delivery Boy Info Display */}
+        {order.deliveryBoy && (
+          <div style={{ marginTop: '5px', fontSize: '11px', color: '#eded05' }}>
+            <b>Start Delivery:</b> {order.deliveryBoy.name} <br />
+            <b>Ph:</b> {order.deliveryBoy.phone}
+          </div>
+        )}
+
         {(!order.orderType || order.orderType === "Delivery") ? (
           <div className="order-item-address">
             <p>{order.address.street + ","}</p>
@@ -74,6 +90,14 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler }) => {
           <option value="Delivered">Delivered</option>
         </select>
 
+        {/* Delivery Boy Selector */}
+        <select value={selectedBoy} onChange={handleBoyChange} style={{ marginTop: '5px' }}>
+          <option value="">Assign Delivery Boy</option>
+          {deliveryBoys.map(boy => (
+            <option key={boy._id} value={boy._id}>{boy.name}</option>
+          ))}
+        </select>
+
         <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           <input
             type="number"
@@ -85,12 +109,12 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler }) => {
           <button
             onClick={handleSetTime}
             style={{
-              backgroundColor: isSet ? '#ffcc00' : 'white', // Golden Yellow when set
+              backgroundColor: isSet ? '#ffcc00' : 'white',
               color: isSet ? 'black' : '#333',
               border: isSet ? '1px solid #ffcc00' : '1px solid #ccc',
               padding: '6px 15px',
               cursor: 'pointer',
-              borderRadius: '20px', // Pill shape ("toggle bar" style)
+              borderRadius: '20px',
               fontWeight: 'bold',
               transition: 'all 0.3s ease',
               boxShadow: isSet ? '0 2px 5px rgba(255, 204, 0, 0.4)' : 'none'
@@ -108,6 +132,18 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler }) => {
 const Orders = ({ URl }) => {
 
   const [orders, setOrders] = useState([])
+  const [deliveryBoys, setDeliveryBoys] = useState([]);
+
+  const fetchDeliveryBoys = async () => {
+    try {
+      const response = await axios.get(URl + "/api/deliveryBoy/list");
+      if (response.data.success) {
+        setDeliveryBoys(response.data.data);
+      }
+    } catch (error) {
+      console.log("Error fetching delivery boys");
+    }
+  }
 
   const fetchAllOrders = async () => {
     const response = await axios.get(URl + "/api/order/list")
@@ -119,11 +155,28 @@ const Orders = ({ URl }) => {
     }
   }
 
-  const statusHandler = async (event, orderId) => {
-    const response = await axios.post(URl + "/api/order/status", {
+  const statusHandler = async (event, orderId, deliveryBoy = null) => {
+    // If deliveryBoy is passed, use it. If event is passed, use event.target.value for status.
+    // If only deliveryBoy is passed (event is null), keep current status or default?
+    // Let's assume if event exists, we update status. If deliveryBoy exists, we update deliveryBoy.
+    // Ideally we might want to update both or one.
+
+    // Find current order to get current status if event is null
+    const currentOrder = orders.find(o => o._id === orderId);
+    let status = currentOrder.status;
+    if (event) {
+      status = event.target.value;
+    }
+
+    const payload = {
       orderId,
-      status: event.target.value
-    })
+      status
+    };
+    if (deliveryBoy) {
+      payload.deliveryBoy = deliveryBoy;
+    }
+
+    const response = await axios.post(URl + "/api/order/status", payload)
 
     if (response.data.success) {
       await fetchAllOrders()
@@ -133,6 +186,7 @@ const Orders = ({ URl }) => {
 
   useEffect(() => {
     fetchAllOrders();
+    fetchDeliveryBoys();
 
     // Connect to Socket
     const socket = io(URl);
@@ -194,6 +248,7 @@ const Orders = ({ URl }) => {
             order={order}
             statusHandler={statusHandler}
             prepTimeHandler={prepTimeHandler}
+            deliveryBoys={deliveryBoys}
           />
         ))}
       </div>

@@ -62,8 +62,61 @@ const Delivery = ({ URl }) => {
         }
     }
 
+    const [deliveryBoys, setDeliveryBoys] = useState([]);
+    const [boyName, setBoyName] = useState("");
+    const [boyPhone, setBoyPhone] = useState("");
+    const [loadingBoy, setLoadingBoy] = useState(false);
+
+    const fetchDeliveryBoys = async () => {
+        try {
+            const response = await axios.get(URl + "/api/deliveryBoy/list");
+            if (response.data.success) {
+                setDeliveryBoys(response.data.data);
+            }
+        } catch (error) {
+            toast.error("Error fetching delivery boys");
+        }
+    }
+
+    const addDeliveryBoy = async () => {
+        if (!boyName || !boyPhone) return toast.error("Please fill all fields");
+        setLoadingBoy(true);
+        try {
+            const response = await axios.post(URl + "/api/deliveryBoy/add", {
+                name: boyName,
+                phone: boyPhone
+            });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setBoyName("");
+                setBoyPhone("");
+                fetchDeliveryBoys();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error("Error adding delivery boy");
+        }
+        setLoadingBoy(false);
+    }
+
+    const removeDeliveryBoy = async (id) => {
+        try {
+            const response = await axios.post(URl + "/api/deliveryBoy/remove", { id });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                fetchDeliveryBoys();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error("Error removing delivery boy");
+        }
+    }
+
     useEffect(() => {
         fetchPoints();
+        fetchDeliveryBoys();
     }, []);
 
     return (
@@ -128,6 +181,43 @@ const Delivery = ({ URl }) => {
                     </div>
                 )
             })}
+            {/* Existing Landmark Logic Ends Here */}
+
+            <hr style={{ margin: "30px 0", border: "1px solid #444" }} />
+
+            <h2>Manage Delivery Boys</h2>
+            <div className='flex-col'>
+                <div className="add-product-name flex-col">
+                    <div className="flex-row gap-20">
+                        <div className="flex-col">
+                            <p>Name</p>
+                            <input type="text" placeholder='Driver Name' value={boyName} onChange={(e) => setBoyName(e.target.value)} />
+                        </div>
+                        <div className="flex-col">
+                            <p>Phone</p>
+                            <input type="number" placeholder='Phone Number' value={boyPhone} onChange={(e) => setBoyPhone(e.target.value)} />
+                        </div>
+                        <button onClick={addDeliveryBoy} className='add-btn' style={{ marginTop: '24px', width: '120px' }} disabled={loadingBoy}>
+                            {loadingBoy ? "Adding..." : "Add Boy"}
+                        </button>
+                    </div>
+                </div>
+
+                <div className="list-table format title" style={{ marginTop: '20px' }}>
+                    <b>Name</b>
+                    <b>Phone</b>
+                    <b>Action</b>
+                </div>
+                {deliveryBoys.map((boy, index) => {
+                    return (
+                        <div key={index} className='list-table format'>
+                            <p>{boy.name}</p>
+                            <p>{boy.phone}</p>
+                            <p onClick={() => removeDeliveryBoy(boy._id)} className='cursor'>X</p>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }
