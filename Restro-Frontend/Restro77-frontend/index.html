@@ -20,6 +20,45 @@
 
   </div>
   <script type="module" src="/src/main.jsx"></script>
+  <!-- Structured Data (JSON-LD) for Google Search -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Restro77",
+      "url": "https://www.restro77.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.restro77.com/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Restro77",
+      "image": "https://www.restro77.com/Restro_Logo.png",
+      "@id": "https://www.restro77.com",
+      "url": "https://www.restro77.com",
+      "telephone": "+918596962616",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Near KV Hostel, C V Raman Global University, Mahura, Patrapada",
+        "addressLocality": "Bhubaneshwar",
+        "postalCode": "752054",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 20.296, 
+        "longitude": 85.824
+      },
+      "servesCuisine": "North Indian, Chinese, Pizza, Momos, Rolls, Fast Food, Biryani",
+      "priceRange": "₹"
+    }
+  </script>
 </body>
 
 </html>
