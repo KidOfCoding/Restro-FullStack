@@ -134,7 +134,7 @@ const Cart = ({ setShowLogin }) => {
           </div>
           <button onClick={checkOut}>Checkout</button>
         </div>
-        <div className={style.CartPromoCode}>
+        {/* <div className={style.CartPromoCode}>
           <div>
             <p>If you have promo code then add here</p>
             <div className={style.CartPromoCodeInput}>
@@ -142,7 +142,7 @@ const Cart = ({ setShowLogin }) => {
               <button>Submit</button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

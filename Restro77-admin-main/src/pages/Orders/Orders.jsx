@@ -62,9 +62,9 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler, deliveryBoys }) => {
 
         {/* Delivery Boy Info Display */}
         {order.deliveryBoy && (
-          <div style={{ marginTop: '5px', fontSize: '11px', color: '#eded05' }}>
+          <div className="delivery-partner-info">
             <b>Start Delivery:</b> {order.deliveryBoy.name} <br />
-            <b>Ph:</b> {order.deliveryBoy.phone}
+            <b>Ph:</b> <a href={`tel:${order.deliveryBoy.phone}`} style={{ color: 'tomato', textDecoration: 'none' }}>{order.deliveryBoy.phone}</a>
           </div>
         )}
 
@@ -72,7 +72,11 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler, deliveryBoys }) => {
           <div className="order-item-address">
             <p>{order.address.street + ","}</p>
             <p>{[order.address.city, order.address.state, order.address.country, order.address.zipcode].filter(Boolean).join(", ")}</p>
-            <p className="order-item-phone">{order.address.phone}</p>
+            <p className="order-item-phone">
+              <a href={`tel:${order.address.phone}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                {order.address.phone}
+              </a>
+            </p>
           </div>
         ) : (
           <div className="order-item-address" style={{ color: '#006064', fontWeight: 'bold' }}>

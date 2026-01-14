@@ -1,86 +1,197 @@
-.list-table-format {
-    display: grid;
-    /* Check | Name | Category | Price | Half | Action */
-    grid-template-columns: 0.5fr 2.5fr 1.5fr 1fr 1fr 0.5fr;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-bottom: 1px solid #e0e0e0;
-    font-size: 13px;
-    background: white;
+/* ================= LIST PAGE ================= */
+.list {
+    width: 75%;
+    margin-left: max(5vw, 25px);
+    margin-top: 50px;
+    color: #d9d9d9;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
 }
 
-.list-table-format.title {
-    background-color: #f0f0f0;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 2px solid #ccc;
-    font-weight: bold;
+/* ================= CARD ================= */
+.list-card {
+    background-color: #1e1e1e;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    min-height: 80vh;
 }
 
 .list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 15px;
 }
 
+.list-header p {
+    font-size: 1.6rem;
+    color: #fff;
+    font-weight: 600;
+    border-left: 4px solid tomato;
+    padding-left: 10px;
+}
+
+/* ================= SEARCH & FILTERS ================= */
 .search-bar {
     display: flex;
     align-items: center;
-    background: white;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background: #2a2a2a;
+    padding: 8px 15px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+    border-color: tomato;
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.1);
 }
 
 .search-bar input {
     border: none;
     outline: none;
-    margin-left: 8px;
+    background: transparent;
+    color: #fff;
+    margin-left: 10px;
     font-size: 14px;
+    min-width: 200px;
 }
 
 .list-filter-bar {
     display: flex;
     gap: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     align-items: center;
 }
 
 .list-filter-bar select {
-    padding: 5px;
-    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
 }
 
+.count-badge {
+    background-color: #333;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ================= TABLE ================= */
+.list-table {
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.list-table-format {
+    display: grid;
+    /* Check | Name | Category | Price | Half | Action */
+    grid-template-columns: 0.5fr 2.5fr 1.5fr 1fr 1fr 0.5fr;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    font-size: 13px;
+    color: #ccc;
+    background-color: #1e1e1e;
+    transition: background-color 0.2s;
+}
+
+.list-table-format:last-child {
+    border-bottom: none;
+}
+
+.list-table-format:hover {
+    background-color: #252525;
+}
+
+.list-table-format.title {
+    background-color: #2a2a2a;
+    color: #ededed;
+    font-weight: bold;
+    border-bottom: 2px solid #444;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* ================= GRID INPUTS ================= */
 .grid-input {
     width: 100%;
     border: 1px solid transparent;
-    padding: 4px;
+    padding: 6px;
     background: transparent;
+    color: #fff;
+    border-radius: 4px;
+    transition: all 0.2s;
 }
 
 .grid-input:hover,
 .grid-input:focus {
-    border: 1px solid #ccc;
-    background: #fff;
+    border: 1px solid #555;
+    background: #2a2a2a;
 }
 
-.cursor.delete-btn {
-    color: red;
-    text-align: center;
+.variant-text {
+    color: #888;
+    font-style: italic;
+}
+
+/* ================= ACTION ICONS ================= */
+.delete-icon {
+    color: #ff4444;
+    cursor: pointer;
     font-size: 16px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
 
-@media (max-width: 600px) {
-    .list-table-format {
-        grid-template-columns: 3fr 1fr 1fr 0.5fr;
-        font-size: 12px;
+.delete-icon:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .list {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 20px;
     }
 
-    .check-col,
-    .variant-text {
-        display: none;
+    .list-table-format {
+        /* Name (2) | Price (4) | Action (6) */
+        grid-template-columns: 2fr 1fr 0.5fr;
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    /* Hide CheckBox (1), Category (3), Variants (5) */
+    .list-table-format> :nth-child(1),
+    .list-table-format> :nth-child(3),
+    .list-table-format> :nth-child(5) {
+        display: none !important;
+    }
+
+    .list-table-format.title> :nth-child(1),
+    .list-table-format.title> :nth-child(3),
+    .list-table-format.title> :nth-child(5) {
+        display: none !important;
+    }
+
+    .search-bar input {
+        min-width: 100px;
     }
 }

@@ -121,102 +121,108 @@ const Delivery = ({ URl }) => {
 
     return (
         <div className='delivery add flex-col'>
-            <h2>Delivery Settings</h2>
 
-            <form className='flex-col' onSubmit={addPoint}>
-                <div className="add-product-name flex-col">
-                    <p>Landmark Name</p>
-                    <input
-                        type="text"
-                        placeholder='e.g. Near KV Hostel'
-                        required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
+            {/* DELIVERY SETTINGS CARD */}
+            <div className="delivery-card">
+                <h2>Delivery Settings</h2>
+                <form className='flex-col' onSubmit={addPoint}>
+                    <div className="add-product-name flex-col">
+                        <p>Landmark Name</p>
+                        <input
+                            className="delivery-input"
+                            type="text"
+                            placeholder='e.g. Near KV Hostel'
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </div>
 
-                <div className="add-product-description flex-col">
-                    <div className="flex-row gap-20">
-                        <div className="flex-col">
-                            <p>Base Distance (km)</p>
-                            <input
-                                type="number"
-                                placeholder='5'
-                                required
-                                value={dist}
-                                onChange={(e) => setDist(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex-col">
-                            <p>Base Cost (₹)</p>
-                            <input
-                                type="number"
-                                placeholder='20'
-                                required
-                                value={cost}
-                                onChange={(e) => setCost(e.target.value)}
-                            />
+                    <div className="add-product-description flex-col">
+                        <div className="flex-row gap-20">
+                            <div className="flex-col">
+                                <p>Base Distance (km)</p>
+                                <input
+                                    className="delivery-input"
+                                    type="number"
+                                    placeholder='5'
+                                    required
+                                    value={dist}
+                                    onChange={(e) => setDist(e.target.value)}
+                                />
+                            </div>
+                            <div className="flex-col">
+                                <p>Base Cost (₹)</p>
+                                <input
+                                    className="delivery-input"
+                                    type="number"
+                                    placeholder='20'
+                                    required
+                                    value={cost}
+                                    onChange={(e) => setCost(e.target.value)}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <button type='submit' className='add-btn' disabled={loading}>
-                    {loading ? "Adding..." : "Add Delivery Point"}
-                </button>
-            </form>
+                    <button type='submit' className='delivery-btn' disabled={loading}>
+                        {loading ? "Adding..." : "Add Delivery Point"}
+                    </button>
+                </form>
 
-            <div className="list-table format title">
-                <b>Name</b>
-                <b>Base Dist</b>
-                <b>Base Cost</b>
-                <b>Action</b>
-            </div>
-            {points.map((item, index) => {
-                return (
-                    <div key={index} className='list-table format'>
-                        <p>{item.name}</p>
-                        <p>{item.defaultDistance} km</p>
-                        <p>₹{item.baseCost}</p>
-                        <p onClick={() => removePoint(item._id)} className='cursor'>X</p>
-                    </div>
-                )
-            })}
-            {/* Existing Landmark Logic Ends Here */}
-
-            <hr style={{ margin: "30px 0", border: "1px solid #444" }} />
-
-            <h2>Manage Delivery Boys</h2>
-            <div className='flex-col'>
-                <div className="add-product-name flex-col">
-                    <div className="flex-row gap-20">
-                        <div className="flex-col">
-                            <p>Name</p>
-                            <input type="text" placeholder='Driver Name' value={boyName} onChange={(e) => setBoyName(e.target.value)} />
-                        </div>
-                        <div className="flex-col">
-                            <p>Phone</p>
-                            <input type="number" placeholder='Phone Number' value={boyPhone} onChange={(e) => setBoyPhone(e.target.value)} />
-                        </div>
-                        <button onClick={addDeliveryBoy} className='add-btn' style={{ marginTop: '24px', width: '120px' }} disabled={loadingBoy}>
-                            {loadingBoy ? "Adding..." : "Add Boy"}
-                        </button>
-                    </div>
-                </div>
-
-                <div className="list-table format title" style={{ marginTop: '20px' }}>
+                <div className="list-table format title">
                     <b>Name</b>
-                    <b>Phone</b>
+                    <b>Base Dist</b>
+                    <b>Base Cost</b>
                     <b>Action</b>
                 </div>
-                {deliveryBoys.map((boy, index) => {
+                {points.map((item, index) => {
                     return (
                         <div key={index} className='list-table format'>
-                            <p>{boy.name}</p>
-                            <p>{boy.phone}</p>
-                            <p onClick={() => removeDeliveryBoy(boy._id)} className='cursor'>X</p>
+                            <p>{item.name}</p>
+                            <p>{item.defaultDistance} km</p>
+                            <p>₹{item.baseCost}</p>
+                            <p onClick={() => removePoint(item._id)} className='cursor delete-icon'>X</p>
                         </div>
                     )
                 })}
+            </div>
+
+            {/* MANAGE DELIVERY BOYS CARD */}
+            <div className="delivery-card">
+                <h2>Manage Delivery Boys</h2>
+                <div className='flex-col'>
+                    <div className="add-product-name flex-col">
+                        <div className="flex-row gap-20">
+                            <div className="flex-col">
+                                <p>Name</p>
+                                <input className="delivery-input" type="text" placeholder='Driver Name' value={boyName} onChange={(e) => setBoyName(e.target.value)} />
+                            </div>
+                            <div className="flex-col">
+                                <p>Phone</p>
+                                <input className="delivery-input" type="number" placeholder='Phone Number' value={boyPhone} onChange={(e) => setBoyPhone(e.target.value)} />
+                            </div>
+                            <button onClick={addDeliveryBoy} className='delivery-btn fit-btn' disabled={loadingBoy}>
+                                {loadingBoy ? "Adding..." : "Add Boy"}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="list-table format title" style={{ marginTop: '20px' }}>
+                        <b>Name</b>
+                        <b>Phone</b>
+                        <b>Action</b>
+                    </div>
+                    {deliveryBoys.map((boy, index) => {
+                        return (
+                            <div key={index} className='list-table format'>
+                                <p>{boy.name}</p>
+                                <p>{boy.phone}</p>
+                                <p onClick={() => removeDeliveryBoy(boy._id)} className='cursor delete-icon'>X</p>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
         </div>
     )

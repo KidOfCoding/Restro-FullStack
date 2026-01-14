@@ -200,12 +200,15 @@ const Navbar = ({ setShowLogin }) => {
           <div
             className={`${style.floatingCart} ${Items > 0 ? style.cartHasItems : style.cartEmpty} ${menu === "cart" ? style.activeCart : ""} ${cartBounce ? style.bounce : ""}`}
             onClick={(e) => {
+              navigate('/cart');
+              /* 
               if (Items > 0) {
                 e.stopPropagation();
                 setShowMiniCart(!showMiniCart);
               } else {
                 navigate('/cart');
               }
+              */
             }}
           >
             <FiShoppingBag className={style.bottomCartIcon} />

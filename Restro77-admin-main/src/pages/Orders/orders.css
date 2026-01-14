@@ -1,161 +1,169 @@
-.order-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    /* Desktop default */
-    /* Slightly narrower min-width */
-    gap: 20px;
-    /* Reduced gap */
-    padding-top: 20px;
-}
-
-.order-item {
+/* ================= ORDER PAGE ================= */
+.order {
+    width: 75%;
+    margin-left: max(5vw, 25px);
+    margin-top: 50px;
+    color: #d9d9d9;
+    font-size: 14px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    /* Reduced gap between elements in card */
-    border: 1px solid #333;
-    padding: 15px;
-    /* Reduced padding */
-    border-radius: 12px;
-    font-size: 13px;
-    /* Slightly smaller base font */
-    color: #d9d9d9;
+}
+
+.order h3 {
+    margin-bottom: 25px;
+    color: #fff;
+    font-size: 1.6rem;
+    border-left: 4px solid tomato;
+    padding-left: 10px;
+}
+
+/* ================= ORDER GRID ================= */
+.order-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* ================= ORDER CARD ================= */
+.order-item {
     background-color: #1e1e1e;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s;
-    height: 100%;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 12px;
+    color: #d9d9d9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .order-item:hover {
     transform: translateY(-5px);
-    border-color: #eded05;
+    border-color: tomato;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
+/* Icon */
 .order-item img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
+    filter: invert(1) brightness(0.8);
+    margin-bottom: 5px;
 }
 
-.order-item-food .order-item-name {
+/* Typography */
+.order-item-food {
     font-weight: 600;
-    font-size: 1.1em;
     color: #fff;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 5px;
 }
 
 .order-item-name {
-    margin-top: 5px;
-    margin-bottom: 2px;
+    font-weight: 700;
     font-size: 1.1em;
-    color: #eded05;
+    color: tomato;
+    margin-bottom: 5px;
 }
 
 .order-item-address {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    color: #aeaeae;
+    font-size: 13px;
     line-height: 1.4;
-    color: #aaa;
+    background: #252525;
+    padding: 10px;
+    border-radius: 6px;
 }
 
 .order-item-phone {
     margin-top: 5px;
     color: #fff;
+    font-weight: 600;
 }
 
-.order-details-grid {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    align-items: center;
-    margin-top: auto;
-    padding-top: 10px;
-    /* Reduced padding */
-    border-top: 1px solid #333;
-}
-
+/* ================= CONTROLS ================= */
 .order-item select {
     background-color: #2a2a2a;
     border: 1px solid #444;
     width: 100%;
-    padding: 8px;
-    /* Reduced padding */
+    padding: 10px;
     outline: none;
     color: #fff;
-    /* Ensure text is white */
     border-radius: 6px;
-    margin-top: 5px;
-    /* Reduced margin */
     cursor: pointer;
-    appearance: none;
-    /* Remove default arrow for custom styling if needed, but simple fix helps */
+    font-size: 13px;
+    margin-bottom: 5px;
+    transition: border-color 0.2s;
 }
 
-/* Fix for options visibility in dropdowns */
+.order-item select:focus {
+    border-color: tomato;
+}
+
 .order-item select option {
     background-color: #2a2a2a;
     color: #fff;
     padding: 10px;
 }
 
-.order-item select:focus {
-    border-color: #eded05;
+/* Prep Time Input */
+.order-item input {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px;
+    outline: none;
+    transition: border-color 0.2s;
 }
 
-@media (max-width: 600px) {
+.order-item input:focus {
+    border-color: tomato;
+}
+
+/* Set Button */
+.order-item button {
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* ================= DELIVERY BOY INFO ================= */
+.delivery-partner-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 99, 71, 0.1);
+    border: 1px solid rgba(255, 99, 71, 0.2);
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.delivery-partner-info b {
+    color: tomato;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .order {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 20px;
+        padding-bottom: 100px;
+        /* Space for mobile nav if existing */
+    }
+
     .order-list {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        /* Force 2 columns on mobile */
-        gap: 10px;
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
     .order-item {
-        padding: 10px;
-        gap: 5px;
-        font-size: 11px;
-        /* Smaller font for mobile */
-    }
-
-    .order-item img {
-        width: 35px;
-        height: 35px;
-    }
-
-    .order-item-food .order-item-name {
-        font-size: 1em;
-    }
-
-    .order-item-name {
-        font-size: 1.1em;
-        margin-top: 5px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .order-item-address {
-        font-size: 10px;
-        margin-bottom: 5px;
-    }
-
-    /* Compact Input/Select for Mobile */
-    .order-item select {
-        padding: 5px;
-        font-size: 11px;
-        margin-top: 5px;
-    }
-
-    .order-item input {
-        width: 40px !important;
-        padding: 4px !important;
-        font-size: 11px;
-    }
-
-    .order-details-grid button {
-        padding: 4px 10px !important;
-        font-size: 10px !important;
-    }
-
-    h3 {
-        font-size: 1.2em;
-        margin-left: 10px;
+        padding: 15px;
     }
 }

@@ -45,6 +45,9 @@ const PlaceOrder = () => {
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
 
+  // LANDMARK SIDEBAR STATE
+  const [showLandmarks, setShowLandmarks] = useState(false);
+
   /* ---------------- FETCH SAVED ADDRESSES & POINTS ---------------- */
   const fetchSavedAddresses = async () => {
     try {
@@ -74,22 +77,24 @@ const PlaceOrder = () => {
   // Rate = 4 Rs/km
   const calculateFee = (distKm, pointId) => {
     let fee = 0;
-    const ratePerKm = 4;
-    const roundTrip = 2; // Multiplier for returning cost
 
     if (pointId) {
-      const point = deliveryPoints.find(p => p._id === pointId);
-      if (point) {
-        const excessDist = Math.max(0, distKm - point.defaultDistance);
-        // Base cost * 2 + Excess * 2 * Rate
-        // Expl: BaseCost covers 1-way of default dist. we need return too.
-        fee = (point.baseCost * roundTrip) + (excessDist * roundTrip * ratePerKm);
-      }
+      // Landmark selected = FREE DELIVERY
+      fee = 0;
     } else {
-      // (Distance * 2) * Rate
-      fee = Math.round(distKm * roundTrip) * ratePerKm;
+      // Normal Address Logic
+      // Total Distance = Going + Return
+      const totalDist = distKm * 2;
+
+      // Condition: <= 4km Total is Free
+      if (totalDist <= 4) {
+        fee = 0;
+      } else {
+        // > 4km Total -> 5 Rs per km (on total distance)
+        fee = totalDist * 5;
+      }
     }
-    setDeliveryFee(Math.max(0, Math.round(fee)));
+    setDeliveryFee(Math.round(fee));
   };
 
   useEffect(() => {
@@ -127,6 +132,9 @@ const PlaceOrder = () => {
         setIsCalculating(false);
       }
     );
+    // MUTUAL EXCLUSIVITY: Clear Landmark
+    setSelectedPoint("");
+    setSelectedAddressId("");
   };
 
   const calculateOSRMDistance = async (userLat, userLng) => {
@@ -184,7 +192,14 @@ const PlaceOrder = () => {
       if (found.latitude && found.longitude) {
         setUserLocation({ lat: found.latitude, lng: found.longitude });
         calculateOSRMDistance(found.latitude, found.longitude);
+      } else {
+        // Manual saved address -> Reset distance/fee (will show "Calculated at delivery")
+        setDistance(0);
+        setDeliveryFee(0);
+        setUserLocation(null);
       }
+      // MUTUAL EXCLUSIVITY: Clear Landmark
+      setSelectedPoint("");
     } else {
       setAddress("");
       setDistance(0);
@@ -222,11 +237,9 @@ const PlaceOrder = () => {
           toast.error("Sorry, we do not deliver to locations > 15km away.");
           return;
         }
-        // Validation: Enforce Landmark if GPS not used (userLocation is null)
-        // If distance is 0, it means no GPS used.
-        // If distance is 0 AND no landmark selected, we must block.
-        if (distance === 0 && !selectedPoint) {
-          toast.error("Please select a nearby Landmark or use Current Location.");
+        // Validation: Must have either a Landmark selected OR an Address entered
+        if (!selectedPoint && !address.trim()) {
+          toast.error("Please enter a delivery address or select a landmark.");
           return;
         }
       }
@@ -383,34 +396,43 @@ const PlaceOrder = () => {
 
         {orderType === "Delivery" && (
           <>
-            {/* Location & Distance Section */}
-            <div className={style.locationSection}>
-              <button type="button" className={style.locationBtn} onClick={getCurrentLocation} disabled={isCalculating}>
-                {isCalculating ? "Calculating..." : "📍 Use Current Location"}
-              </button>
-              {distance > 0 && <span className={style.distanceBadge}>{distance} km from Restaurant</span>}
-            </div>
-
-            {/* Delivery Point Dropdown (Hybrid) */}
+            {/* 1. Landmark Selection as Primary Option */}
             {deliveryPoints.length > 0 && (
-              <select
-                className={style.pointSelect}
-                value={selectedPoint}
-                onChange={(e) => setSelectedPoint(e.target.value)}
-              >
-                <option value="">Select Nearby Landmark (Optional)</option>
-                {deliveryPoints.map((p) => (
-                  <option key={p._id} value={p._id}>
-                    {p.name} (Base: {p.defaultDistance}km / ₹{p.baseCost})
-                  </option>
-                ))}
-                <option value="FAR_RANGE" style={{ color: "red", fontWeight: "bold" }}>
-                  📍 Far than 15km (Out of Range)
-                </option>
-              </select>
+              <div className={style.landmarkSection}>
+                {selectedPoint ? (
+                  <>
+                    <div className={style.selectedLandmarkSummary}>
+                      <div className={style.selectedLandmarkText}>
+                        📍 {deliveryPoints.find(p => p._id === selectedPoint)?.name}
+                      </div>
+                      <button
+                        type="button"
+                        className={style.changeLandmarkBtn}
+                        onClick={() => setShowLandmarks(true)}
+                      >
+                        Change
+                      </button>
+                    </div>
+                    <div className={style.warningText}>
+                      *Free delivery if within 1km of this landmark. Extra distance will be charged at ₹10/km.
+                    </div>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className={style.openLandmarkBtn}
+                    onClick={() => setShowLandmarks(true)}
+                  >
+                    🏪 Select Free Delivery Landmark
+                  </button>
+                )}
+              </div>
             )}
 
+            {/* OR Divider */}
+            <div className={style.orDivider}>or</div>
 
+            {/* 2. Saved Addresses */}
             {savedAddresses.length > 0 && (
               <select value={selectedAddressId} onChange={handleAddressSelect}>
                 <option value="">Select saved address</option>
@@ -422,12 +444,48 @@ const PlaceOrder = () => {
               </select>
             )}
 
-            <textarea
-              placeholder="Enter delivery address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
+            {/* 3. Manual Address Entry with Integrated Location Button */}
+            <div className={style.addressInputGroup}>
+              <button
+                type="button"
+                className={style.locationBtnGroup}
+                onClick={getCurrentLocation}
+                disabled={isCalculating}
+                title="Use Current Location"
+              >
+                <div className={style.locationIcon}>📍</div>
+                <div className={style.locationText}>
+                  {isCalculating ? "Wait..." : "use location"}
+                </div>
+              </button>
+
+              <textarea
+                placeholder="Enter delivery address manually"
+                value={address}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                  // MUTUAL EXCLUSIVITY: Clear Landmark if user types manually
+                  setSelectedPoint("");
+                  // Reset GPS data if typing manually (unless we want to keep it? usually typing invalidates GPS precision)
+                  // For now, let's keep it simple. If they type, it becomes a "Manual Address" unless they click "Use Location" again.
+                  if (distance > 0) {
+                    setDistance(0);
+                    setDeliveryFee(0);
+                    setUserLocation(null);
+                  }
+                }}
+                required
+              />
+            </div>
+
+            {distance > 0 && (
+              <>
+                <span className={style.distanceBadge}>{distance} km from Restaurant</span>
+                <div className={style.infoText}>
+                  *Free delivery valid up to 2km. Nominal fee applies for longer routes.
+                </div>
+              </>
+            )}
 
             <label className={style.checkboxRow}>
               <input
@@ -483,7 +541,11 @@ const PlaceOrder = () => {
                 {selectedPoint === "FAR_RANGE" || distance > 15 ? (
                   <span style={{ color: "red", fontWeight: "bold" }}>Out of Delivery Area</span>
                 ) : (
-                  distance > 0 ? `₹${deliveryFee}` : <span style={{ color: "orange", fontSize: "12px" }}>Calculated at delivery</span>
+                  selectedPoint ? (
+                    <span style={{ color: "#4caf50", fontWeight: "600" }}>Free</span>
+                  ) : (
+                    distance > 0 ? `₹${deliveryFee}` : <span style={{ color: "orange", fontSize: "12px" }}>Calculated at delivery</span>
+                  )
                 )}
               </span>
             </div>
@@ -517,7 +579,10 @@ const PlaceOrder = () => {
             </p>
           )}
 
-          <button type="submit" disabled={orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE")}>
+          <button
+            type="submit"
+            className={style.submitBtn}
+            disabled={orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE")}>
             {orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE") ? "Out of Range" : "Proceed to Payment"}
           </button>
           {userData?.phone === "8596962616" && (
@@ -545,6 +610,52 @@ const PlaceOrder = () => {
           </div>
         </div>
       )}
+      {/* LANDMARK SIDEBAR */}
+      {/* Overlay */}
+      <div
+        className={`${style.sidebarOverlay} ${showLandmarks ? style.active : ""}`}
+        onClick={() => setShowLandmarks(false)}
+      />
+
+      {/* Drawer */}
+      <div className={`${style.sidebar} ${showLandmarks ? style.active : ""}`}>
+        <div className={style.sidebarHeader}>
+          <h3>Free Delivery Landmarks</h3>
+          <button
+            type="button"
+            className={style.closeSidebarBtn}
+            onClick={() => setShowLandmarks(false)}
+          >
+            &times;
+          </button>
+        </div>
+
+        <div className={style.sidebarContent}>
+          {deliveryPoints.map((p) => (
+            <div
+              key={p._id}
+              className={`${style.landmarkRow} ${selectedPoint === p._id ? style.active : ""}`}
+              onClick={() => {
+                setSelectedPoint(p._id);
+                setShowLandmarks(false);
+                // MUTUAL EXCLUSIVITY: Clear Address Inputs
+                setAddress("");
+                setDistance(0);
+                setDeliveryFee(0);
+                setUserLocation(null);
+                setSelectedAddressId("");
+              }}
+            >
+              <div className={style.landmarkIcon}>🏪</div>
+              <div className={style.landmarkInfo}>
+                <div className={style.landmarkName}>{p.name}</div>
+                <div className={style.landmarkDist}>{p.defaultDistance} km from Restaurant</div>
+              </div>
+              <div className={style.landmarkBadge}>FREE</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </form>
   );
 };

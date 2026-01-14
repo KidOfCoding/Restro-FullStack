@@ -1,57 +1,174 @@
+/* ================= DELIVERY PAGE CONTAINER ================= */
+.delivery {
+    width: 75%;
+    margin-left: max(5vw, 25px);
+    margin-top: 50px;
+    color: #d9d9d9;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* ================= CARDS ================= */
+.delivery-card {
+    background-color: #1e1e1e;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.delivery-card h2 {
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1.4rem;
+    border-left: 4px solid tomato;
+    padding-left: 10px;
+}
+
+/* ================= UTILITY CLASSES ================= */
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .flex-row {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .gap-20 {
     gap: 20px;
 }
 
+/* ================= INPUTS ================= */
+.delivery-input {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px 15px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.delivery-input:focus {
+    border-color: tomato;
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.2);
+}
+
+.delivery-input::placeholder {
+    color: #666;
+}
+
+/* ================= BUTTONS ================= */
+.delivery-btn {
+    background-color: tomato;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    align-self: flex-start;
+}
+
+.delivery-btn:hover {
+    background-color: #ff4500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.3);
+}
+
+.delivery-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.fit-btn {
+    margin-top: 0;
+    /* Override for inline buttons */
+    white-space: nowrap;
+    height: 42px;
+    /* Match input height roughly */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-end;
+    /* Align with inputs in row */
+}
+
+/* ================= TABLE ================= */
 .list-table.format {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 0.5fr;
     align-items: center;
-    gap: 10px;
-    padding: 12px 15px;
-    border: 1px solid #cacaca;
+    padding: 15px;
+    border-bottom: 1px solid #333;
     font-size: 13px;
+    color: #ccc;
+    transition: background-color 0.2s;
+}
+
+.list-table.format:hover {
+    background-color: #252525;
 }
 
 .list-table.title {
-    background-color: #f9f9f9;
-    margin-top: 20px;
+    background-color: #2a2a2a;
+    color: #ededed;
+    font-weight: bold;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 2px solid #444;
+    margin-top: 25px;
 }
 
-.add-product-name,
-.add-product-description {
-    width: 100%;
-    /* Ensure full width in form container */
-    max-width: 500px;
+.delete-icon {
+    color: #ff4444;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
 
-@media (max-width: 600px) {
+.delete-icon:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+}
 
-    /* Stack elements vertically on mobile */
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .delivery {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 20px;
+    }
+
     .flex-row {
         flex-direction: column;
-        gap: 10px;
+        align-items: stretch;
+        gap: 15px;
     }
 
-    /* Full width inputs */
-    .add-product-name,
-    .add-product-description,
-    .flex-col {
-        width: 100%;
-        max-width: 100%;
+    .fit-btn {
+        margin-top: 15px;
+        align-self: stretch;
     }
 
-    .add-btn {
-        width: 100% !important;
-        /* Force full width button */
-    }
-
-    /* Make table scrollable or stack */
     .list-table.format {
-        font-size: 11px;
+        grid-template-columns: 1fr 1fr 1fr 0.5fr;
+        font-size: 12px;
+        gap: 5px;
+        padding: 10px;
     }
 }

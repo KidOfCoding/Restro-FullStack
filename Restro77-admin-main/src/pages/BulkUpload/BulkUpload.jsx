@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -49,35 +48,36 @@ const BulkUpload = ({ url }) => {
     };
 
     return (
-        <div className='add'>
-            <div style={{ maxWidth: "600px" }}>
+        <div className='bulk-upload add'>
+            <div className="bulk-card">
                 <h2>Bulk Menu Upload</h2>
-                <p>Upload the <b>Excel (.xlsx)</b> file to update the menu items.</p>
-                <br />
+                <div className="bulk-info">
+                    <p>Upload the <b>Excel (.xlsx)</b> file to update the menu items.</p>
+                </div>
 
                 <form onSubmit={handleUpload} className='flex-col'>
-                    <div className='add-product-name flex-col'>
-                        <p>Select Excel File</p>
+                    <div className='bulk-input-group'>
+                        <label>Select Excel File</label>
                         <input
+                            className="bulk-file-input"
                             id="fileInput"
                             type="file"
                             accept=".xlsx, .xls"
                             onChange={handleFileChange}
                             required
-                            style={{ padding: "10px", border: "1px solid #ccc" }}
                         />
                     </div>
 
-                    <button type='submit' className='add-btn' style={{ marginTop: "20px" }}>
+                    <button type='submit' className='bulk-btn'>
                         {status === "Uploading..." ? "Processing..." : "Upload Menu"}
                     </button>
 
-                    {status && <p style={{ marginTop: "10px", fontWeight: "bold" }}>{status}</p>}
+                    {status && <p className={`status-msg ${status.includes("Success") ? "success" : "error"}`}>{status}</p>}
                 </form>
 
-                <div style={{ marginTop: "30px", background: "#f0f0f0", padding: "15px", listStyle: "none" }}>
+                <div className="bulk-instructions">
                     <h4>Instructions:</h4>
-                    <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>
+                    <ul>
                         <li>File must be .xlsx format.</li>
                         <li>Column 1: Section (Category)</li>
                         <li>Column 2: Item Name (Unique Key)</li>

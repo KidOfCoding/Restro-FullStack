@@ -1,51 +1,174 @@
+/* ================= ADD ITEM PAGE ================= */
 .add {
-    width: 70%;
+    width: 75%;
     margin-left: max(5vw, 25px);
     margin-top: 50px;
-    color: #aeaeae;
-    /* Lighter gray for better visibility on dark background */
+    color: #e0e0e0;
     font-size: 16px;
+    display: flex;
+    flex-direction: column;
 }
 
-.add form {
+/* ================= ADD CARD ================= */
+.add-card {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    max-width: 800px;
+}
+
+.add-card h2 {
+    margin-bottom: 25px;
+    color: #fff;
+    font-size: 1.5rem;
+    border-left: 4px solid tomato;
+    padding-left: 10px;
+    text-transform: capitalize;
+}
+
+.add-card form {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
-.add-image-upload img {
-    width: 120px;
-}
-
+/* ================= INPUTS ================= */
 .add-product-name,
 .add-product-desc {
-    width: max(40%, 280px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
 }
 
-.add-product-name input,
-.add-product-desc textarea {
-    padding: 10px;
+.add-product-name p,
+.add-category p,
+.add-price p {
+    font-size: 14px;
+    color: #aeaeae;
+    margin-bottom: 5px;
 }
 
-.add-category select,
-option {
-    color: black;
+.add-input {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px 15px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    width: 100%;
 }
 
+textarea.add-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.add-input:focus {
+    border-color: tomato;
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.2);
+}
+
+.add-input::placeholder {
+    color: #666;
+}
+
+/* Fix width for name */
+.add-product-name .add-input {
+    max-width: 500px;
+}
+
+/* ================= ROW LAYOUT ================= */
 .add-category-price {
     display: flex;
-    gap: 30px;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-.add-category-price select,
-.add-category-price input {
-    max-width: 120px;
-    padding: 10px;
+.add-category,
+.add-price {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.add-btn {
-    max-width: 120px;
-    border: none;
-    padding: 10px;
-    background-color: black;
-    color: white;
+.add-category-price .add-input {
+    width: 150px;
+}
+
+/* Select Styling */
+select.add-input {
     cursor: pointer;
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    padding-right: 30px;
+}
+
+option {
+    background-color: #2a2a2a;
+    color: white;
+    padding: 10px;
+}
+
+/* ================= BUTTON ================= */
+.add-btn {
+    background-color: tomato;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.add-btn:hover {
+    background-color: #ff4500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.3);
+}
+
+.add-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+    .add {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 20px;
+    }
+
+    .add-product-name .add-input {
+        max-width: 100%;
+    }
+
+    .add-category-price {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .add-category-price .add-input {
+        width: 100%;
+    }
+
+    .add-btn {
+        width: 100%;
+        text-align: center;
+    }
 }
