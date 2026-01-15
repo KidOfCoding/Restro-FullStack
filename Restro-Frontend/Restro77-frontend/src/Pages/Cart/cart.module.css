@@ -13,6 +13,23 @@
     gap: 20px;
 }
 
+/* Center Align Quantity Column (Header & Item) */
+.CartItemsTitle> :nth-child(3) {
+    justify-self: center;
+    text-align: center;
+}
+
+/* Center Align Total Column */
+.CartItemsTitle> :nth-child(4) {
+    text-align: center;
+}
+
+/* Right Align Remove Column */
+.CartItemsTitle> :nth-child(5) {
+    text-align: right;
+    justify-self: center;
+}
+
 .CartItemsItem {
     margin: 10px 0px;
     color: #fff;
@@ -110,6 +127,7 @@
         justify-content: start;
     }
 }
+
 /* ================= GAP VALUE UPSELL ================= */
 .gapMessage {
     background: rgba(255, 99, 71, 0.1);
@@ -146,3 +164,64 @@
     border: 1px solid #4cd137;
 }
 
+/* ================= QUANTITY CONTROL ================= */
+.cartQuantityControl {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #1f232b;
+    padding: 2px;
+    border-radius: 6px;
+    width: fit-content;
+    border: 1px solid #333;
+}
+
+.cartQuantityControl button {
+    background: #2a2e38;
+    color: #fff;
+    border: none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.cartQuantityControl button:hover {
+    background: #ff6b4a;
+    color: #fff;
+}
+
+.cartQuantityControl span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    min-width: 0;
+    text-align: center;
+}
+
+.quantityInput {
+    width: 24px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    padding: 0;
+    margin: 0 2px;
+}
+
+.quantityInput::-webkit-outer-spin-button,
+.quantityInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

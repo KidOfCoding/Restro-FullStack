@@ -8,7 +8,7 @@ import { GiCancel } from "react-icons/gi";
 import { useState } from 'react';
 
 const Cart = ({ setShowLogin }) => {
-  const { cartItem, food_list, removeFromCart, getTotalCartAmount, URl, token } = useContext(StoreContext);
+  const { cartItem, food_list, addToCart, removeFromCart, updateQuantity, getTotalCartAmount, URl, token } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
@@ -67,7 +67,7 @@ const Cart = ({ setShowLogin }) => {
           <p>Price</p>
           <p>Quantity</p>
           <p>Total</p>
-          <p>Remove</p>
+          <p></p>
         </div>
         <br />
         <hr />
@@ -98,11 +98,21 @@ const Cart = ({ setShowLogin }) => {
                 <div className={`${style.CartItemsTitle} ${style.CartItemsItem}`}>
                   <p>{displayName}</p>
                   <p><FaRupeeSign />{price}</p>
-                  <p>{cartItem[key]}</p>
+                  <div className={style.cartQuantityControl}>
+                    <button onClick={() => removeFromCart(itemId, variantName)}>-</button>
+                    <input
+                      type="number"
+                      min="1"
+                      value={cartItem[key]}
+                      onChange={(e) => updateQuantity(itemId, variantName, parseInt(e.target.value) || 0)}
+                      className={style.quantityInput}
+                    />
+                    <button onClick={() => addToCart(itemId, variantName)}>+</button>
+                  </div>
                   <p><FaRupeeSign />{price * cartItem[key]}</p>
                   <p
                     className={style.Cross}
-                    onClick={() => removeFromCart(itemId, variantName)}
+                    onClick={() => removeFromCart(itemId, variantName, true)} // Pass true to remove completely
                   >
                     <GiCancel color="red" />
                   </p>
