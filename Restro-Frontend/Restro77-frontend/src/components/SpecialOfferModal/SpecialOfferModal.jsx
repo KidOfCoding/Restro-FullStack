@@ -2,28 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './SpecialOfferModal.css';
 import { FaRupeeSign } from "react-icons/fa";
 
-const SpecialOfferModal = () => {
-    const [isVisible, setIsVisible] = useState(false);
+const SpecialOfferModal = ({ show, onClose }) => {
 
-    useEffect(() => {
-        // Check session storage so it shows once per session
-        const hasSeen = sessionStorage.getItem('hasSeenPromo_v2');
-        if (!hasSeen) {
-            // Add a small delay for smoother entrance on page load
-            const timer = setTimeout(() => {
-                setIsVisible(true);
-                sessionStorage.setItem('hasSeenPromo_v2', 'true');
-            }, 1000);
-            return () => clearTimeout(timer);
-        }
-    }, []);
-
-    if (!isVisible) return null;
+    if (!show) return null;
 
     return (
         <div className="offer-overlay">
             <div className="offer-modal">
-                <button className="close-btn" onClick={() => setIsVisible(false)}>&times;</button>
+                <button className="close-btn" onClick={onClose}>&times;</button>
                 <div className="confetti-bg"></div>
 
                 <div className="offer-content">
@@ -48,7 +34,7 @@ const SpecialOfferModal = () => {
                         </div>
                     </div>
 
-                    <button className="offer-cta" onClick={() => setIsVisible(false)}>
+                    <button className="offer-cta" onClick={onClose}>
                         Start Ordering 🚀
                     </button>
                 </div>

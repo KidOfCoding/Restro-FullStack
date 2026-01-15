@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar/Navbar'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './Pages/Home/Home'
 import Cart from './Pages/Cart/Cart'
 import PlaceOrder from './Pages/PlaceOrder/PlaceOrder'
@@ -14,16 +14,33 @@ import Profile from './Pages/Profile/Profile'
 import About from './Pages/About/About'
 import FloatingCart from './components/FloatingCart/FloatingCart'
 import PortfolioButton from './components/PortfolioButton/PortfolioButton'
+import SpecialOfferTag from './components/SpecialOfferTag/SpecialOfferTag'
 
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import SpecialOfferModal from './components/SpecialOfferModal/SpecialOfferModal'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
+  const [showOfferModal, setShowOfferModal] = useState(false);
+  const location = useLocation();
+
+  // Auto-Open Offer Modal logic
+  useEffect(() => {
+    const hasSeen = sessionStorage.getItem('hasSeenPromo_v3');
+    if (!hasSeen) {
+      const timer = setTimeout(() => {
+        setShowOfferModal(true);
+        sessionStorage.setItem('hasSeenPromo_v3', 'true');
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <>
       <ScrollToTop />
-      <SpecialOfferModal />
+      <SpecialOfferModal show={showOfferModal} onClose={() => setShowOfferModal(false)} />
+      {location.pathname === '/' && <SpecialOfferTag onClick={() => setShowOfferModal(true)} />}
       {showLogin ? <LoginPopUp setShowLogin={setShowLogin} /> : <></>}
       <div className="app">
         <Navbar setShowLogin={setShowLogin} />
