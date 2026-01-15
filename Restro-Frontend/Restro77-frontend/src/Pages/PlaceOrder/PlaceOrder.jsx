@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import confetti from "canvas-confetti";
+import { FaRupeeSign } from "react-icons/fa";
 
 const RESTAURANT_COORDS = { lat: 20.214642744864992, lng: 85.73559221488036 };
 
@@ -26,6 +27,7 @@ const PlaceOrder = () => {
 
   /* ---------------- STATES ---------------- */
   const [orderType, setOrderType] = useState("Delivery");
+  const [deliverySlot, setDeliverySlot] = useState("Now"); // "Now" or "9-10PM"
   const [address, setAddress] = useState("");
   const [usePoints, setUsePoints] = useState(false);
 
@@ -74,34 +76,36 @@ const PlaceOrder = () => {
 
   /* ---------------- CALCULATE FEE ---------------- */
   // Hybrid Logic: BaseCost + (max(0, Actual - BaseDist) * Rate)
-  // Rate = 4 Rs/km
+  // Rate = 5 Rs/km (Round Trip) -> 10 Rs/km effective
   const calculateFee = (distKm, pointId) => {
     let fee = 0;
 
-    if (pointId) {
-      // Landmark selected = FREE DELIVERY
-      fee = 0;
-    } else {
-      // Normal Address Logic
-      // Total Distance = Going + Return
-      const totalDist = distKm * 2;
-
-      // Condition: <= 4km Total is Free
-      if (totalDist <= 4) {
-        fee = 0;
-      } else {
-        // > 4km Total -> 5 Rs per km (on total distance)
-        fee = totalDist * 5;
-      }
+    // GLOBAL FREE DELIVERY CONDITIONS
+    // CONDITION 1: Distance Cap. If > 5km, Standard Rate ALWAYS applies (Offers void).
+    if (distKm > 5) {
+      fee = distKm * 10;
     }
+    // CONDITION 2: Happy Hour OR High Cart Value -> Free (if <= 5km)
+    else if (deliverySlot === "9-10PM" || getTotalCartAmount() > 149) {
+      fee = 0;
+    }
+    // CONDITION 3: Standard Rate for short distances if criteria not met
+    else {
+      fee = distKm * 10;
+    }
+
     setDeliveryFee(Math.round(fee));
   };
 
   useEffect(() => {
-    if (distance > 0) {
-      calculateFee(distance, selectedPoint);
+    // Re-calculate fee if Distance, Point, Slot, or Cart Total changes
+    if (selectedPoint) {
+      const p = deliveryPoints.find(dp => dp._id === selectedPoint);
+      if (p) calculateFee(p.defaultDistance || distance, selectedPoint);
+    } else if (distance > 0) {
+      calculateFee(distance, "");
     }
-  }, [distance, selectedPoint]);
+  }, [distance, selectedPoint, deliverySlot, cartItem]);
 
 
   /* ---------------- LOCATION SERVICES ---------------- */
@@ -294,7 +298,8 @@ const PlaceOrder = () => {
         pointsToUse: usePoints ? userPoints : 0,
         amount: finalAmount,
         deliveryFee: deliveryFee, // New Field
-        bypassPayment: bypass
+        bypassPayment: bypass,
+        deliverySlot // Pass the slot info
       };
 
       const res = await axios.post(
@@ -396,6 +401,39 @@ const PlaceOrder = () => {
 
         {orderType === "Delivery" && (
           <>
+            {/* TIME SLOT SELECTOR */}
+            <div className={style.timeSlotGroup}>
+              <h4 style={{ fontSize: '14px', marginBottom: '8px', color: '#ccc' }}>Select Delivery Time:</h4>
+              <label className={style.timeSlotLabel}>
+                <input
+                  type="radio"
+                  name="deliverySlot"
+                  value="Now"
+                  checked={deliverySlot === "Now"}
+                  onChange={(e) => setDeliverySlot(e.target.value)}
+                />
+                <div className={style.slotInfo}>
+                  <span className={style.slotTitle}>Standard Delivery (Now)</span>
+                  <span className={style.slotSub}>Free landmark delivery on orders &gt; <FaRupeeSign />149</span>
+                </div>
+              </label>
+
+              <label className={style.timeSlotLabel}>
+                <input
+                  type="radio"
+                  name="deliverySlot"
+                  value="9-10PM"
+                  checked={deliverySlot === "9-10PM"}
+                  onChange={(e) => setDeliverySlot(e.target.value)}
+                />
+                <div className={style.slotInfo}>
+                  <span className={style.slotTitle}>Happy Hour (9 PM - 10 PM)</span>
+                  <span className={style.slotSub}>Free Delivery at Landmarks (No Min Order)</span>
+                </div>
+                <div className={style.freeBadge}>FREE</div>
+              </label>
+            </div>
+
             {/* 1. Landmark Selection as Primary Option */}
             {deliveryPoints.length > 0 && (
               <div className={style.landmarkSection}>
@@ -405,16 +443,35 @@ const PlaceOrder = () => {
                       <div className={style.selectedLandmarkText}>
                         📍 {deliveryPoints.find(p => p._id === selectedPoint)?.name}
                       </div>
-                      <button
-                        type="button"
-                        className={style.changeLandmarkBtn}
-                        onClick={() => setShowLandmarks(true)}
-                      >
-                        Change
-                      </button>
+                      <div className={style.landmarkActions}>
+                        <button
+                          type="button"
+                          className={style.changeLandmarkBtn}
+                          onClick={() => setShowLandmarks(true)}
+                        >
+                          Change
+                        </button>
+                        <button
+                          type="button"
+                          className={style.removeLandmarkBtn}
+                          onClick={() => {
+                            setSelectedPoint("");
+                            setDeliveryFee(0);
+                            setAddress("");
+                          }}
+                          title="Remove Landmark"
+                        >
+                          ❌
+                        </button>
+                      </div>
                     </div>
-                    <div className={style.warningText}>
-                      *Free delivery if within 1km of this landmark. Extra distance will be charged at ₹10/km.
+                    {deliverySlot !== "9-10PM" && getTotalCartAmount() <= 149 && (
+                      <div className={style.warningText}>
+                        *Cart under <FaRupeeSign />149. Add items or use Happy Hour for Free Delivery (max 5km).
+                      </div>
+                    )}
+                    <div className={style.warningText} style={{ marginTop: '4px', color: '#aaa' }}>
+                      *Free delivery valid within 1km of landmark. Extra distance charged at <FaRupeeSign />10/km.
                     </div>
                   </>
                 ) : (
@@ -423,7 +480,7 @@ const PlaceOrder = () => {
                     className={style.openLandmarkBtn}
                     onClick={() => setShowLandmarks(true)}
                   >
-                    🏪 Select Free Delivery Landmark
+                    🏪 Select Nearest Delivery Landmark
                   </button>
                 )}
               </div>
@@ -466,8 +523,7 @@ const PlaceOrder = () => {
                   setAddress(e.target.value);
                   // MUTUAL EXCLUSIVITY: Clear Landmark if user types manually
                   setSelectedPoint("");
-                  // Reset GPS data if typing manually (unless we want to keep it? usually typing invalidates GPS precision)
-                  // For now, let's keep it simple. If they type, it becomes a "Manual Address" unless they click "Use Location" again.
+                  // Reset GPS data if typing manually
                   if (distance > 0) {
                     setDistance(0);
                     setDeliveryFee(0);
@@ -482,7 +538,13 @@ const PlaceOrder = () => {
               <>
                 <span className={style.distanceBadge}>{distance} km from Restaurant</span>
                 <div className={style.infoText}>
-                  *Free delivery valid up to 2km. Nominal fee applies for longer routes.
+                  {distance > 5 ? (
+                    <span style={{ color: '#ff6b4a' }}>*Distance &gt; 5km. Standard delivery fee applies (Free delivery valid up to 5km).</span>
+                  ) : (
+                    getTotalCartAmount() > 149 || deliverySlot === "9-10PM"
+                      ? "*Free Delivery Unlocked! (Valid up to 5km)"
+                      : <span className={style.infoMessage}>*Standard delivery rate applies. Add items &gt; <FaRupeeSign />149 for FREE delivery (up to 5km)!</span>
+                  )}
                 </div>
               </>
             )}
@@ -531,7 +593,7 @@ const PlaceOrder = () => {
 
           <div className={cartStyle.cartTotalDetails}>
             <span>Subtotal : </span>
-            <span>₹{getTotalCartAmount()}</span>
+            <span><FaRupeeSign />{getTotalCartAmount()}</span>
           </div>
 
           {orderType === "Delivery" && (
@@ -542,9 +604,13 @@ const PlaceOrder = () => {
                   <span style={{ color: "red", fontWeight: "bold" }}>Out of Delivery Area</span>
                 ) : (
                   selectedPoint ? (
-                    <span style={{ color: "#4caf50", fontWeight: "600" }}>Free</span>
+                    deliveryFee === 0 ? (
+                      <span style={{ color: "#4caf50", fontWeight: "600" }}>Free</span>
+                    ) : (
+                      <><FaRupeeSign />{deliveryFee}</>
+                    )
                   ) : (
-                    distance > 0 ? `₹${deliveryFee}` : <span style={{ color: "orange", fontSize: "12px" }}>Calculated at delivery</span>
+                    distance > 0 ? <><FaRupeeSign />{deliveryFee}</> : <span style={{ color: "orange", fontSize: "12px" }}>Calculated at delivery</span>
                   )
                 )}
               </span>
@@ -565,14 +631,16 @@ const PlaceOrder = () => {
           <div className={cartStyle.cartTotalDetails}>
             <b>Total :</b>
             <b>
-              &nbsp; ₹{Math.max(0, getTotalCartAmount() - (usePoints ? userPoints : 0) + (orderType === "Delivery" ? deliveryFee : 0))}
+              &nbsp; <FaRupeeSign />{Math.max(0, getTotalCartAmount() - (usePoints ? userPoints : 0) + (orderType === "Delivery" ? deliveryFee : 0))}
             </b>
           </div>
-          {orderType === "Delivery" && distance === 0 && selectedPoint !== "FAR_RANGE" && (
-            <p style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-              * Delivery fee will be calculated at the time of delivery.
+
+          {orderType === "Delivery" && distance > 0 && !selectedPoint && (
+            <p style={{ color: "red", fontSize: "11px", marginTop: "8px", lineHeight: "1.4" }}>
+              * Distance is estimated. Final delivery fee may be adjusted upon delivery based on the actual route taken.
             </p>
           )}
+
           {orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE") && (
             <p style={{ color: "red", fontSize: "12px", marginTop: "5px", fontWeight: "bold" }}>
               * Sorry, we do not deliver to this location (Max 15km).
@@ -582,8 +650,19 @@ const PlaceOrder = () => {
           <button
             type="submit"
             className={style.submitBtn}
-            disabled={orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE")}>
-            {orderType === "Delivery" && (distance > 15 || selectedPoint === "FAR_RANGE") ? "Out of Range" : "Proceed to Payment"}
+            disabled={
+              orderType === "Delivery" && (
+                !selectedPoint && !address.trim() || // No Address/Landmark
+                distance > 15 ||                     // Out of Range
+                selectedPoint === "FAR_RANGE"        // Explicit Far Range
+              )
+            }
+          >
+            {orderType === "Delivery" ? (
+              (distance > 15 || selectedPoint === "FAR_RANGE") ? "Out of Range" :
+                (!selectedPoint && !address.trim()) ? "Select Address" :
+                  "Proceed to Payment"
+            ) : "Proceed to Payment"}
           </button>
           {userData?.phone === "8596962616" && (
             <button
@@ -631,29 +710,77 @@ const PlaceOrder = () => {
         </div>
 
         <div className={style.sidebarContent}>
-          {deliveryPoints.map((p) => (
-            <div
-              key={p._id}
-              className={`${style.landmarkRow} ${selectedPoint === p._id ? style.active : ""}`}
-              onClick={() => {
-                setSelectedPoint(p._id);
-                setShowLandmarks(false);
-                // MUTUAL EXCLUSIVITY: Clear Address Inputs
-                setAddress("");
-                setDistance(0);
-                setDeliveryFee(0);
-                setUserLocation(null);
-                setSelectedAddressId("");
-              }}
-            >
-              <div className={style.landmarkIcon}>🏪</div>
-              <div className={style.landmarkInfo}>
-                <div className={style.landmarkName}>{p.name}</div>
-                <div className={style.landmarkDist}>{p.defaultDistance} km from Restaurant</div>
-              </div>
-              <div className={style.landmarkBadge}>FREE</div>
+          {/* SIDEBAR PROMO */}
+          {deliverySlot !== "9-10PM" && getTotalCartAmount() < 149 && getTotalCartAmount() > 0 && (
+            <div style={{
+              background: 'rgba(255, 107, 74, 0.1)',
+              border: '1px dashed #ff6b4a',
+              borderRadius: '10px',
+              padding: '12px',
+              marginBottom: '15px',
+              textAlign: 'center'
+            }}>
+              <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#ff6b4a' }}>
+                Add <b><FaRupeeSign />{149 - getTotalCartAmount()}</b> more for <b>FREE Delivery</b> at these landmarks!
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                style={{
+                  background: '#ff6b4a',
+                  color: 'white',
+                  border: 'none',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  cursor: 'pointer'
+                }}
+              >
+                Go to Menu 🍔
+              </button>
             </div>
-          ))}
+          )}
+
+          {deliveryPoints.map((p) => {
+            // Determine if free badge is applicable (only if dist <= 5km)
+            const dist = p.defaultDistance || 0;
+            const isFree = (deliverySlot === "9-10PM" || getTotalCartAmount() > 149) && dist <= 5;
+
+            return (
+              <div
+                key={p._id}
+                className={`${style.landmarkRow} ${selectedPoint === p._id ? style.active : ""}`}
+                onClick={() => {
+                  setSelectedPoint(p._id);
+                  setShowLandmarks(false);
+                  // MUTUAL EXCLUSIVITY: Clear Address Inputs
+                  setAddress("");
+                  setDistance(0);
+                  setDeliveryFee(0);
+                  setUserLocation(null);
+                  setSelectedAddressId("");
+                  // Force Recalc
+                  calculateFee(p.defaultDistance, p._id);
+                }}
+              >
+                <div className={style.landmarkIcon}>🏪</div>
+                <div className={style.landmarkInfo}>
+                  <div className={style.landmarkName}>{p.name}</div>
+                  <div className={style.landmarkDist}>{p.defaultDistance} km from Restaurant</div>
+                </div>
+                <div className={style.landmarkBadge} style={{
+                  background: isFree ? 'rgba(76, 175, 80, 0.1)' : 'rgba(255, 107, 74, 0.1)',
+                  color: isFree ? '#4caf50' : '#ff6b4a'
+                }}>
+                  {isFree ? "FREE" : (() => {
+                    const dist = p.defaultDistance || 0;
+                    const fee = Math.round(dist * 10);
+                    return <><FaRupeeSign />{fee}</>;
+                  })()}
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </form>

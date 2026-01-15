@@ -110,3 +110,39 @@
         justify-content: start;
     }
 }
+/* ================= GAP VALUE UPSELL ================= */
+.gapMessage {
+    background: rgba(255, 99, 71, 0.1);
+    color: #ff6347;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px dashed #ff6347;
+}
+
+.gapMessage button {
+    background: #ff6347 !important;
+    color: white !important;
+    width: auto !important;
+    padding: 6px 14px !important;
+    font-size: 12px;
+    height: auto;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.freeUnlockedMsg {
+    background: rgba(76, 175, 80, 0.15);
+    color: #4caf50;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #4cd137;
+}
+

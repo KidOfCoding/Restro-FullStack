@@ -4,6 +4,8 @@ import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import { FaBriefcase, FaHome, FaMapMarkerAlt, FaPlus, FaTrash } from "react-icons/fa";
+
 const MyAddresses = () => {
 
     const { URl, token } = useContext(StoreContext);
@@ -56,38 +58,70 @@ const MyAddresses = () => {
         fetchAddresses();
     }, [token])
 
+    const getIcon = (lbl) => {
+        switch (lbl) {
+            case "Home": return <FaHome />;
+            case "Work": return <FaBriefcase />;
+            default: return <FaMapMarkerAlt />;
+        }
+    }
+
     return (
         <div className='my-addresses'>
-            <h2>Saved Addresses</h2>
+            <h2><FaMapMarkerAlt style={{ color: '#ff6b4a' }} /> Saved Addresses</h2>
+
             <div className="address-form">
-                <textarea
-                    value={newAddress}
-                    onChange={(e) => setNewAddress(e.target.value)}
-                    placeholder="Enter full address details (Street, City, Zip, etc.)"
-                    required
-                ></textarea>
-                <select value={label} onChange={(e) => setLabel(e.target.value)}>
-                    <option value="Home">Home</option>
-                    <option value="Work">Work</option>
-                    <option value="Other">Other</option>
-                </select>
-                <button onClick={addAddress}>Save Address</button>
+                <h3>Add New Address</h3>
+                <div className="form-group">
+                    <textarea
+                        value={newAddress}
+                        onChange={(e) => setNewAddress(e.target.value)}
+                        placeholder="Enter full address details (Street, City, Zip, etc.)"
+                        required
+                    ></textarea>
+                </div>
+
+                <div className="form-actions">
+                    <div className="select-wrapper">
+                        <select value={label} onChange={(e) => setLabel(e.target.value)}>
+                            <option value="Home">Home</option>
+                            <option value="Work">Work</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button onClick={addAddress} className="save-btn"><FaPlus /> Save Address</button>
+                </div>
             </div>
 
             <div className="address-list">
-                {addresses.map((addr, index) => (
-                    <div key={index} className="address-card">
-                        <div className="address-header">
-                            <b>{addr.label}</b>
-                            <button onClick={() => removeAddress(addr._id)}>Delete</button>
+                <h3>Your Locations</h3>
+                <div className="address-grid">
+                    {addresses.map((addr, index) => (
+                        <div key={index} className="address-card">
+                            <div className="address-icon">
+                                {getIcon(addr.label)}
+                            </div>
+                            <div className="address-content">
+                                <div className="address-header">
+                                    <b>{addr.label}</b>
+                                    <button onClick={() => removeAddress(addr._id)} className="delete-btn" title="Delete">
+                                        <FaTrash />
+                                    </button>
+                                </div>
+                                <p>{addr.address}</p>
+                            </div>
                         </div>
-                        <p>{addr.address}</p>
+                    ))}
+                </div>
+                {addresses.length === 0 && (
+                    <div className="empty-state">
+                        <p>No saved addresses found.</p>
                     </div>
-                ))}
-                {addresses.length === 0 && <p>No saved addresses.</p>}
+                )}
             </div>
         </div>
     )
 }
 
 export default MyAddresses
+

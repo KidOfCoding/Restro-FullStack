@@ -131,6 +131,22 @@ const Cart = ({ setShowLogin }) => {
               <b>Total</b>
               <b><FaRupeeSign />{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + Number(import.meta.env.VITE_DELIVERY_FEE || 0)}</b>
             </div>
+
+            {/* GAP VALUE UPSELL */}
+            {getTotalCartAmount() > 0 && (
+              <>
+                {getTotalCartAmount() <= 149 ? (
+                  <div className={style.gapMessage}>
+                    <span>Add <b><FaRupeeSign />{149 - getTotalCartAmount()}</b> for Free Landmark Delivery!</span>
+                    <button onClick={() => navigate('/')}>Menu</button>
+                  </div>
+                ) : (
+                  <div className={style.freeUnlockedMsg}>
+                    🎉 Free Landmark Delivery Unlocked!
+                  </div>
+                )}
+              </>
+            )}
           </div>
           <button onClick={checkOut}>Checkout</button>
         </div>

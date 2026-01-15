@@ -1,0 +1,166 @@
+/* Overlay */
+.offer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal Box */
+.offer-modal {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    width: 90%;
+    max-width: 450px;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: scale(0.8);
+    opacity: 0;
+    animation: popUp 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0.2s forwards;
+    overflow: hidden;
+}
+
+@keyframes popUp {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    z-index: 2;
+}
+
+.close-btn:hover {
+    background: #ff4757;
+    transform: rotate(90deg);
+}
+
+/* Content */
+.offer-content h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.offer-content p {
+    color: #dfe6e9;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Features List */
+.offer-features {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+}
+
+.feature-item:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ff6b6b;
+}
+
+.feature-icon {
+    font-size: 30px;
+}
+
+.feature-text h3 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.feature-text p {
+    font-size: 12px;
+    color: #b2bec3;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* CTA Button */
+.offer-cta {
+    background: linear-gradient(45deg, #ff4757, #ff6b81);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+    transition: 0.3s;
+    width: 100%;
+}
+
+.offer-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
+}
+
+/* Decorations */
+.confetti-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Adding a subtle gradient overlay */
+    background: radial-gradient(circle at top right, rgba(255, 107, 107, 0.1), transparent 40%);
+    z-index: 1;
+}
