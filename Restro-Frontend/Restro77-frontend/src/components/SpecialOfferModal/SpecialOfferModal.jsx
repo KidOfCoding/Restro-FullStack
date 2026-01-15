@@ -40,10 +40,10 @@ const SpecialOfferModal = () => {
                         </div>
 
                         <div className="feature-item">
-                            <div className="feature-icon">📍</div>
+                            <div className="feature-icon">♨️</div>
                             <div className="feature-text">
-                                <h3>Free Delivery above <FaRupeeSign />149</h3>
-                                <p>Get <b>FREE Delivery</b> at landmarks on orders above <b><FaRupeeSign />149</b> (up to 5km)!</p>
+                                <h3>Free Delivery above <span style={{ whiteSpace: 'nowrap' }}><FaRupeeSign />149</span></h3>
+                                <p>Get <b>FREE Delivery</b> at landmarks on orders above <b><span style={{ whiteSpace: 'nowrap' }}><FaRupeeSign />149</span></b> (up to 5km)!</p>
                             </div>
                         </div>
                     </div>

@@ -84,41 +84,15 @@ const Cart = ({ setShowLogin }) => {
 
             if (!item) return null;
 
-            let price = item.price;
-            let displayName = item.name;
-
-            if (variantName) {
-              displayName += ` (${variantName})`;
-              const v = item.variants?.find(v => v.name === variantName);
-              if (v) price = v.price;
-            }
-
             return (
-              <div key={key}>
-                <div className={`${style.CartItemsTitle} ${style.CartItemsItem}`}>
-                  <p>{displayName}</p>
-                  <p><FaRupeeSign />{price}</p>
-                  <div className={style.cartQuantityControl}>
-                    <button onClick={() => removeFromCart(itemId, variantName)}>-</button>
-                    <input
-                      type="number"
-                      min="1"
-                      value={cartItem[key]}
-                      onChange={(e) => updateQuantity(itemId, variantName, parseInt(e.target.value) || 0)}
-                      className={style.quantityInput}
-                    />
-                    <button onClick={() => addToCart(itemId, variantName)}>+</button>
-                  </div>
-                  <p><FaRupeeSign />{price * cartItem[key]}</p>
-                  <p
-                    className={style.Cross}
-                    onClick={() => removeFromCart(itemId, variantName, true)} // Pass true to remove completely
-                  >
-                    <GiCancel color="red" />
-                  </p>
-                </div>
-                <hr />
-              </div>
+              <CartItem
+                key={key}
+                itemKey={key}
+                item={item}
+                variantName={variantName}
+                quantity={cartItem[key]}
+                cartMethods={{ addToCart, removeFromCart, updateQuantity }}
+              />
             );
           }
         })}
@@ -170,6 +144,76 @@ const Cart = ({ setShowLogin }) => {
           </div>
         </div> */}
       </div>
+    </div>
+  );
+};
+
+// Sub-component to handle local input state
+const CartItem = ({ itemKey, item, variantName, quantity, cartMethods }) => {
+  const { addToCart, removeFromCart, updateQuantity } = cartMethods;
+  const [localQty, setLocalQty] = useState(quantity);
+
+  // Sync local state when external quantity changes (e.g. from +/- buttons)
+  useEffect(() => {
+    setLocalQty(quantity);
+  }, [quantity]);
+
+  let price = item.price;
+  let displayName = item.name;
+
+  if (variantName) {
+    displayName += ` (${variantName})`;
+    const v = item.variants?.find(v => v.name === variantName);
+    if (v) price = v.price;
+  }
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setLocalQty(val); // Update input display immediately
+
+    // Only update global store if valid positive number
+    // Allow empty string to exist locally without updating store to 0
+    if (val !== "" && !isNaN(val)) {
+      const numVal = parseInt(val);
+      if (numVal > 0) {
+        updateQuantity(item._id, variantName, numVal);
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    // On blur, if invalid or empty, revert to actual store quantity
+    if (localQty === "" || isNaN(localQty) || parseInt(localQty) <= 0) {
+      setLocalQty(quantity);
+    }
+  };
+
+  return (
+    <div>
+      <div className={`${style.CartItemsTitle} ${style.CartItemsItem}`}>
+        <p>{displayName}</p>
+        <p><FaRupeeSign />{price}</p>
+        <div className={style.cartQuantityControl}>
+          <button onClick={() => removeFromCart(item._id, variantName)}>-</button>
+          <input
+            type="number"
+            min="1"
+            value={localQty}
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            className={style.quantityInput}
+          />
+          <button onClick={() => addToCart(item._id, variantName)}>+</button>
+        </div>
+        <p><FaRupeeSign />{price * quantity}</p>
+        <p
+          className={style.Cross}
+          onClick={() => removeFromCart(item._id, variantName, true)}
+        >
+          <GiCancel color="red" />
+        </p>
+      </div>
+      <hr />
     </div>
   );
 };
