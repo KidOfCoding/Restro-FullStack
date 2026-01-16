@@ -1,7 +1,8 @@
 .special-offer-tag {
-    position: fixed;
-    z-index: 10000;
-    /* High z-index to sit above navbar */
+    position: absolute;
+    /* Changed from fixed */
+    z-index: 50;
+    /* Above Header content */
     width: 80px;
     height: 80px;
     display: flex;

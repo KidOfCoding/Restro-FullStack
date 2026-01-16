@@ -14,8 +14,6 @@ import Profile from './Pages/Profile/Profile'
 import About from './Pages/About/About'
 import FloatingCart from './components/FloatingCart/FloatingCart'
 import PortfolioButton from './components/PortfolioButton/PortfolioButton'
-import SpecialOfferTag from './components/SpecialOfferTag/SpecialOfferTag'
-
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import SpecialOfferModal from './components/SpecialOfferModal/SpecialOfferModal'
 
@@ -40,12 +38,11 @@ const App = () => {
     <>
       <ScrollToTop />
       <SpecialOfferModal show={showOfferModal} onClose={() => setShowOfferModal(false)} />
-      {location.pathname === '/' && <SpecialOfferTag onClick={() => setShowOfferModal(true)} />}
       {showLogin ? <LoginPopUp setShowLogin={setShowLogin} /> : <></>}
       <div className="app">
         <Navbar setShowLogin={setShowLogin} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home setShowOfferModal={setShowOfferModal} showOfferModal={showOfferModal} />} />
           <Route path="/cart" element={<Cart setShowLogin={setShowLogin} />} />
           <Route path="/placeorder" element={<PlaceOrder />} />
           <Route path='/verify' element={<Verify />} />
