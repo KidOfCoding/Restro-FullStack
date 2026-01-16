@@ -39,8 +39,8 @@ const App = () => {
       <ScrollToTop />
       <SpecialOfferModal show={showOfferModal} onClose={() => setShowOfferModal(false)} />
       {showLogin ? <LoginPopUp setShowLogin={setShowLogin} /> : <></>}
+      <Navbar setShowLogin={setShowLogin} />
       <div className="app">
-        <Navbar setShowLogin={setShowLogin} />
         <Routes>
           <Route path="/" element={<Home setShowOfferModal={setShowOfferModal} showOfferModal={showOfferModal} />} />
           <Route path="/cart" element={<Cart setShowLogin={setShowLogin} />} />

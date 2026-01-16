@@ -1,6 +1,6 @@
 /* ================= MAIN NAVBAR (DESKTOP) ================= */
 .Navbar {
-    padding: 15px 0px;
+    padding: 15px 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
