@@ -1,0 +1,149 @@
+.sub-promo-wrapper {
+    margin: 15px auto;
+    width: 90%;
+    max-width: 600px;
+}
+
+.sub-promo-container {
+    background: #18191a; 
+    border: 1px solid #ff6b4a; 
+    border-radius: 12px;
+    padding: 10px 15px 10px 10px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 30px rgba(255, 107, 74, 0.15); /* orange glow */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.sub-promo-container:hover {
+    transform: scale(1.02);
+}
+
+/* Base wavy background effect */
+.sub-promo-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-radial-gradient(
+        ellipse at center,
+        transparent 0,
+        transparent 4px,
+        rgba(255, 107, 74, 0.03) 5px,
+        rgba(255, 107, 74, 0.03) 6px
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Top Right Diagonal Ribbon */
+.sub-promo-ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.sub-promo-ribbon span {
+    position: absolute;
+    top: 25px;
+    right: -32px;
+    transform: rotate(45deg);
+    width: 140px;
+    padding: 6px 0;
+    background-color: #ff6b4a;
+    color: #111;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 0.5px;
+}
+
+/* Icon Container */
+.sub-promo-icon-container {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.sub-promo-icon-container svg {
+    width: 75px;
+    height: 75px;
+    display: block;
+}
+
+/* Content */
+.sub-promo-content {
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.sub-promo-title {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    white-space: normal;
+    padding-right: 60px; /* Leave space for the ribbon on the right */
+}
+
+.sub-promo-btn {
+    background: linear-gradient(135deg, #ff6b4a, #ff8364); /* Brand Gradient */
+    color: #ffffff;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    align-self: flex-start;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(255, 107, 74, 0.2);
+}
+
+.sub-promo-btn:hover {
+    background-color: #16a34a;
+}
+
+@media (max-width: 480px) {
+    .sub-promo-container {
+        padding: 15px 12px 15px 12px;
+    }
+    .sub-promo-icon-container svg {
+        width: 65px;
+        height: 65px;
+    }
+    .sub-promo-title {
+        font-size: 15px;
+        padding-right: 40px;
+    }
+    .sub-promo-btn {
+        padding: 5px 14px;
+        font-size: 12px;
+    }
+    .sub-promo-ribbon span {
+        font-size: 11px;
+        width: 130px;
+        top: 26px;
+        right: -32px;
+        padding: 5px 0;
+    }
+}

@@ -5,6 +5,7 @@ import ExploreMenu from '../../components/ExploreMenu/ExploreMenu'
 import FoodDisplay from '../../components/foodDisplay/FoodDisplay'
 import Testimonials from '../../components/Testimonials/Testimonials'
 import SpecialOfferTag from '../../components/SpecialOfferTag/SpecialOfferTag'
+import SubscriptionPromoBanner from '../../components/SubscriptionPromoBanner/SubscriptionPromoBanner'
 
 const Home = ({ setShowOfferModal, showOfferModal }) => {
 
@@ -18,6 +19,7 @@ const Home = ({ setShowOfferModal, showOfferModal }) => {
         show={!showOfferModal}
       />
       <Header />
+      <SubscriptionPromoBanner />
       <ExploreMenu category={category} setCategory={setCategory} />
       <FoodDisplay category={category} />
       <Testimonials />

@@ -9,6 +9,7 @@ import orderRouter from "./routes/orderRoute.js";
 import userRouter from "./routes/userRoute.js";
 import deliveryRouter from "./routes/deliveryRoute.js";
 import deliveryBoyRouter from "./routes/deliveryBoyRoute.js";
+import mealPlanRouter from "./routes/mealPlanRoute.js";
 
 import { Server } from "socket.io";
 import { createServer } from "http";
@@ -66,6 +67,7 @@ app.use('/api/order', orderRouter)
 app.use('/api/user', userRouter)
 app.use('/api/delivery', deliveryRouter)
 app.use('/api/deliveryBoy', deliveryBoyRouter)
+app.use('/api/mealplan', mealPlanRouter)
 
 // Http Requests
 app.get('/', (req, res) => {

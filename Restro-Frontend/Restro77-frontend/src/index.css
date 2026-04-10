@@ -44,3 +44,10 @@ a {
     opacity: 1;
   }
 }
+
+/* Prevent content from hiding behind fixed mobile navbar */
+@media (max-width: 850px) {
+  body {
+    padding-bottom: 70px;
+  }
+}

@@ -171,7 +171,13 @@ const StoreContextProvider = (props) => {
         try {
             const response = await axios.get(URl + "/api/food/list")
             if (response.data.success) {
-                setFoodList(response.data.data)
+                // TEMPORARY PRICE INCREASE OF 10
+                const updatedList = response.data.data.map(item => ({
+                    ...item,
+                    price: item.price + 10,
+                    variants: item.variants ? item.variants.map(v => ({...v, price: v.price + 10})) : undefined
+                }));
+                setFoodList(updatedList)
             } else {
                 // Fallback if needed, or handle error
             }

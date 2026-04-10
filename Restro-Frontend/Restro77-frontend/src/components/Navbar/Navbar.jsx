@@ -91,6 +91,7 @@ const Navbar = ({ setShowLogin }) => {
         <ul className={style.navbarMenu}>
           <li onClick={() => { setMenu("home"); navigate('/'); window.scrollTo(0, 0); }} className={menu === "home" ? style.active : ""}>Home</li>
           <li onClick={() => { setMenu("menu"); navigate('/'); setTimeout(() => document.getElementById('ExploreMenu')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className={menu === "menu" ? style.active : ""}>Menu</li>
+          <li onClick={() => { setMenu("mealplans"); navigate('/meal-plans'); }} className={menu === "mealplans" ? style.active : ""}>Meal Plans</li>
           <li onClick={() => { setMenu("orders"); navigate('/myorders') }} className={menu === "orders" ? style.active : ""}>Orders</li>
           <li onClick={() => { setMenu("contact"); document.getElementById('Footer')?.scrollIntoView({ behavior: 'smooth' }); }}>Contact</li>
         </ul>
@@ -128,6 +129,9 @@ const Navbar = ({ setShowLogin }) => {
                 <ul className={`${style.navProfileDropdown} ${showProfile ? style.showDropdown : ""}`}>
                   <li onClick={() => { navigate('/myorders'); setShowProfile(false); }}>
                     <FiPackage className={style.dropIcon} /> <p>Orders</p>
+                  </li>
+                  <li onClick={() => { navigate('/my-subscriptions'); setShowProfile(false); }}>
+                    <FiPackage className={style.dropIcon} /> <p>Subscriptions</p>
                   </li>
                   <li onClick={() => { navigate('/myrewards'); setShowProfile(false); }}>
                     <BiSolidOffer className={style.dropIcon} /> <p>Rewards</p>
@@ -239,6 +243,9 @@ const Navbar = ({ setShowLogin }) => {
             <ul className={`${style.bottomProfileDropdown} ${showProfile ? style.showDropdown : ""}`}>
               <li onClick={(e) => { e.stopPropagation(); navigate('/myorders'); setShowProfile(false); }}>
                 <FiPackage className={style.dropIcon} /> <p>Orders</p>
+              </li>
+              <li onClick={(e) => { e.stopPropagation(); navigate('/my-subscriptions'); setShowProfile(false); }}>
+                <FiPackage className={style.dropIcon} /> <p>Subscriptions</p>
               </li>
               <li onClick={(e) => { e.stopPropagation(); navigate('/myrewards'); setShowProfile(false); }}>
                 <BiSolidOffer className={style.dropIcon} /> <p>Rewards</p>

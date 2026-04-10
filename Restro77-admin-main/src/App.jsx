@@ -8,6 +8,9 @@ import Orders from './pages/Orders/Orders'
 import BulkUpload from './pages/BulkUpload/BulkUpload'
 import Login from './pages/Login/Login'
 import Delivery from './pages/Delivery/Delivery'
+import AddMealPlan from './pages/AddMealPlan/AddMealPlan'
+import MealPlans from './pages/MealPlans/MealPlans'
+import Subscriptions from './pages/Subscriptions/Subscriptions'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -39,6 +42,9 @@ const App = () => {
               <Route path='/orders' element={<Orders URl={URl} />} />
               <Route path='/delivery' element={<Delivery URl={URl} />} />
               <Route path='/bulk-upload' element={<BulkUpload url={URl} />} />
+              <Route path='/add-meal-plan' element={<AddMealPlan URl={URl} />} />
+              <Route path='/meal-plans' element={<MealPlans URl={URl} />} />
+              <Route path='/subscriptions' element={<Subscriptions URl={URl} />} />
               <Route path='/' element={<Navigate to="/orders" />} />
             </Routes>
           </div>

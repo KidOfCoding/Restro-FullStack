@@ -1,0 +1,307 @@
+.my-subscriptions-premium {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    color: #fff;
+    min-height: 80vh;
+    padding: 0 20px;
+}
+
+.my-sub-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.my-sub-header h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff; /* Standard White Header */
+}
+
+.my-sub-header p {
+    color: #94a3b8; /* Muted slate */
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+.my-sub-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+.premium-sub-card {
+    background: #111; /* Navbar-consistent dark */
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #222;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.premium-sub-card:hover {
+    transform: translateY(-4px);
+    border-color: #eded05; /* Brand Yellow hover */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.sub-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sub-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.sub-info h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: #fff;
+}
+
+.sub-status {
+    margin-left: auto;
+}
+
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pill.active {
+    background: rgba(34, 197, 94, 0.15); /* #22c55e */
+    color: #22c55e;
+}
+
+.status-pill.pending {
+    background: rgba(24acc15, 0.15); /* #facc15 */
+    color: #facc15;
+}
+
+.status-pill.expired,
+.status-pill.cancelled {
+    background: rgba(239, 68, 68, 0.15); /* #ef4444 */
+    color: #ef4444;
+}
+
+.sub-card-body {
+    background: #0c0d14; /* Match body bg */
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #1e1e24;
+}
+
+.date-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.date-item label {
+    display: block;
+    color: #64748b; /* Slate 400 */
+    font-size: 10px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.date-item p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.date-sep {
+    width: 1px;
+    height: 25px;
+    background: #1e1e24;
+}
+
+.sub-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.whatsapp-btn,
+.renew-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+}
+
+.whatsapp-btn {
+    background: #22c55e; /* Consistently positive green */
+    color: #fff;
+}
+
+.whatsapp-btn:hover {
+    background: #16a34a;
+    transform: scale(1.02);
+}
+
+.renew-btn {
+    background: linear-gradient(135deg, #ff6b4a, #ff8364); /* Brand Gradient */
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 107, 74, 0.2);
+}
+
+.renew-btn:hover {
+    background: linear-gradient(135deg, #ff8364, #ff6b4a);
+    box-shadow: 0 6px 20px rgba(255, 107, 74, 0.35);
+    transform: scale(1.02);
+}
+
+/* Welcome Modal Styles */
+.welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.4s ease;
+}
+
+.welcome-modal {
+    background: #1e1e1e;
+    padding: 40px;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid #eded05;
+    box-shadow: 0 0 50px rgba(237, 237, 5, 0.2);
+    animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.welcome-emoji {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.welcome-modal h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #eded05;
+}
+
+.welcome-modal p {
+    color: #a0a0b0;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.welcome-modal button {
+    background: #eded05;
+    color: #000;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.welcome-modal button:hover {
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.no-subs {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px;
+    background: #1e1e1e;
+    border-radius: 20px;
+    border: 1px dashed #555;
+    margin-top: 20px;
+}
+
+.no-subs img {
+    width: 60px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+    filter: invert(1);
+}
+
+.no-subs p {
+    font-size: 17px;
+    color: #a0a0b0;
+    margin-bottom: 25px;
+}
+
+.no-subs button {
+    background: #eded05;
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+@media (max-width: 850px) {
+    .my-sub-container {
+        grid-template-columns: 1fr;
+    }
+
+    .my-sub-header h2 {
+        font-size: 24px;
+    }
+}

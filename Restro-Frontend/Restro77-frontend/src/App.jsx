@@ -12,6 +12,9 @@ import MyRewards from './Pages/MyRewards/MyRewards'
 import MyAddresses from './Pages/MyAddresses/MyAddresses'
 import Profile from './Pages/Profile/Profile'
 import About from './Pages/About/About'
+import MealPlans from './Pages/MealPlans/MealPlans'
+import SubscriptionCheckout from './Pages/SubscriptionCheckout/SubscriptionCheckout'
+import MySubscriptions from './Pages/MySubscriptions/MySubscriptions'
 import FloatingCart from './components/FloatingCart/FloatingCart'
 import PortfolioButton from './components/PortfolioButton/PortfolioButton'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
@@ -51,6 +54,9 @@ const App = () => {
           <Route path="/myaddresses" element={<MyAddresses />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />
+          <Route path="/meal-plans" element={<MealPlans />} />
+          <Route path="/subscription-checkout" element={<SubscriptionCheckout />} />
+          <Route path="/my-subscriptions" element={<MySubscriptions />} />
         </Routes>
         <FloatingCart />
         <PortfolioButton />

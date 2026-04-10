@@ -1,7 +1,7 @@
 import React from 'react'
 import './SideBar.css'
 import { NavLink } from 'react-router-dom'
-import { FaPlus, FaList, FaTruck, FaCloudUploadAlt, FaTimes } from 'react-icons/fa'
+import { FaPlus, FaList, FaTruck, FaCloudUploadAlt, FaTimes, FaRegCalendarAlt, FaIdCardAlt } from 'react-icons/fa'
 import { MdOutlinePlaylistAddCheck } from "react-icons/md";
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
@@ -30,6 +30,18 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
         <NavLink to='/delivery' className="sidebar-option" onClick={closeSidebar}>
           <FaTruck />
           <p>Delivery</p>
+        </NavLink>
+        <NavLink to='/add-meal-plan' className="sidebar-option" onClick={closeSidebar}>
+          <FaPlus />
+          <p>Add Meal Plan</p>
+        </NavLink>
+        <NavLink to='/meal-plans' className="sidebar-option" onClick={closeSidebar}>
+          <FaRegCalendarAlt />
+          <p>Meal Plans</p>
+        </NavLink>
+        <NavLink to='/subscriptions' className="sidebar-option" onClick={closeSidebar}>
+          <FaIdCardAlt />
+          <p>Subscriptions</p>
         </NavLink>
       </div>
     </div>
