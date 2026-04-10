@@ -7,7 +7,8 @@ import {
     subscribeToPlan,
     verifySubscriptionPayment,
     getUserSubscriptions,
-    getAllSubscriptions
+    getAllSubscriptions,
+    cancelSubscription
 } from "../controllers/mealPlanController.js";
 
 const mealPlanRouter = express.Router();
@@ -21,6 +22,7 @@ mealPlanRouter.post("/remove", removeMealPlan);
 mealPlanRouter.post("/subscribe", authMiddleware, subscribeToPlan);
 mealPlanRouter.post("/verify", authMiddleware, verifySubscriptionPayment);
 mealPlanRouter.post("/user-subscriptions", authMiddleware, getUserSubscriptions);
+mealPlanRouter.post("/cancel", authMiddleware, cancelSubscription);
 
 // Admin Subscription Endpoint
 mealPlanRouter.get("/all-subscriptions", getAllSubscriptions);

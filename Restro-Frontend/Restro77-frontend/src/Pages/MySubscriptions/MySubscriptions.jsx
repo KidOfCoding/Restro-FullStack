@@ -3,12 +3,14 @@ import './MySubscriptions.css'
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
-import { FaCalendarCheck, FaWhatsapp } from 'react-icons/fa';
+import { FaCalendarCheck, FaWhatsapp, FaTrash } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const MySubscriptions = () => {
     const { URl, token } = useContext(StoreContext);
     const [data, setData] = useState([]);
+    const [activeTab, setActiveTab] = useState('Active');
     const [showWelcome, setShowWelcome] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
@@ -46,6 +48,43 @@ const MySubscriptions = () => {
         navigate('/meal-plans');
     }
 
+    const handleDelete = (subscriptionId) => {
+        const toastId = toast.warn(
+            <div style={{ textAlign: 'center', padding: '5px' }}>
+                <h3 style={{ marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>Confirm Cancellation</h3>
+                <p style={{ marginBottom: '20px', fontSize: '14px', color: 'inherit' }}>Are you sure you want to stop this subscription? This action cannot be undone.</p>
+                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(toastId);
+                            try {
+                                const response = await axios.post(URl + "/api/mealplan/cancel", { subscriptionId }, { headers: { token } });
+                                if (response.data.success) {
+                                    toast.success("Subscription stopped.");
+                                    fetchSubs();
+                                } else {
+                                    toast.error(response.data.message);
+                                }
+                            } catch (e) {
+                                toast.error("Error cancelling subscription");
+                            }
+                        }}
+                        style={{ padding: '8px 16px', background: '#e11d48', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', flex: 1 }}
+                    >
+                        Confirm Stop
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(toastId)}
+                        style={{ padding: '8px 16px', border: '1px solid #ccc', background: 'transparent', color: 'inherit', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', flex: 1 }}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>,
+            { position: "top-center", autoClose: false, closeOnClick: false, draggable: false }
+        );
+    }
+
     return (
         <div className='my-subscriptions-premium'>
             {showWelcome && (
@@ -74,15 +113,30 @@ const MySubscriptions = () => {
             )}
 
             <div className="my-sub-header">
-                <h2>Active Subscriptions</h2>
-                <p>Manage your ongoing and upcoming meal plans</p>
+                <h2>My Subscriptions</h2>
+                <p>Manage your ongoing and past meal plans</p>
             </div>
             
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '30px', borderBottom: '1px solid #333', paddingBottom: '10px', maxWidth: '400px', margin: '0 auto 30px' }}>
+                <button 
+                    onClick={() => setActiveTab('Active')} 
+                    style={{ background: 'transparent', color: activeTab === 'Active' ? '#ff6b4a' : '#fff', border: 'none', borderBottom: activeTab === 'Active' ? '2px solid #ff6b4a' : 'none', cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', padding: '5px 15px', transition: '0.3s' }}
+                >
+                    Active
+                </button>
+                <button 
+                    onClick={() => setActiveTab('Expired')} 
+                    style={{ background: 'transparent', color: activeTab === 'Expired' ? '#ff6b4a' : '#fff', border: 'none', borderBottom: activeTab === 'Expired' ? '2px solid #ff6b4a' : 'none', cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', padding: '5px 15px', transition: '0.3s' }}
+                >
+                    Expired
+                </button>
+            </div>
+
             <div className="my-sub-container">
-                {data.length === 0 ? (
+                {data.filter(sub => activeTab === 'Active' ? sub.status === 'Active' || sub.status === 'Pending' : sub.status === 'Expired' || sub.status === 'Cancelled').length === 0 ? (
                     <div className="no-subs">
                         <img src={assets.parcel_icon} alt="No subscriptions"/>
-                        <p>You have no active subscriptions.</p>
+                        <p>You have no {activeTab.toLowerCase()} subscriptions.</p>
                         <button 
                             onClick={() => navigate('/meal-plans')} 
                             style={{ 
@@ -100,11 +154,23 @@ const MySubscriptions = () => {
                         </button>
                     </div>
                 ) : (
-                    data.map((sub, index) => {
+                    data.filter(sub => activeTab === 'Active' ? sub.status === 'Active' || sub.status === 'Pending' : sub.status === 'Expired' || sub.status === 'Cancelled').map((sub, index) => {
                         const isExpired = sub.status === 'Expired' || sub.status === 'Cancelled';
 
                         return (
-                            <div key={index} className='premium-sub-card'>
+                            <div key={index} className='premium-sub-card' style={{ position: 'relative' }}>
+                                {!isExpired && (
+                                    <button 
+                                        className="delete-sub-btn" 
+                                        onClick={() => handleDelete(sub._id)}
+                                        style={{ position: 'absolute', top: '15px', right: '15px', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.3s' }}
+                                        title="Stop Subscription"
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = '#ef4444'; e.currentTarget.style.color = '#fff' }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#ef4444' }}
+                                    >
+                                        <FaTrash size={14} />
+                                    </button>
+                                )}
                                 <div className="sub-card-header">
                                     <div className="sub-icon-box">
                                         <FaCalendarCheck size={28} color="#ff6b4a" /> {/* Brand Orange */}
@@ -112,7 +178,7 @@ const MySubscriptions = () => {
                                     <div className="sub-info">
                                         <h3>Monthly Meal Subscription</h3>
                                     </div>
-                                    <div className="sub-status">
+                                    <div className="sub-status" style={!isExpired ? { marginRight: '35px' } : {}}>
                                         <span className={`status-pill ${sub.status.toLowerCase()}`}>
                                             {sub.status}
                                         </span>
@@ -133,11 +199,11 @@ const MySubscriptions = () => {
                                     </div>
                                 </div>
                                 
-                                <div className="sub-card-footer">
+                                <div className="sub-card-footer" style={{ width: '100%' }}>
                                     {isExpired ? (
-                                        <button className="renew-btn" onClick={handleRenewPlan}>Renew the Plan</button>
+                                        <button className="renew-btn" onClick={handleRenewPlan} style={{ width: '100%' }}>Renew the Plan</button>
                                     ) : (
-                                        <button className="whatsapp-btn" onClick={handleJoinWhatsApp}>
+                                        <button className="whatsapp-btn" onClick={handleJoinWhatsApp} style={{ width: '100%' }}>
                                             <FaWhatsapp size={20} /> Join WhatsApp
                                         </button>
                                     )}

@@ -210,6 +210,37 @@ const getAllSubscriptions = async (req, res) => {
     }
 }
 
+// User: Cancel an active subscription
+const cancelSubscription = async (req, res) => {
+    try {
+        const { subscriptionId } = req.body;
+        // userId comes from authMiddleware
+        const subscription = await subscriptionModel.findById(subscriptionId);
+        
+        if (!subscription) {
+            return res.json({ success: false, message: "Subscription not found" });
+        }
+        
+        // Ensure the subscription belongs to the user
+        if (subscription.userId.toString() !== req.body.userId) {
+            return res.json({ success: false, message: "Unauthorized action" });
+        }
+
+        if (subscription.status !== 'Active') {
+            return res.json({ success: false, message: "Only Active subscriptions can be cancelled" });
+        }
+
+        subscription.status = 'Expired';
+        subscription.endDate = new Date(); // Effectively expires it now
+        await subscription.save();
+
+        res.json({ success: true, message: "Subscription cancelled successfully" });
+    } catch (error) {
+        console.log("Error cancelling subscription:", error);
+        res.json({ success: false, message: "Error cancelling subscription" });
+    }
+}
+
 
 export {
     addMealPlan,
@@ -218,5 +249,6 @@ export {
     subscribeToPlan,
     verifySubscriptionPayment,
     getUserSubscriptions,
-    getAllSubscriptions
+    getAllSubscriptions,
+    cancelSubscription
 };

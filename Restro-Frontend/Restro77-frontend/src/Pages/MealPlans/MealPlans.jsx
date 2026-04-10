@@ -51,7 +51,7 @@ const MealPlans = () => {
 
         if (activeTab === "monthly") {
             navigate('/subscription-checkout', {
-                state: { customPlan: { name: "Monthly Subscription", price: 12, planType: "Monthly" } } // 2+10
+                state: { customPlan: { name: "Monthly Subscription", price: 2, planType: "Monthly" } } // 2 for testing
             });
         } else {
             const breakdown = calculateBreakdown();
@@ -125,7 +125,7 @@ const MealPlans = () => {
                                 <div className="monthly-spacer"></div>
 
                                 <button className="glow-subscribe-btn" onClick={handleSubscribe}>
-                                    Subscribe Now - ₹12
+                                    Subscribe Now - ₹2
                                 </button>
                             </div>
                         ) : (

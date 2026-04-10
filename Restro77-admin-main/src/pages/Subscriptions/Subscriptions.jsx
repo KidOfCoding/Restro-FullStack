@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import './Subscriptions.css'
 import axios from "axios"
 import { toast } from 'react-toastify'
+import * as XLSX from 'xlsx'
 
 const Subscriptions = ({ URl }) => {
   const [subs, setSubs] = useState([]);
+  const [activeTab, setActiveTab] = useState('Active');
 
   const fetchSubscriptions = async () => {
     try {
@@ -23,18 +25,62 @@ const Subscriptions = ({ URl }) => {
     fetchSubscriptions();
   }, [])
 
+  const handleExport = () => {
+    const activeSubs = subs.filter(sub => sub.status === 'Active');
+    const exportData = activeSubs.map(sub => {
+      const addressDetails = sub.address || {};
+      return {
+        "Name": sub.userId?.name || addressDetails.name || 'N/A',
+        "Phone": sub.userId?.phone || addressDetails.phone || 'N/A',
+        "Address": addressDetails.address || 'N/A',
+        "Plan Name": sub.customPlan?.name || sub.planId?.name || 'N/A',
+        "Starts On": new Date(sub.startDate).toLocaleDateString(),
+        "Ends On": new Date(sub.endDate).toLocaleDateString()
+      }
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Active Subscribers");
+    XLSX.writeFile(workbook, "Active_Subscribers.xlsx");
+  }
+
+  const filteredSubs = subs.filter(sub => activeTab === 'Active' ? sub.status === 'Active' : (sub.status === 'Expired' || sub.status === 'Cancelled'));
+
   return (
     <div className='subs-admin-container'>
-      <div className="subs-header">
-        <h3>Meal Plan Subscriptions</h3>
-        <p>Overview of active meal plan subscribers</p>
+      <div className="subs-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h3>Meal Plan Subscriptions</h3>
+          <p>Overview of meal plan subscribers</p>
+        </div>
+        {activeTab === 'Active' && (
+          <button onClick={handleExport} className="export-btn" style={{ padding: '10px 20px', background: '#22c55e', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+            Export Excel
+          </button>
+        )}
+      </div>
+
+      <div className="subs-tabs" style={{ display: 'flex', gap: '20px', marginBottom: '25px', borderBottom: '1px solid #333', paddingBottom: '10px' }}>
+        <button 
+          onClick={() => setActiveTab('Active')} 
+          style={{ background: 'transparent', color: activeTab === 'Active' ? '#ff6b4a' : '#fff', border: 'none', borderBottom: activeTab === 'Active' ? '2px solid #ff6b4a' : 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold', padding: '5px 10px' }}
+        >
+          Active
+        </button>
+        <button 
+          onClick={() => setActiveTab('Expired')} 
+          style={{ background: 'transparent', color: activeTab === 'Expired' ? '#ff6b4a' : '#fff', border: 'none', borderBottom: activeTab === 'Expired' ? '2px solid #ff6b4a' : 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold', padding: '5px 10px' }}
+        >
+          Expired
+        </button>
       </div>
 
       <div className="subs-list">
-        {subs.length === 0 ? (
-          <div className="no-data">No active subscriptions found.</div>
+        {filteredSubs.length === 0 ? (
+          <div className="no-data">No {activeTab.toLowerCase()} subscriptions found.</div>
         ) : (
-          subs.map((sub, index) => {
+          filteredSubs.map((sub, index) => {
             const plan = sub.customPlan || sub.planId || { name: "Unknown", price: 0, planType: "N/A" };
             const addressDetails = sub.address || {};
             
