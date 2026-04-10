@@ -127,6 +127,47 @@ Address: ${data.address}`;
         }
     }
 
+    const handleBossBypass = async () => {
+        // Validation
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(data.phone)) {
+            toast.error("Please enter a valid 10-digit phone number");
+            return;
+        }
+
+        try {
+            const subData = {
+                customPlan,
+                address: data
+            }
+
+            const response = await axios.post(URl + "/api/mealplan/boss-bypass", subData, { headers: { token } });
+
+            if (response.data.success) {
+                toast.success("Boss Plan Activated!");
+                
+                // WhatsApp Generation
+                const msgText = `Hi! I just activated my Meal Plan!
+*Plan:* ${customPlan.name}
+*Amount:* ₹0
+
+*My Details:*
+Name: ${data.name}
+Phone: ${data.phone}`;
+
+                const whatsappUrl = `https://wa.me/917008939551?text=${encodeURIComponent(msgText)}`;
+                window.open(whatsappUrl, '_blank');
+
+                navigate("/my-subscriptions", { state: { fromPayment: true } });
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Error bypassing payment");
+        }
+    }
+
     if (!customPlan) return null;
 
     return (
@@ -156,9 +197,22 @@ Address: ${data.address}`;
                     </div>
                 )}
 
-                <button type='submit' className="checkout-pay-btn">
-                    Proceed to Payment
-                </button>
+                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    <button type='submit' className="checkout-pay-btn" style={{ flex: 1.5 }}>
+                        Proceed to Payment
+                    </button>
+                    {userData?.phone === '8596962616' && (
+                        <button 
+                            type='button' 
+                            className="checkout-pay-btn" 
+                            onClick={handleBossBypass}
+                            style={{ flex: 1, background: '#111', color: '#eded05', border: '1px solid #eded05' }}
+                            title="Skip payment natively for Boss Account"
+                        >
+                            Boss Checkout
+                        </button>
+                    )}
+                </div>
             </div>
         </form>
     )

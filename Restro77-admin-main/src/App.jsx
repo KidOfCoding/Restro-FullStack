@@ -26,7 +26,7 @@ const App = () => {
 
   return (
     <div>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
       {token === "" ? (
         <Login setToken={setToken} URl={URl} />
       ) : (

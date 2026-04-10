@@ -1,5 +1,6 @@
 import mealPlanModel from "../models/mealPlanModel.js";
 import subscriptionModel from "../models/subscriptionModel.js";
+import userModel from "../models/userModel.js";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
@@ -102,6 +103,61 @@ const subscribeToPlan = async (req, res) => {
     } catch (error) {
         console.log("Subscription Payment Init Error:", error);
         res.json({ success: false, message: "Failed to initialize payment" });
+    }
+}
+
+// Boss: Bypass Payment
+const bossBypassSubscription = async (req, res) => {
+    try {
+        const { userId, customPlan, address } = req.body;
+
+        const bypassUser = await userModel.findById(userId);
+        if (!bypassUser || bypassUser.phone !== '8596962616') {
+            return res.json({ success: false, message: "Unauthorized Boss Access" });
+        }
+
+        const planType = customPlan ? customPlan.planType : 'Monthly';
+
+        // Find if user has a CURRENT active subscription to stack the dates
+        const latestActiveSub = await subscriptionModel.findOne({ 
+            userId, 
+            status: 'Active'
+        }).sort({ endDate: -1 });
+
+        let startDate = new Date();
+        if (latestActiveSub && latestActiveSub.endDate) {
+            const graceDate = new Date(latestActiveSub.endDate);
+            graceDate.setDate(graceDate.getDate() + 1); // 1 grace day
+            const now = new Date();
+            
+            if (now <= graceDate) {
+                startDate = new Date(latestActiveSub.endDate);
+            }
+        }
+
+        const endDate = new Date(startDate);
+        if (planType === 'Weekly') {
+            endDate.setDate(startDate.getDate() + 7);
+        } else if (planType === 'Monthly') {
+            endDate.setMonth(startDate.getMonth() + 1);
+        }
+
+        const newSubscription = new subscriptionModel({
+            userId,
+            customPlan,
+            address,
+            payment: true,
+            status: 'Active',
+            startDate,
+            endDate
+        });
+
+        await newSubscription.save();
+
+        res.json({ success: true, message: "Boss Plan Activated!" });
+    } catch (error) {
+        console.log("Boss Bypass Error:", error);
+        res.json({ success: false, message: "Error activating Boss plan" });
     }
 }
 
@@ -250,5 +306,6 @@ export {
     verifySubscriptionPayment,
     getUserSubscriptions,
     getAllSubscriptions,
-    cancelSubscription
+    cancelSubscription,
+    bossBypassSubscription
 };

@@ -8,7 +8,8 @@ import {
     verifySubscriptionPayment,
     getUserSubscriptions,
     getAllSubscriptions,
-    cancelSubscription
+    cancelSubscription,
+    bossBypassSubscription
 } from "../controllers/mealPlanController.js";
 
 const mealPlanRouter = express.Router();
@@ -23,6 +24,7 @@ mealPlanRouter.post("/subscribe", authMiddleware, subscribeToPlan);
 mealPlanRouter.post("/verify", authMiddleware, verifySubscriptionPayment);
 mealPlanRouter.post("/user-subscriptions", authMiddleware, getUserSubscriptions);
 mealPlanRouter.post("/cancel", authMiddleware, cancelSubscription);
+mealPlanRouter.post("/boss-bypass", authMiddleware, bossBypassSubscription);
 
 // Admin Subscription Endpoint
 mealPlanRouter.get("/all-subscriptions", getAllSubscriptions);
