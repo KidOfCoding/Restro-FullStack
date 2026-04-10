@@ -1,7 +1,7 @@
 .subs-admin-container {
   padding: 30px;
   font-family: 'Poppins', sans-serif;
-  background: #f8f9fa;
+  background: transparent;
   min-height: 100vh;
 }
 
@@ -12,7 +12,7 @@
 .subs-header h3 {
   font-size: 24px;
   font-weight: 700;
-  color: #1a1b23;
+  color: #fff;
 }
 
 .subs-header p {
@@ -27,14 +27,14 @@
 }
 
 .sub-item-card {
-  background: #fff;
+  background: #1e1e1e;
   border-radius: 16px;
   padding: 25px;
   display: grid;
   grid-template-columns: 1.5fr 1.5fr 1fr;
   gap: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid #333;
   transition: transform 0.2s;
 }
 
@@ -73,7 +73,7 @@
 .price-label {
   font-size: 20px;
   font-weight: 700;
-  color: #343a40;
+  color: #fff;
 }
 
 .user-meta {
@@ -82,7 +82,7 @@
 
 .user-name {
   font-weight: 600;
-  color: #1a1b23;
+  color: #fff;
 }
 
 .user-contact {
@@ -91,8 +91,8 @@
 }
 
 .address-box {
-  background: #fdfdfd;
-  border: 1px solid #f1f1f1;
+  background: #2a2a2a;
+  border: 1px solid #333;
   padding: 12px;
   border-radius: 10px;
   font-size: 13px;
@@ -100,7 +100,7 @@
 
 .full-address {
   margin-top: 5px;
-  color: #495057;
+  color: #ccc;
   line-height: 1.4;
 }
 
@@ -114,7 +114,7 @@
 .date-box span {
   font-weight: 600;
   font-size: 14px;
-  color: #343a40;
+  color: #fff;
 }
 
 .date-arrow {

@@ -7,14 +7,15 @@
   }
   
   .add-card {
-    background-color: white;
+    background-color: transparent;
+    border: 1px solid #333;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
   }
   
   .add-card h2 {
-    color: #333;
+    color: #fff;
     margin-bottom: 25px;
     font-size: 24px;
     font-weight: 600;
@@ -29,7 +30,7 @@
   .add-product-name input,
   .add-product-name textarea {
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
     border-radius: 6px;
     font-size: 15px;
     width: 100%;
@@ -46,7 +47,7 @@
   .add-category-price select,
   .add-category-price input {
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
     border-radius: 6px;
     font-size: 15px;
     width: 200px;

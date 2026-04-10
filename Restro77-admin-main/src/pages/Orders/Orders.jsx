@@ -113,9 +113,9 @@ const OrderItem = ({ order, statusHandler, prepTimeHandler, deliveryBoys }) => {
           <button
             onClick={handleSetTime}
             style={{
-              backgroundColor: isSet ? '#ffcc00' : 'white',
-              color: isSet ? 'black' : '#333',
-              border: isSet ? '1px solid #ffcc00' : '1px solid #ccc',
+              backgroundColor: isSet ? '#ffcc00' : 'transparent',
+              color: isSet ? 'black' : '#ccc',
+              border: isSet ? '1px solid #ffcc00' : '1px solid #555',
               padding: '6px 15px',
               cursor: 'pointer',
               borderRadius: '20px',
