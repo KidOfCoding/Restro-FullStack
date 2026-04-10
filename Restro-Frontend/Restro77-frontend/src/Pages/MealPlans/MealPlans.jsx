@@ -3,7 +3,7 @@ import './MealPlans.css'
 import { StoreContext } from '../../context/StoreContext'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { GiNoodleBowl } from 'react-icons/gi'
+import { GiFastNoodles } from 'react-icons/gi'
 
 import monthlyImg from '../../assets/monthly_plan.png'
 import weeklyImg from '../../assets/weekly_plan.png'
@@ -118,7 +118,7 @@ const MealPlans = () => {
                             <div className="premium-monthly">
                                 <div className="monthly-info-box">
                                     <div className="info-icon-wrapper">
-                                        <GiNoodleBowl size={80} color="#ff6b4a" />
+                                        <GiFastNoodles size={80} color="#ff6b4a" />
                                     </div>
                                     <p>You can order any <b>Fried Rice</b> or <b>Noodles</b> in place of meal just that much.</p>
                                 </div>

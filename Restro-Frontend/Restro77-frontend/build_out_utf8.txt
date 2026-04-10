@@ -1,0 +1,32 @@
+﻿ERROR_STDOUT:
+ 
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v5.4.0 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 215 modules transformed.
+ ERROR_STDERR:
+ [31mx[39m Build failed in 2.04s
+[31merror during build:
+[31msrc/Pages/MealPlans/MealPlans.jsx (6:9): "GiNoodleBowl" is not exported by "node_modules/react-icons/gi/index.mjs", imported by "src/Pages/MealPlans/MealPlans.jsx".[31m
+file: [36mC:/Users/newak/OneDrive/Desktop/Restro FullStack/Restro FullStack V2/Restro-Frontend/Restro77-frontend/src/Pages/MealPlans/MealPlans.jsx:6:9[31m
+[33m
+4: import { useNavigate } from 'react-router-dom'
+5: import { toast } from 'react-toastify'
+6: import { GiNoodleBowl } from 'react-icons/gi'
+            ^
+7: 
+8: import monthlyImg from '../../assets/monthly_plan.png'
+[31m
+    at getRollupError (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/parseAst.js:392:41)
+    at error (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/parseAst.js:388:42)
+    at Module.error (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:13958:16)
+    at Module.traceVariable (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:14406:29)
+    at ModuleScope.findVariable (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:12110:39)
+    at ReturnValueScope.findVariable (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:7465:38)
+    at FunctionBodyScope.findVariable (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:7465:38)
+    at Identifier.bind (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:6941:40)
+    at CallExpression.bind (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:4804:28)
+    at CallExpression.bind (file:///C:/Users/newak/OneDrive/Desktop/Restro%20FullStack/Restro%20FullStack%20V2/Restro-Frontend/Restro77-frontend/node_modules/rollup/dist/es/shared/node-entry.js:9215:15)[39m
+
