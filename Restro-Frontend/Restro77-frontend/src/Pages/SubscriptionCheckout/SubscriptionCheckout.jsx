@@ -153,7 +153,8 @@ Address: ${data.address}`;
 
 *My Details:*
 Name: ${data.name}
-Phone: ${data.phone}`;
+Phone: ${data.phone}
+Address: ${data.address}`;
 
                 const whatsappUrl = `https://wa.me/917008939551?text=${encodeURIComponent(msgText)}`;
                 window.open(whatsappUrl, '_blank');
